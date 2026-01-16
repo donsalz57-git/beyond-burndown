@@ -1,0 +1,17 @@
+{
+  "name": "beyond-burndown",
+  "version": "1.0.0",
+  "description": "Jira Forge dashboard gadget for feasibility analysis and compliance checking",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js"
+  },
+  "dependencies": {
+    "@forge/api": "^4.0.0",
+    "@forge/resolver": "^1.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  },
+  "license": "MIT"
+}

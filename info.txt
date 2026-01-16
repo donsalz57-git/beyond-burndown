@@ -1,0 +1,22 @@
+project = DEV and Summary !~ Capacity
+
+This is Beyond Burndown™ Feasibility Gadget - a Jira Cloud dashboard gadget built on Atlassian Forge that provides physics-based feasibility analysis for project teams.       
+
+  Core Purpose
+
+  It answers: "Can we deliver the planned work with available capacity?"
+
+  Main Features
+
+  1. Feasibility Envelope Analysis - Spreads remaining estimates across business days and compares demand vs. capacity to identify overloaded periods
+  2. Demand & Capacity Scoping - Configurable JQL queries to define what work needs to be done (demand) and what bandwidth is available (capacity)
+  3. Compliance Engine - Detects planning violations:
+    - Missing dates or estimates
+    - Done issues with remaining work
+    - Overdue issues
+    - Child stories due after parent Epic
+    - Dependency conflicts (predecessor finishing after successor starts)
+  4. Dependency Modeling - Extracts blocking relationships from Jira issue links and detects circular dependencies
+  5. Diagnostic Mode - Debug views showing raw data to verify live connectivity
+
+ATATT3xFfGF0dZK_4q7rPXF145vssMfO0Q0xeFtvUV7A4yPs9__pwiLGroPHTGL1P7UAntk8AoH-v7mCmtPpRJDVozHoVErfpqRjFigRG34rIASB4UI57aqMcgH8djfubctNUjpJW78zpXzI8LrplCdNBlhUPjTPw7sVtSKCIR_MIcno0CtQSBc=62C4EAD1
