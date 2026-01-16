@@ -8,8 +8,6 @@ modules:
       resource: frontend
       resolver:
         function: resolver
-      edit:
-        resource: frontend
   function:
     - key: resolver
       handler: index.handler

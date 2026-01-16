@@ -1,5 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
-import { view } from '@forge/bridge';
+import React, { useState, Component } from 'react';
 import { useGadgetData } from './hooks/useGadgetData';
 import FeasibilityChart from './components/FeasibilityChart';
 import CompliancePanel from './components/CompliancePanel';
@@ -44,18 +43,7 @@ const TABS = {
 
 function App() {
   const [activeTab, setActiveTab] = useState(TABS.FEASIBILITY);
-  const [isEditMode, setIsEditMode] = useState(false);
   const { data, loading, error, config, updateConfig, refresh } = useGadgetData();
-
-  // Check if we're in edit mode
-  useEffect(() => {
-    view.getContext().then(context => {
-      if (context?.extension?.gadget?.isEditing) {
-        setIsEditMode(true);
-        setActiveTab(TABS.CONFIG);
-      }
-    });
-  }, []);
 
   // Render loading state
   if (loading) {
@@ -80,19 +68,6 @@ function App() {
             Retry
           </button>
         </div>
-      </div>
-    );
-  }
-
-  // Render config-only in edit mode
-  if (isEditMode) {
-    return (
-      <div className="gadget-container">
-        <ConfigPanel
-          config={config}
-          onSave={updateConfig}
-          isEditMode={true}
-        />
       </div>
     );
   }
