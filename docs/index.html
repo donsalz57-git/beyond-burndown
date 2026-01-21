@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beyond Burndown - Feasibility & Compliance Analyzer for Jira</title>
+  <meta name="description" content="Beyond Burndown analyzes sprint feasibility, tracks capacity vs demand over time, and shows completion progress. Plan realistic sprints with confidence.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">
+        <span class="logo-icon">&#128202;</span>
+        Beyond Burndown
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="user-manual.html">User Manual</a>
+        <a href="#install" class="btn btn-primary">Install Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Sprint Planning,<br><span class="highlight">Beyond Guesswork</span></h1>
+      <p class="hero-subtitle">
+        Beyond Burndown analyzes capacity vs demand over time, calculates feasibility scores,
+        and tracks completion progress. Know if your sprint is realistic before you commit.
+      </p>
+      <div class="hero-cta">
+        <a href="#install" class="btn btn-primary btn-large">Install on Jira</a>
+        <a href="#how-it-works" class="btn btn-secondary btn-large">See How It Works</a>
+      </div>
+      <p class="hero-note">Free for teams. Works with Jira Cloud.</p>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="problem">
+    <div class="container">
+      <h2>Burndown Charts Don't Tell the Whole Story</h2>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-icon">&#128200;</div>
+          <h3>Burndowns Are Reactive</h3>
+          <p>Traditional burndown charts only show progress after work begins. By then, it's too late to adjust scope.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">&#9888;</div>
+          <h3>No Early Warning System</h3>
+          <p>Without comparing capacity to demand over time, teams can't see overload periods before they happen.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">&#128269;</div>
+          <h3>Missing Completion Visibility</h3>
+          <p>How much of the original planned work is actually done? Burndowns don't track original estimates vs time spent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2>Everything You Need for Realistic Planning</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#128202;</div>
+          <h3>Feasibility Score</h3>
+          <p>Get a 0-100% score showing how realistic your sprint is. Green means go, red means reconsider.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128197;</div>
+          <h3>Timeline Analysis</h3>
+          <p>See capacity vs demand plotted day by day. Identify exactly when and where overload periods occur.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128337;</div>
+          <h3>Completion Tracking</h3>
+          <p>Track time spent against original estimates. See actual completion percentage over time.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128200;</div>
+          <h3>Period Aggregation</h3>
+          <p>View data daily, weekly, bi-weekly, monthly, or quarterly. Zoom in or out to see the big picture.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#9889;</div>
+          <h3>Overload Warnings</h3>
+          <p>Instantly see which periods are overloaded. Get specific dates and hours over capacity.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128736;</div>
+          <h3>Flexible Configuration</h3>
+          <p>Use JQL filters for both demand and capacity. Configure exactly which issues to analyze.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="how-it-works">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Configure Your JQL</h3>
+          <p>Set up JQL queries for demand issues (your work) and capacity issues (team availability).</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Analyze the Timeline</h3>
+          <p>The tool spreads estimates across business days based on issue start/due dates.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Get Your Score</h3>
+          <p>See the feasibility score and identify any overloaded periods that need attention.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3>Track Progress</h3>
+          <p>As work is logged, watch completion percentage grow against original estimates.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Section -->
+  <section id="technical" class="technical">
+    <div class="container">
+      <h2>Understanding the Feasibility Score</h2>
+      <p class="technical-subtitle">
+        The feasibility score quantifies how realistic your sprint plan is based on capacity vs demand analysis.
+      </p>
+
+      <div class="formula-box">
+        <h3>Feasibility Score Formula</h3>
+        <div class="formula">
+          Score = (Coverage Ratio - Overload Penalty) x 100
+        </div>
+        <p><strong>Coverage Ratio:</strong> How well capacity covers demand</p>
+        <div class="formula">
+          Coverage Ratio = min(1, Total Capacity / Total Demand)
+        </div>
+        <p><strong>Overload Penalty:</strong> Penalizes days where demand exceeds capacity</p>
+        <div class="formula">
+          Overload Penalty = min(0.3, (Overloaded Days / Total Days) x 0.5)
+        </div>
+      </div>
+
+      <div class="formula-box">
+        <h3>Score Interpretation</h3>
+        <ul>
+          <li><strong class="score-good">80-100%:</strong> Healthy - Capacity exceeds demand with minimal overload periods</li>
+          <li><strong class="score-warning">50-79%:</strong> At Risk - Some overload periods exist or capacity is tight</li>
+          <li><strong class="score-danger">0-49%:</strong> Overloaded - Significant capacity shortage or many overloaded days</li>
+        </ul>
+      </div>
+
+      <div class="formula-box">
+        <h3>Completion Percentage</h3>
+        <p>Tracks how much of the original planned work has been completed:</p>
+        <div class="formula">
+          Completion % = (Cumulative Time Spent / Cumulative Original Estimate) x 100
+        </div>
+        <p>This shows actual progress against what was originally planned, not remaining estimates which can change.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section id="comparison" class="comparison">
+    <div class="container">
+      <h2>Beyond Burndown vs Traditional Charts</h2>
+      <p class="comparison-subtitle">See what proactive planning provides over reactive monitoring</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Burndown Chart</th>
+              <th>Beyond Burndown</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Show work remaining</td>
+              <td class="check">&#10004;</td>
+              <td class="check">&#10004;</td>
+            </tr>
+            <tr>
+              <td>Track velocity trend</td>
+              <td class="check">&#10004;</td>
+              <td class="check">&#10004;</td>
+            </tr>
+            <tr>
+              <td><strong>Predict feasibility before sprint starts</strong></td>
+              <td class="cross">&#10008;</td>
+              <td class="check">&#10004;</td>
+            </tr>
+            <tr>
+              <td><strong>Show capacity vs demand over time</strong></td>
+              <td class="cross">&#10008;</td>
+              <td class="check">&#10004;</td>
+            </tr>
+            <tr>
+              <td><strong>Identify overloaded periods</strong></td>
+              <td class="cross">&#10008;</td>
+              <td class="check">&#10004; with dates</td>
+            </tr>
+            <tr>
+              <td><strong>Track completion vs original estimate</strong></td>
+              <td class="cross">&#10008;</td>
+              <td class="check">&#10004;</td>
+            </tr>
+            <tr>
+              <td><strong>Aggregate by week/month/quarter</strong></td>
+              <td class="cross">&#10008;</td>
+              <td class="check">&#10004;</td>
+            </tr>
+            <tr>
+              <td><strong>JQL-based issue filtering</strong></td>
+              <td>Limited</td>
+              <td class="check">&#10004; full JQL</td>
+            </tr>
+            <tr>
+              <td><strong>Separate capacity tracking</strong></td>
+              <td class="cross">&#10008;</td>
+              <td class="check">&#10004;</td>
+            </tr>
+            <tr>
+              <td><strong>Dashboard gadget</strong></td>
+              <td class="check">&#10004;</td>
+              <td class="check">&#10004;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section id="install" class="cta">
+    <div class="container">
+      <h2>Ready to Plan with Confidence?</h2>
+      <p>Install Beyond Burndown on your Jira Cloud instance. Free for all teams.</p>
+      <a href="https://marketplace.atlassian.com/" class="btn btn-primary btn-large">
+        Get Beyond Burndown
+      </a>
+      <p class="cta-note">Available on the Atlassian Marketplace</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="logo-icon">&#128202;</span>
+          Beyond Burndown
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/donsalz57-git/beyond-burndown">GitHub</a>
+          <a href="#features">Features</a>
+          <a href="user-manual.html">User Manual</a>
+        </div>
+      </div>
+      <p class="copyright">&copy; 2025 Beyond Burndown. Built for Jira Cloud.</p>
+    </div>
+  </footer>
+</body>
+</html>
