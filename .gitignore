@@ -5,6 +5,9 @@ node_modules/
 static/frontend/build/
 dist/
 
+# Test coverage
+coverage/
+
 # Forge
 .forge/
 
