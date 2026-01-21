@@ -39,11 +39,14 @@ export async function analyzeEnvelope(demandIssues, capacityIssues, worklogs = [
   // Build daily demand map
   const dailyDemand = buildDailyDemand(demandIssues, businessDays);
 
+  // Build daily original estimate map (for completion tracking)
+  const dailyOriginalEstimate = buildDailyOriginalEstimate(demandIssues, businessDays);
+
   // Build daily time spent from worklogs
   const dailyTimeSpent = buildDailyTimeSpent(worklogs, businessDays);
 
   // Calculate cumulative values and identify overloaded days
-  const timeline = buildTimeline(businessDays, dailyCapacity, dailyDemand, dailyTimeSpent);
+  const timeline = buildTimeline(businessDays, dailyCapacity, dailyDemand, dailyOriginalEstimate, dailyTimeSpent);
 
   // Calculate feasibility score
   const feasibilityScore = calculateFeasibilityScore(timeline);
@@ -54,6 +57,9 @@ export async function analyzeEnvelope(demandIssues, capacityIssues, worklogs = [
   // Calculate total time spent
   const totalTimeSpent = worklogs.reduce((sum, w) => sum + (w.hours || 0), 0);
 
+  // Calculate total original estimate
+  const totalOriginalEstimate = timeline.reduce((sum, d) => sum + d.originalEstimate, 0);
+
   return {
     rangeStart: rangeStart.toISOString(),
     rangeEnd: rangeEnd.toISOString(),
@@ -63,6 +69,7 @@ export async function analyzeEnvelope(demandIssues, capacityIssues, worklogs = [
     totals: {
       totalCapacity: timeline.reduce((sum, d) => sum + d.capacity, 0),
       totalDemand: timeline.reduce((sum, d) => sum + d.demand, 0),
+      totalOriginalEstimate: Math.round(totalOriginalEstimate * 100) / 100,
       totalTimeSpent: Math.round(totalTimeSpent * 100) / 100,
       totalDays: timeline.length
     }
@@ -163,6 +170,53 @@ function buildDailyDemand(demandIssues, businessDays) {
 }
 
 /**
+ * Build daily original estimate by spreading original estimates across business days
+ * Used for calculating completion percentage
+ * @param {Array} demandIssues - Demand issues
+ * @param {Date[]} businessDays - Array of business days
+ * @returns {Map<string, number>} Daily original estimate (date key -> hours)
+ */
+function buildDailyOriginalEstimate(demandIssues, businessDays) {
+  const dailyOriginalEstimate = new Map();
+  const today = getToday();
+
+  // Initialize all days
+  for (const day of businessDays) {
+    dailyOriginalEstimate.set(formatDateKey(day), 0);
+  }
+
+  // Spread each issue's original estimate across its date range
+  for (const issue of demandIssues) {
+    // Include all issues (even done ones) for original estimate tracking
+    const original = issue.originalEstimate || 0;
+    if (original <= 0) continue;
+
+    // Determine start date
+    let effectiveStart = issue.startDate || today;
+
+    // Use due date or extend 10 business days from start
+    const effectiveEnd = issue.dueDate ||
+      new Date(effectiveStart.getTime() + 14 * 24 * 60 * 60 * 1000);
+
+    // Get business days for this issue
+    const issueDays = getBusinessDaysBetween(effectiveStart, effectiveEnd);
+    if (issueDays.length === 0) continue;
+
+    // Spread estimate evenly across days
+    const hoursPerDay = original / issueDays.length;
+
+    for (const day of issueDays) {
+      const key = formatDateKey(day);
+      if (dailyOriginalEstimate.has(key)) {
+        dailyOriginalEstimate.set(key, dailyOriginalEstimate.get(key) + hoursPerDay);
+      }
+    }
+  }
+
+  return dailyOriginalEstimate;
+}
+
+/**
  * Build daily time spent from worklogs
  * @param {Array} worklogs - Array of worklog entries
  * @param {Date[]} businessDays - Array of business days
@@ -193,36 +247,48 @@ function buildDailyTimeSpent(worklogs, businessDays) {
  * @param {Date[]} businessDays - Array of business days
  * @param {Map<string, number>} dailyCapacity - Daily capacity
  * @param {Map<string, Object>} dailyDemand - Daily demand
+ * @param {Map<string, number>} dailyOriginalEstimate - Daily original estimate
  * @param {Map<string, number>} dailyTimeSpent - Daily time spent
  * @returns {Array} Timeline entries
  */
-function buildTimeline(businessDays, dailyCapacity, dailyDemand, dailyTimeSpent) {
+function buildTimeline(businessDays, dailyCapacity, dailyDemand, dailyOriginalEstimate, dailyTimeSpent) {
   const timeline = [];
   let cumulativeCapacity = 0;
   let cumulativeDemand = 0;
+  let cumulativeOriginalEstimate = 0;
   let cumulativeTimeSpent = 0;
 
   for (const day of businessDays) {
     const key = formatDateKey(day);
     const capacity = dailyCapacity.get(key) || 0;
     const demandData = dailyDemand.get(key) || { total: 0, issues: [] };
+    const originalEstimate = dailyOriginalEstimate.get(key) || 0;
     const timeSpent = dailyTimeSpent.get(key) || 0;
 
     cumulativeCapacity += capacity;
     cumulativeDemand += demandData.total;
+    cumulativeOriginalEstimate += originalEstimate;
     cumulativeTimeSpent += timeSpent;
 
     const overload = cumulativeDemand - cumulativeCapacity;
+
+    // Calculate completion percentage (time spent / original estimate)
+    const completionPercent = cumulativeOriginalEstimate > 0
+      ? Math.round((cumulativeTimeSpent / cumulativeOriginalEstimate) * 100)
+      : 0;
 
     timeline.push({
       date: key,
       displayDate: day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
       capacity: Math.round(capacity * 100) / 100,
       demand: Math.round(demandData.total * 100) / 100,
+      originalEstimate: Math.round(originalEstimate * 100) / 100,
       timeSpent: Math.round(timeSpent * 100) / 100,
       cumulativeCapacity: Math.round(cumulativeCapacity * 100) / 100,
       cumulativeDemand: Math.round(cumulativeDemand * 100) / 100,
+      cumulativeOriginalEstimate: Math.round(cumulativeOriginalEstimate * 100) / 100,
       cumulativeTimeSpent: Math.round(cumulativeTimeSpent * 100) / 100,
+      completionPercent,
       overload: Math.round(Math.max(0, overload) * 100) / 100,
       isOverloaded: overload > 0,
       contributingIssues: demandData.issues

@@ -90,6 +90,7 @@ function aggregateTimeline(timeline, period) {
         days: [],
         capacity: 0,
         demand: 0,
+        originalEstimate: 0,
         timeSpent: 0
       });
     }
@@ -98,6 +99,7 @@ function aggregateTimeline(timeline, period) {
     group.days.push(day);
     group.capacity += day.capacity || 0;
     group.demand += day.demand || 0;
+    group.originalEstimate += day.originalEstimate || 0;
     group.timeSpent += day.timeSpent || 0;
   }
 
@@ -105,24 +107,34 @@ function aggregateTimeline(timeline, period) {
   const result = [];
   let cumulativeCapacity = 0;
   let cumulativeDemand = 0;
+  let cumulativeOriginalEstimate = 0;
   let cumulativeTimeSpent = 0;
 
   for (const [, group] of groups) {
     cumulativeCapacity += group.capacity;
     cumulativeDemand += group.demand;
+    cumulativeOriginalEstimate += group.originalEstimate;
     cumulativeTimeSpent += group.timeSpent;
 
     const overload = cumulativeDemand - cumulativeCapacity;
+
+    // Calculate completion percentage
+    const completionPercent = cumulativeOriginalEstimate > 0
+      ? Math.round((cumulativeTimeSpent / cumulativeOriginalEstimate) * 100)
+      : 0;
 
     result.push({
       date: group.groupKey,
       displayDate: group.groupLabel,
       capacity: Math.round(group.capacity * 100) / 100,
       demand: Math.round(group.demand * 100) / 100,
+      originalEstimate: Math.round(group.originalEstimate * 100) / 100,
       timeSpent: Math.round(group.timeSpent * 100) / 100,
       cumulativeCapacity: Math.round(cumulativeCapacity * 100) / 100,
       cumulativeDemand: Math.round(cumulativeDemand * 100) / 100,
+      cumulativeOriginalEstimate: Math.round(cumulativeOriginalEstimate * 100) / 100,
       cumulativeTimeSpent: Math.round(cumulativeTimeSpent * 100) / 100,
+      completionPercent,
       overload: Math.round(Math.max(0, overload) * 100) / 100,
       isOverloaded: overload > 0,
       daysInPeriod: group.days.length
@@ -160,7 +172,10 @@ function FeasibilityChart({ envelope }) {
     demand: item.cumulativeDemand,
     periodCapacity: item.capacity,
     periodDemand: item.demand,
+    periodOriginalEstimate: item.originalEstimate,
+    cumulativeOriginalEstimate: item.cumulativeOriginalEstimate || 0,
     timeSpent: item.cumulativeTimeSpent || 0,
+    completionPercent: item.completionPercent || 0,
     overload: item.overload,
     isOverloaded: item.isOverloaded,
     daysInPeriod: item.daysInPeriod || 1
@@ -199,7 +214,11 @@ function FeasibilityChart({ envelope }) {
           <div style={{ marginTop: '4px', borderTop: '1px solid #DFE1E6', paddingTop: '4px' }}>
             <div>Cumulative Capacity: {data.capacity}h</div>
             <div>Cumulative Demand: {data.demand}h</div>
+            <div>Cumulative Original Estimate: {data.cumulativeOriginalEstimate}h</div>
             <div>Cumulative Time Spent: <strong style={{ color: '#FF8B00' }}>{data.timeSpent}h</strong></div>
+          </div>
+          <div style={{ marginTop: '4px', borderTop: '1px solid #DFE1E6', paddingTop: '4px' }}>
+            <div>Completion: <strong style={{ color: '#9C27B0' }}>{data.completionPercent}%</strong></div>
           </div>
           {data.isOverloaded && (
             <div style={{ color: '#DE350B', marginTop: '4px' }}>
@@ -281,9 +300,18 @@ function FeasibilityChart({ envelope }) {
               interval="preserveStartEnd"
             />
             <YAxis
+              yAxisId="left"
               tick={{ fontSize: 11, fill: '#5E6C84' }}
               tickLine={{ stroke: '#DFE1E6' }}
               label={{ value: period === PERIODS.DAILY ? 'Hours/Day' : `Hours/${periodLabel}`, angle: -90, position: 'insideLeft', fontSize: 11, fill: '#5E6C84' }}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              tick={{ fontSize: 11, fill: '#5E6C84' }}
+              tickLine={{ stroke: '#DFE1E6' }}
+              domain={[0, 100]}
+              label={{ value: 'Completion %', angle: 90, position: 'insideRight', fontSize: 11, fill: '#9C27B0' }}
             />
             <Tooltip content={<CustomTooltip />} />
 
@@ -294,6 +322,7 @@ function FeasibilityChart({ envelope }) {
               stroke="#00875A"
               strokeWidth={2}
               dot={false}
+              yAxisId="left"
               name={`${periodLabel} Capacity`}
             />
 
@@ -304,6 +333,7 @@ function FeasibilityChart({ envelope }) {
               stroke="#0052CC"
               strokeWidth={2}
               dot={false}
+              yAxisId="left"
               name={`${periodLabel} Demand`}
             />
 
@@ -315,6 +345,7 @@ function FeasibilityChart({ envelope }) {
               strokeWidth={2}
               strokeDasharray="5 5"
               dot={false}
+              yAxisId="left"
               name="Cumulative Capacity"
             />
 
@@ -326,6 +357,7 @@ function FeasibilityChart({ envelope }) {
               strokeWidth={2}
               strokeDasharray="5 5"
               dot={false}
+              yAxisId="left"
               name="Cumulative Demand"
             />
 
@@ -337,7 +369,19 @@ function FeasibilityChart({ envelope }) {
               strokeWidth={2}
               strokeDasharray="5 5"
               dot={false}
+              yAxisId="left"
               name="Time Spent"
+            />
+
+            {/* Completion Percentage line */}
+            <Line
+              type="monotone"
+              dataKey="completionPercent"
+              stroke="#9C27B0"
+              strokeWidth={2}
+              dot={false}
+              yAxisId="right"
+              name="Completion %"
             />
           </ComposedChart>
         </ResponsiveContainer>
@@ -364,6 +408,10 @@ function FeasibilityChart({ envelope }) {
         <div className="legend-item">
           <div className="legend-color" style={{ background: '#FF8B00', borderStyle: 'dashed' }}></div>
           <span>Cumulative Time Spent</span>
+        </div>
+        <div className="legend-item">
+          <div className="legend-color" style={{ background: '#9C27B0' }}></div>
+          <span>Completion %</span>
         </div>
       </div>
     </div>
