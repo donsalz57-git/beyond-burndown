@@ -88,8 +88,8 @@ function App() {
           config={config}
           onSave={async (newConfig) => {
             await updateConfig(newConfig);
-            // Close edit mode after saving
-            view.close();
+            // Use view.submit() to tell Jira the gadget is configured
+            view.submit(newConfig);
           }}
           onCancel={() => view.close()}
         />

@@ -60,13 +60,26 @@ resolver.define('getData', async ({ payload, context }) => {
   }
 });
 
+// Helper to get consistent storage key for gadget config
+function getConfigKey(context) {
+  // Try gadget ID first, then dashboard ID, then fall back to 'default'
+  const gadgetId = context.extension?.gadget?.id;
+  const dashboardId = context.extension?.gadget?.dashboardId;
+
+  // Use gadget ID if available, otherwise dashboard ID, otherwise default
+  const key = gadgetId || dashboardId || 'default';
+  console.log('getConfigKey - gadgetId:', gadgetId, 'dashboardId:', dashboardId, 'using key:', key);
+  return `config-${key}`;
+}
+
 // Save gadget configuration
 resolver.define('saveConfig', async ({ payload, context }) => {
   const { storage } = await import('@forge/api');
-  const gadgetId = context.extension?.gadget?.id || 'default';
+  const configKey = getConfigKey(context);
 
   try {
-    await storage.set(`config-${gadgetId}`, payload);
+    await storage.set(configKey, payload);
+    console.log('saveConfig - saved successfully with key:', configKey);
     return { success: true };
   } catch (error) {
     console.error('Error saving config:', error);
@@ -77,10 +90,18 @@ resolver.define('saveConfig', async ({ payload, context }) => {
 // Load gadget configuration
 resolver.define('loadConfig', async ({ context }) => {
   const { storage } = await import('@forge/api');
-  const gadgetId = context.extension?.gadget?.id || 'default';
+  const configKey = getConfigKey(context);
 
   try {
-    const config = await storage.get(`config-${gadgetId}`);
+    let config = await storage.get(configKey);
+
+    // If no config found and we're using a specific key, try the 'default' key as fallback
+    if (!config && configKey !== 'config-default') {
+      console.log('loadConfig - trying fallback to default key');
+      config = await storage.get('config-default');
+    }
+
+    console.log('loadConfig - loaded config:', config ? 'found' : 'not found', 'with key:', configKey);
     return {
       success: true,
       config: config || {
