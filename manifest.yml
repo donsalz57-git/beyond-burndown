@@ -6,6 +6,8 @@ modules:
         detects compliance violations, and models dependencies.
       thumbnail: https://developer.atlassian.com/platform/forge/images/icons/dashboard-gadget-icon.svg
       resource: frontend
+      edit:
+        resource: frontend
       resolver:
         function: resolver
   function:

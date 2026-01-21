@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function ConfigPanel({ config, onSave }) {
+function ConfigPanel({ config, onSave, onCancel }) {
   const [formData, setFormData] = useState({
     demandJql: 'project = DEV and Summary !~ Capacity',
     capacityJql: 'project = DEV and Summary ~ Capacity'
@@ -76,6 +76,15 @@ function ConfigPanel({ config, onSave }) {
         >
           {saving ? 'Saving...' : 'Save Configuration'}
         </button>
+        {onCancel && (
+          <button
+            className="cancel-button"
+            onClick={onCancel}
+            disabled={saving}
+          >
+            Cancel
+          </button>
+        )}
         {saved && (
           <span style={{ color: '#00875A', fontSize: '13px' }}>
             Configuration saved successfully

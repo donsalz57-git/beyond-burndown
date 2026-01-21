@@ -345,6 +345,25 @@
   cursor: not-allowed;
 }
 
+.cancel-button {
+  background: #F4F5F7;
+  color: #172B4D;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background: #DFE1E6;
+}
+
+.cancel-button:disabled {
+  color: #A5ADBA;
+  cursor: not-allowed;
+}
+
 /* Empty States */
 .empty-state {
   text-align: center;

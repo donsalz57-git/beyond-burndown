@@ -1,4 +1,5 @@
-import React, { useState, Component } from 'react';
+import React, { useState, useEffect, Component } from 'react';
+import { view } from '@forge/bridge';
 import { useGadgetData } from './hooks/useGadgetData';
 import FeasibilityChart from './components/FeasibilityChart';
 import CompliancePanel from './components/CompliancePanel';
@@ -37,13 +38,20 @@ class ErrorBoundary extends Component {
 const TABS = {
   FEASIBILITY: 'feasibility',
   COMPLIANCE: 'compliance',
-  DEPENDENCIES: 'dependencies',
-  CONFIG: 'config'
+  DEPENDENCIES: 'dependencies'
 };
 
 function App() {
   const [activeTab, setActiveTab] = useState(TABS.FEASIBILITY);
+  const [isEditMode, setIsEditMode] = useState(false);
   const { data, loading, error, config, updateConfig, refresh } = useGadgetData();
+
+  // Detect if gadget is in edit/configure mode
+  useEffect(() => {
+    view.getContext().then(context => {
+      setIsEditMode(context.extension?.entryPoint === 'edit');
+    });
+  }, []);
 
   // Render loading state
   if (loading) {
@@ -68,6 +76,23 @@ function App() {
             Retry
           </button>
         </div>
+      </div>
+    );
+  }
+
+  // Render configuration screen when in edit mode
+  if (isEditMode) {
+    return (
+      <div className="gadget-container">
+        <ConfigPanel
+          config={config}
+          onSave={async (newConfig) => {
+            await updateConfig(newConfig);
+            // Close edit mode after saving
+            view.close();
+          }}
+          onCancel={() => view.close()}
+        />
       </div>
     );
   }
@@ -128,12 +153,6 @@ function App() {
             <span className="badge danger">{data.dependencies.circularDependencies.length}</span>
           )}
         </button>
-        <button
-          className={`tab-button ${activeTab === TABS.CONFIG ? 'active' : ''}`}
-          onClick={() => setActiveTab(TABS.CONFIG)}
-        >
-          Settings
-        </button>
       </div>
 
       {/* Tab Content */}
@@ -146,15 +165,6 @@ function App() {
         )}
         {activeTab === TABS.DEPENDENCIES && (
           <DependencyView dependencies={data?.dependencies} />
-        )}
-        {activeTab === TABS.CONFIG && (
-          <ConfigPanel
-            config={config}
-            onSave={async (newConfig) => {
-              await updateConfig(newConfig);
-              refresh();
-            }}
-          />
         )}
       </div>
     </div>
