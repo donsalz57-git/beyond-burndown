@@ -23,10 +23,18 @@
   "jest": {
     "testEnvironment": "node",
     "testMatch": ["**/test/**/*.test.js"],
-    "collectCoverageFrom": ["src/**/*.js"],
+    "collectCoverageFrom": ["src/**/*.js", "!src/index.js"],
     "transform": {
       "^.+\\.js$": "babel-jest"
-    }
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@forge)/)"
+    ],
+    "moduleNameMapper": {
+      "^@forge/api$": "<rootDir>/test/__mocks__/@forge/api.js",
+      "^@forge/resolver$": "<rootDir>/test/__mocks__/@forge/resolver.js"
+    },
+    "setupFilesAfterEnv": ["<rootDir>/test/setup.js"]
   },
   "license": "MIT"
 }
