@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ComposedChart,
   Area,
@@ -11,7 +11,130 @@ import {
   ReferenceLine
 } from 'recharts';
 
+const PERIODS = {
+  DAILY: 'daily',
+  WEEKLY: 'weekly',
+  BIWEEKLY: 'biweekly',
+  MONTHLY: 'monthly',
+  QUARTERLY: 'quarterly'
+};
+
+const PERIOD_LABELS = {
+  [PERIODS.DAILY]: 'Daily',
+  [PERIODS.WEEKLY]: 'Weekly',
+  [PERIODS.BIWEEKLY]: 'Bi-weekly',
+  [PERIODS.MONTHLY]: 'Monthly',
+  [PERIODS.QUARTERLY]: 'Quarterly'
+};
+
+/**
+ * Aggregate daily timeline data into larger periods
+ */
+function aggregateTimeline(timeline, period) {
+  if (period === PERIODS.DAILY || !timeline || timeline.length === 0) {
+    return timeline;
+  }
+
+  const groups = new Map();
+
+  for (const day of timeline) {
+    const date = new Date(day.date);
+    let groupKey;
+    let groupLabel;
+
+    switch (period) {
+      case PERIODS.WEEKLY: {
+        // Group by week (starting Monday)
+        const weekStart = new Date(date);
+        const dayOfWeek = date.getDay();
+        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        weekStart.setDate(date.getDate() + diff);
+        groupKey = weekStart.toISOString().split('T')[0];
+        groupLabel = `Week of ${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+        break;
+      }
+      case PERIODS.BIWEEKLY: {
+        // Group by bi-weekly periods (2-week chunks from start)
+        const weekStart = new Date(date);
+        const dayOfWeek = date.getDay();
+        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        weekStart.setDate(date.getDate() + diff);
+        // Get week number and group by even/odd weeks
+        const startOfYear = new Date(weekStart.getFullYear(), 0, 1);
+        const weekNum = Math.ceil((((weekStart - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
+        const biweekNum = Math.floor(weekNum / 2);
+        groupKey = `${weekStart.getFullYear()}-BW${biweekNum}`;
+        groupLabel = `${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - 2wk`;
+        break;
+      }
+      case PERIODS.MONTHLY: {
+        groupKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        groupLabel = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        break;
+      }
+      case PERIODS.QUARTERLY: {
+        const quarter = Math.floor(date.getMonth() / 3) + 1;
+        groupKey = `${date.getFullYear()}-Q${quarter}`;
+        groupLabel = `Q${quarter} ${date.getFullYear()}`;
+        break;
+      }
+      default:
+        groupKey = day.date;
+        groupLabel = day.displayDate;
+    }
+
+    if (!groups.has(groupKey)) {
+      groups.set(groupKey, {
+        groupKey,
+        groupLabel,
+        days: [],
+        capacity: 0,
+        demand: 0,
+        timeSpent: 0
+      });
+    }
+
+    const group = groups.get(groupKey);
+    group.days.push(day);
+    group.capacity += day.capacity || 0;
+    group.demand += day.demand || 0;
+    group.timeSpent += day.timeSpent || 0;
+  }
+
+  // Convert to array and calculate cumulative values
+  const result = [];
+  let cumulativeCapacity = 0;
+  let cumulativeDemand = 0;
+  let cumulativeTimeSpent = 0;
+
+  for (const [, group] of groups) {
+    cumulativeCapacity += group.capacity;
+    cumulativeDemand += group.demand;
+    cumulativeTimeSpent += group.timeSpent;
+
+    const overload = cumulativeDemand - cumulativeCapacity;
+
+    result.push({
+      date: group.groupKey,
+      displayDate: group.groupLabel,
+      capacity: Math.round(group.capacity * 100) / 100,
+      demand: Math.round(group.demand * 100) / 100,
+      timeSpent: Math.round(group.timeSpent * 100) / 100,
+      cumulativeCapacity: Math.round(cumulativeCapacity * 100) / 100,
+      cumulativeDemand: Math.round(cumulativeDemand * 100) / 100,
+      cumulativeTimeSpent: Math.round(cumulativeTimeSpent * 100) / 100,
+      overload: Math.round(Math.max(0, overload) * 100) / 100,
+      isOverloaded: overload > 0,
+      daysInPeriod: group.days.length
+    });
+  }
+
+  return result;
+}
+
 function FeasibilityChart({ envelope }) {
+  const [period, setPeriod] = useState(PERIODS.DAILY);
+
   if (!envelope || !envelope.timeline || envelope.timeline.length === 0) {
     return (
       <div className="empty-state">
@@ -23,18 +146,28 @@ function FeasibilityChart({ envelope }) {
 
   const { timeline, overloadedPeriods, feasibilityScore, totals } = envelope;
 
-  // Prepare chart data
-  const chartData = timeline.map(day => ({
-    date: day.displayDate,
-    fullDate: day.date,
-    capacity: day.cumulativeCapacity,
-    demand: day.cumulativeDemand,
-    dailyCapacity: day.capacity,
-    dailyDemand: day.demand,
-    timeSpent: day.cumulativeTimeSpent || 0,
-    overload: day.overload,
-    isOverloaded: day.isOverloaded
+  // Aggregate timeline based on selected period
+  const aggregatedTimeline = useMemo(
+    () => aggregateTimeline(timeline, period),
+    [timeline, period]
+  );
+
+  // Prepare chart data from aggregated timeline
+  const chartData = aggregatedTimeline.map(item => ({
+    date: item.displayDate,
+    fullDate: item.date,
+    capacity: item.cumulativeCapacity,
+    demand: item.cumulativeDemand,
+    periodCapacity: item.capacity,
+    periodDemand: item.demand,
+    timeSpent: item.cumulativeTimeSpent || 0,
+    overload: item.overload,
+    isOverloaded: item.isOverloaded,
+    daysInPeriod: item.daysInPeriod || 1
   }));
+
+  // Dynamic labels based on period
+  const periodLabel = period === PERIODS.DAILY ? 'Daily' : PERIOD_LABELS[period];
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload, label }) => {
@@ -42,6 +175,9 @@ function FeasibilityChart({ envelope }) {
 
     const data = payload[0]?.payload;
     if (!data) return null;
+
+    const capacityLabel = period === PERIODS.DAILY ? 'Daily' : periodLabel;
+    const demandLabel = period === PERIODS.DAILY ? 'Daily' : periodLabel;
 
     return (
       <div style={{
@@ -52,9 +188,14 @@ function FeasibilityChart({ envelope }) {
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
       }}>
         <div style={{ fontWeight: 600, marginBottom: '8px' }}>{label}</div>
+        {period !== PERIODS.DAILY && data.daysInPeriod && (
+          <div style={{ fontSize: '11px', color: '#5E6C84', marginBottom: '8px' }}>
+            ({data.daysInPeriod} business days)
+          </div>
+        )}
         <div style={{ fontSize: '13px', color: '#5E6C84' }}>
-          <div>Daily Capacity: <strong style={{ color: '#00875A' }}>{data.dailyCapacity}h</strong></div>
-          <div>Daily Demand: <strong style={{ color: '#0052CC' }}>{data.dailyDemand}h</strong></div>
+          <div>{capacityLabel} Capacity: <strong style={{ color: '#00875A' }}>{data.periodCapacity}h</strong></div>
+          <div>{demandLabel} Demand: <strong style={{ color: '#0052CC' }}>{data.periodDemand}h</strong></div>
           <div style={{ marginTop: '4px', borderTop: '1px solid #DFE1E6', paddingTop: '4px' }}>
             <div>Cumulative Capacity: {data.capacity}h</div>
             <div>Cumulative Demand: {data.demand}h</div>
@@ -72,7 +213,7 @@ function FeasibilityChart({ envelope }) {
 
   return (
     <div>
-      {/* Feasibility Score */}
+      {/* Header with Feasibility Score and Period Selector */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -89,8 +230,27 @@ function FeasibilityChart({ envelope }) {
             {feasibilityScore}%
           </span>
         </div>
-        <div style={{ fontSize: '13px', color: '#5E6C84' }}>
-          {totals.totalDemand.toFixed(1)}h demand / {totals.totalCapacity.toFixed(1)}h capacity / {(totals.totalTimeSpent || 0).toFixed(1)}h spent
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ fontSize: '13px', color: '#5E6C84' }}>
+            {totals.totalDemand.toFixed(1)}h demand / {totals.totalCapacity.toFixed(1)}h capacity / {(totals.totalTimeSpent || 0).toFixed(1)}h spent
+          </div>
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '4px',
+              border: '2px solid #DFE1E6',
+              fontSize: '13px',
+              color: '#172B4D',
+              background: 'white',
+              cursor: 'pointer'
+            }}
+          >
+            {Object.entries(PERIOD_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -123,28 +283,28 @@ function FeasibilityChart({ envelope }) {
             <YAxis
               tick={{ fontSize: 11, fill: '#5E6C84' }}
               tickLine={{ stroke: '#DFE1E6' }}
-              label={{ value: 'Hours/Day', angle: -90, position: 'insideLeft', fontSize: 11, fill: '#5E6C84' }}
+              label={{ value: period === PERIODS.DAILY ? 'Hours/Day' : `Hours/${periodLabel}`, angle: -90, position: 'insideLeft', fontSize: 11, fill: '#5E6C84' }}
             />
             <Tooltip content={<CustomTooltip />} />
 
-            {/* Daily Capacity line */}
+            {/* Period Capacity line */}
             <Line
               type="monotone"
-              dataKey="dailyCapacity"
+              dataKey="periodCapacity"
               stroke="#00875A"
               strokeWidth={2}
               dot={false}
-              name="Daily Capacity"
+              name={`${periodLabel} Capacity`}
             />
 
-            {/* Daily Demand line */}
+            {/* Period Demand line */}
             <Line
               type="monotone"
-              dataKey="dailyDemand"
+              dataKey="periodDemand"
               stroke="#0052CC"
               strokeWidth={2}
               dot={false}
-              name="Daily Demand"
+              name={`${periodLabel} Demand`}
             />
 
             {/* Cumulative Capacity line */}
@@ -187,11 +347,11 @@ function FeasibilityChart({ envelope }) {
       <div className="chart-legend" style={{ marginTop: '48px' }}>
         <div className="legend-item">
           <div className="legend-color capacity"></div>
-          <span>Daily Capacity</span>
+          <span>{periodLabel} Capacity</span>
         </div>
         <div className="legend-item">
           <div className="legend-color demand"></div>
-          <span>Daily Demand</span>
+          <span>{periodLabel} Demand</span>
         </div>
         <div className="legend-item">
           <div className="legend-color capacity" style={{ borderStyle: 'dashed' }}></div>
