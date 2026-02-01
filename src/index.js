@@ -1,6 +1,6 @@
 import Resolver from '@forge/resolver';
 import { fetchDemandIssues, fetchWorklogs } from './resolvers/fetchDemand';
-import { fetchCapacityIssues, buildManualCapacityIssues, buildTeamCapacityIssue } from './resolvers/fetchCapacity';
+import { fetchCapacityIssues, buildManualCapacityIssues, buildTeamCapacityIssue, buildVariableCapacityIssues } from './resolvers/fetchCapacity';
 import { analyzeEnvelope } from './resolvers/analyzeEnvelope';
 import { checkCompliance } from './resolvers/checkCompliance';
 import { buildDependencies } from './resolvers/buildDependencies';
@@ -49,9 +49,11 @@ resolver.define('getData', async ({ payload, context }) => {
     capacityJql = 'project = DEV and Summary ~ Capacity',
     capacityMode = 'jira',  // 'manual' or 'jira'
     capacityType = 'team',  // 'team' or 'individual'
+    variableCapacity = false,  // true for variable schedule
     capacityPeriod = 'week', // 'week' or 'month'
     teamHours = 160,  // Total team hours (when capacityType is 'team')
-    teamMembers = []  // Array of {name, hoursPerPeriod, startDate?, endDate?}
+    teamMembers = [],  // Array of {name, hoursPerPeriod, startDate?, endDate?}
+    capacitySchedule = []  // Array of {startDate, teamHours, memberHours} for variable capacity
   } = payload || {};
 
   try {
@@ -64,7 +66,15 @@ resolver.define('getData', async ({ payload, context }) => {
       // Calculate date range from demand issues for manual capacity
       const dateRange = calculateDateRangeFromDemand(demandIssues);
 
-      if (capacityType === 'team' && teamHours > 0) {
+      if (variableCapacity && capacitySchedule.length > 0) {
+        // Variable capacity - build from schedule
+        capacityIssues = buildVariableCapacityIssues(
+          capacitySchedule,
+          capacityType,
+          capacityPeriod
+        );
+        console.log('Using variable capacity:', capacityIssues.length, 'entries');
+      } else if (capacityType === 'team' && teamHours > 0) {
         // Team total capacity - create a single capacity entry
         capacityIssues = buildTeamCapacityIssue(
           teamHours,

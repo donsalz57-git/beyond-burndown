@@ -75,6 +75,77 @@ function normalizeCapacityIssue(issue) {
 }
 
 /**
+ * Build capacity issues from a variable schedule
+ * @param {Array} schedule - Array of {startDate, teamHours, memberHours}
+ * @param {string} capacityType - 'team' or 'individual'
+ * @param {string} period - 'week' or 'month'
+ * @returns {Array} Array of capacity issues
+ */
+export function buildVariableCapacityIssues(schedule, capacityType, period) {
+  if (!schedule || schedule.length === 0) {
+    return [];
+  }
+
+  const issues = [];
+  const sortedSchedule = [...schedule].sort((a, b) =>
+    new Date(a.startDate) - new Date(b.startDate)
+  );
+
+  for (let i = 0; i < sortedSchedule.length; i++) {
+    const entry = sortedSchedule[i];
+    const startDate = new Date(entry.startDate);
+
+    // Calculate end date based on period or next entry
+    let endDate;
+    if (i < sortedSchedule.length - 1) {
+      // End is day before next entry starts
+      endDate = new Date(sortedSchedule[i + 1].startDate);
+      endDate.setDate(endDate.getDate() - 1);
+    } else {
+      // Last entry - extend based on period
+      endDate = new Date(startDate);
+      if (period === 'week') {
+        endDate.setDate(endDate.getDate() + 6);
+      } else {
+        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setDate(endDate.getDate() - 1);
+      }
+    }
+
+    if (capacityType === 'team') {
+      // Single team entry for this period
+      issues.push({
+        key: `CAPACITY-${i + 1}`,
+        id: `variable-${i}`,
+        summary: `Team Capacity`,
+        startDate: startDate,
+        dueDate: endDate,
+        originalEstimate: entry.teamHours || 0,
+        assignee: null
+      });
+    } else {
+      // Per-member entries for this period
+      const memberHours = entry.memberHours || {};
+      Object.entries(memberHours).forEach(([name, hours], mIndex) => {
+        if (hours > 0) {
+          issues.push({
+            key: `CAPACITY-${i + 1}-${mIndex + 1}`,
+            id: `variable-${i}-${mIndex}`,
+            summary: `${name} Capacity`,
+            startDate: startDate,
+            dueDate: endDate,
+            originalEstimate: hours,
+            assignee: name
+          });
+        }
+      });
+    }
+  }
+
+  return issues;
+}
+
+/**
  * Build a single capacity issue from team total hours
  * @param {number} teamHours - Total team hours per period
  * @param {string} period - 'week' or 'month'

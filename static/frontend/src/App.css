@@ -968,3 +968,117 @@
 .add-selected-button:hover {
   background: #006644;
 }
+
+/* Capacity Mode Toggle */
+.capacity-mode-toggle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Schedule Table */
+.capacity-schedule-section {
+  background: #F4F5F7;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.capacity-schedule-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.capacity-schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 400px;
+}
+
+.capacity-schedule-table th,
+.capacity-schedule-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #DFE1E6;
+  white-space: nowrap;
+}
+
+.capacity-schedule-table th {
+  background: #EBECF0;
+  font-weight: 600;
+  color: #172B4D;
+  position: sticky;
+  top: 0;
+}
+
+.capacity-schedule-table th:first-child {
+  min-width: 140px;
+}
+
+.capacity-schedule-table tbody tr:hover {
+  background: #FAFBFC;
+}
+
+.schedule-date-input {
+  padding: 6px 8px;
+  border: 1px solid #DFE1E6;
+  border-radius: 4px;
+  font-size: 13px;
+  width: 130px;
+}
+
+.schedule-date-input:focus {
+  outline: none;
+  border-color: #0052CC;
+}
+
+.schedule-hours-input {
+  padding: 6px 8px;
+  border: 1px solid #DFE1E6;
+  border-radius: 4px;
+  font-size: 13px;
+  width: 70px;
+  text-align: center;
+}
+
+.schedule-hours-input:focus {
+  outline: none;
+  border-color: #0052CC;
+}
+
+.remove-period-button {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: #5E6C84;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-period-button:hover {
+  background: #FFEBE6;
+  color: #DE350B;
+}
+
+.add-period-button {
+  padding: 8px 16px;
+  background: white;
+  color: #0052CC;
+  border: 2px dashed #DFE1E6;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+}
+
+.add-period-button:hover {
+  border-color: #0052CC;
+  background: #DEEBFF;
+}
