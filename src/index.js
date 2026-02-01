@@ -4,6 +4,8 @@ import { fetchCapacityIssues } from './resolvers/fetchCapacity';
 import { analyzeEnvelope } from './resolvers/analyzeEnvelope';
 import { checkCompliance } from './resolvers/checkCompliance';
 import { buildDependencies } from './resolvers/buildDependencies';
+import { analyzeScopeHistory, calculateScopeChangeTrend } from './resolvers/analyzeScopeHistory';
+import { generateStatusReport } from './resolvers/generateStatusReport';
 
 const resolver = new Resolver();
 
@@ -30,11 +32,19 @@ resolver.define('getData', async ({ payload, context }) => {
     }
 
     // Run all analyses in parallel
+    // Note: analyzeEnvelope now receives capacityIssues for per-person capacity tracking
     const [envelope, compliance, dependencies] = await Promise.all([
       analyzeEnvelope(demandIssues, capacityIssues, worklogs),
       checkCompliance(demandIssues),
       buildDependencies(demandIssues)
     ]);
+
+    // Run scope analysis (depends on envelope timeline)
+    const scopeHistory = analyzeScopeHistory(demandIssues, envelope.timeline);
+    const scopeTrend = calculateScopeChangeTrend(demandIssues);
+
+    // Generate status report
+    const statusReport = generateStatusReport(envelope, compliance, dependencies, demandIssues);
 
     return {
       success: true,
@@ -42,6 +52,12 @@ resolver.define('getData', async ({ payload, context }) => {
         envelope,
         compliance,
         dependencies,
+        scope: {
+          ...scopeHistory,
+          trend: scopeTrend.trend,
+          alerts: scopeTrend.alerts
+        },
+        statusReport,
         summary: {
           totalDemandIssues: demandIssues.length,
           totalCapacityIssues: capacityIssues.length,

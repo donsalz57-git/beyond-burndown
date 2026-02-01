@@ -414,3 +414,230 @@
 .legend-color.capacity { background: #00875A; }
 .legend-color.demand { background: #0052CC; }
 .legend-color.overload { background: #DE350B; }
+
+/* Interactive Legend */
+.chart-legend.interactive .legend-item {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.chart-legend.interactive .legend-item:hover {
+  background: #F4F5F7;
+}
+
+.chart-legend.interactive .legend-item.hidden {
+  opacity: 0.5;
+}
+
+/* Team Health View */
+.team-health-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.team-health-table th,
+.team-health-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #DFE1E6;
+}
+
+.team-health-table th {
+  background: #F4F5F7;
+  font-weight: 600;
+  color: #172B4D;
+}
+
+.team-health-table tr:hover {
+  background: #FAFBFC;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.overloaded {
+  background: #FFEBE6;
+  color: #DE350B;
+}
+
+.status-badge.on_track {
+  background: #E3FCEF;
+  color: #00875A;
+}
+
+.status-badge.under_utilized {
+  background: #FFFAE6;
+  color: #FF8B00;
+}
+
+.status-badge.no_capacity {
+  background: #F4F5F7;
+  color: #5E6C84;
+}
+
+.status-badge.idle {
+  background: #DEEBFF;
+  color: #0052CC;
+}
+
+/* Scope Graph */
+.scope-graph-container {
+  margin-bottom: 24px;
+}
+
+.scope-trend-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.scope-trend-table th,
+.scope-trend-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #DFE1E6;
+}
+
+.scope-trend-table th {
+  background: #F4F5F7;
+  font-weight: 600;
+}
+
+.scope-change-positive {
+  color: #DE350B;
+}
+
+.scope-change-negative {
+  color: #00875A;
+}
+
+/* Status Report */
+.status-report {
+  max-width: 800px;
+}
+
+.status-report-section {
+  margin-bottom: 24px;
+}
+
+.status-report-section h3 {
+  font-size: 14px;
+  color: #172B4D;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #DFE1E6;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.metric-card {
+  padding: 16px;
+  background: #F4F5F7;
+  border-radius: 4px;
+}
+
+.metric-card .metric-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #172B4D;
+}
+
+.metric-card .metric-label {
+  font-size: 12px;
+  color: #5E6C84;
+  margin-top: 4px;
+}
+
+/* What-If Panel */
+.what-if-panel {
+  padding: 16px;
+  background: #FAFBFC;
+  border: 1px solid #DFE1E6;
+  border-radius: 4px;
+  margin-top: 16px;
+}
+
+.what-if-panel h4 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #172B4D;
+}
+
+.what-if-scenario {
+  margin-bottom: 16px;
+}
+
+.what-if-scenario label {
+  display: block;
+  font-size: 13px;
+  color: #5E6C84;
+  margin-bottom: 4px;
+}
+
+.what-if-result {
+  padding: 12px;
+  background: white;
+  border: 1px solid #DFE1E6;
+  border-radius: 4px;
+  margin-top: 16px;
+}
+
+.what-if-delta {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.what-if-delta.positive {
+  color: #00875A;
+}
+
+.what-if-delta.negative {
+  color: #DE350B;
+}
+
+/* Export Menu */
+.export-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.export-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #DFE1E6;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  min-width: 160px;
+  z-index: 100;
+}
+
+.export-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.export-dropdown button:hover {
+  background: #F4F5F7;
+}

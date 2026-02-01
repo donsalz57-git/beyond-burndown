@@ -2,7 +2,8 @@ import {
   getBusinessDaysBetween,
   countBusinessDays,
   formatDateKey,
-  getDateRange
+  getDateRange,
+  addBusinessDays
 } from '../utils/businessDays';
 import { getToday } from '../utils/dateUtils';
 
@@ -60,19 +61,34 @@ export async function analyzeEnvelope(demandIssues, capacityIssues, worklogs = [
   // Calculate total original estimate
   const totalOriginalEstimate = timeline.reduce((sum, d) => sum + d.originalEstimate, 0);
 
+  // Calculate totals
+  const totals = {
+    totalCapacity: timeline.reduce((sum, d) => sum + d.capacity, 0),
+    totalDemand: timeline.reduce((sum, d) => sum + d.demand, 0),
+    totalOriginalEstimate: Math.round(totalOriginalEstimate * 100) / 100,
+    totalTimeSpent: Math.round(totalTimeSpent * 100) / 100,
+    totalDays: timeline.length
+  };
+
+  // Calculate forecast (when work will complete)
+  const forecast = calculateForecast(timeline, totals, rangeEnd);
+
+  // Calculate confidence (data quality score)
+  const confidence = calculateConfidence(demandIssues);
+
+  // Calculate resource breakdown (per-person capacity/demand)
+  const resources = buildResourceBreakdown(demandIssues, capacityIssues);
+
   return {
     rangeStart: rangeStart.toISOString(),
     rangeEnd: rangeEnd.toISOString(),
     timeline,
     feasibilityScore,
     overloadedPeriods,
-    totals: {
-      totalCapacity: timeline.reduce((sum, d) => sum + d.capacity, 0),
-      totalDemand: timeline.reduce((sum, d) => sum + d.demand, 0),
-      totalOriginalEstimate: Math.round(totalOriginalEstimate * 100) / 100,
-      totalTimeSpent: Math.round(totalTimeSpent * 100) / 100,
-      totalDays: timeline.length
-    }
+    totals,
+    forecast,
+    confidence,
+    resources
   };
 }
 
@@ -359,4 +375,190 @@ function findOverloadedPeriods(timeline) {
   }
 
   return periods;
+}
+
+/**
+ * Calculate forecast for when work will complete
+ * @param {Array} timeline - Timeline entries
+ * @param {Object} totals - Total capacity/demand values
+ * @param {Date} rangeEnd - End of analysis range (deadline)
+ * @returns {Object} Forecast details
+ */
+function calculateForecast(timeline, totals, rangeEnd) {
+  if (timeline.length === 0) {
+    return { forecastDate: null, extraDays: 0, status: 'on_track', message: 'No data to forecast' };
+  }
+
+  const lastEntry = timeline[timeline.length - 1];
+  const gap = lastEntry.cumulativeDemand - lastEntry.cumulativeCapacity;
+
+  if (gap <= 0) {
+    return {
+      forecastDate: null,
+      extraDays: 0,
+      gap: 0,
+      status: 'on_track',
+      message: 'Work completes within planned capacity'
+    };
+  }
+
+  // Calculate average daily capacity
+  const avgDailyCapacity = totals.totalDays > 0 ? totals.totalCapacity / totals.totalDays : 0;
+  if (avgDailyCapacity <= 0) {
+    return {
+      forecastDate: null,
+      extraDays: null,
+      gap,
+      status: 'critical',
+      message: 'No capacity available to complete remaining work'
+    };
+  }
+
+  const extraDays = Math.ceil(gap / avgDailyCapacity);
+  const deadlineDate = new Date(rangeEnd);
+  const forecastDate = addBusinessDays(deadlineDate, extraDays);
+
+  const status = extraDays > 10 ? 'critical' : extraDays > 5 ? 'warning' : 'minor';
+  const forecastDisplay = forecastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  return {
+    forecastDate: forecastDate.toISOString(),
+    extraDays,
+    gap: Math.round(gap * 100) / 100,
+    avgDailyCapacity: Math.round(avgDailyCapacity * 100) / 100,
+    status,
+    message: `Work completes ${forecastDisplay} (${extraDays} days after deadline)`
+  };
+}
+
+/**
+ * Calculate confidence score based on data quality
+ * @param {Array} demandIssues - Demand issues
+ * @returns {Object} Confidence details
+ */
+function calculateConfidence(demandIssues) {
+  const total = demandIssues.length;
+  if (total === 0) {
+    return {
+      overallScore: 100,
+      level: 'high',
+      breakdown: {
+        estimates: { count: 0, total: 0, percent: 100 },
+        dates: { count: 0, total: 0, percent: 100 },
+        assignees: { count: 0, total: 0, percent: 100 }
+      },
+      warnings: []
+    };
+  }
+
+  let hasEstimate = 0;
+  let hasDates = 0;
+  let hasAssignee = 0;
+
+  for (const issue of demandIssues) {
+    if (issue.remainingEstimate > 0 || issue.originalEstimate > 0) hasEstimate++;
+    if (issue.startDate && issue.dueDate) hasDates++;
+    if (issue.assignee) hasAssignee++;
+  }
+
+  const estimatePercent = (hasEstimate / total) * 100;
+  const datePercent = (hasDates / total) * 100;
+  const assigneePercent = (hasAssignee / total) * 100;
+  const overallScore = Math.round((estimatePercent + datePercent + assigneePercent) / 3);
+
+  // Generate warnings
+  const warnings = [];
+  if (estimatePercent < 80) {
+    warnings.push(`${total - hasEstimate} issues missing estimates`);
+  }
+  if (datePercent < 80) {
+    warnings.push(`${total - hasDates} issues missing dates`);
+  }
+  if (assigneePercent < 80) {
+    warnings.push(`${total - hasAssignee} issues unassigned`);
+  }
+
+  return {
+    overallScore,
+    level: overallScore >= 80 ? 'high' : overallScore >= 60 ? 'medium' : 'low',
+    breakdown: {
+      estimates: { count: hasEstimate, total, percent: Math.round(estimatePercent) },
+      dates: { count: hasDates, total, percent: Math.round(datePercent) },
+      assignees: { count: hasAssignee, total, percent: Math.round(assigneePercent) }
+    },
+    warnings
+  };
+}
+
+/**
+ * Build resource breakdown showing capacity and demand per assignee
+ * @param {Array} demandIssues - Demand issues
+ * @param {Array} capacityIssues - Capacity issues
+ * @returns {Array} Resource breakdown by assignee
+ */
+function buildResourceBreakdown(demandIssues, capacityIssues) {
+  const resourceMap = new Map();
+
+  // Aggregate capacity by assignee from capacity issues
+  for (const issue of capacityIssues) {
+    const assignee = issue.assignee || 'Team Pool';
+    if (!resourceMap.has(assignee)) {
+      resourceMap.set(assignee, {
+        assignee,
+        capacity: 0,
+        demand: 0,
+        timeSpent: 0,
+        issueCount: 0
+      });
+    }
+    resourceMap.get(assignee).capacity += issue.originalEstimate || 0;
+  }
+
+  // Aggregate demand by assignee from demand issues
+  for (const issue of demandIssues) {
+    if (issue.status.category === 'done') continue;
+    const assignee = issue.assignee || 'Unassigned';
+
+    if (!resourceMap.has(assignee)) {
+      resourceMap.set(assignee, {
+        assignee,
+        capacity: 0,
+        demand: 0,
+        timeSpent: 0,
+        issueCount: 0
+      });
+    }
+    const r = resourceMap.get(assignee);
+    r.demand += issue.remainingEstimate || 0;
+    r.timeSpent += issue.timeSpent || 0;
+    r.issueCount++;
+  }
+
+  // Calculate derived metrics and status
+  return Array.from(resourceMap.values()).map(r => {
+    const loadPercent = r.capacity > 0 ? Math.round((r.demand / r.capacity) * 100) : null;
+    const utilizationPercent = r.capacity > 0 ? Math.round((r.timeSpent / r.capacity) * 100) : null;
+
+    let status;
+    if (r.capacity === 0) {
+      status = r.demand > 0 ? 'no_capacity' : 'idle';
+    } else if (r.demand > r.capacity) {
+      status = 'overloaded';
+    } else if (r.demand < r.capacity * 0.8) {
+      status = 'under_utilized';
+    } else {
+      status = 'on_track';
+    }
+
+    return {
+      assignee: r.assignee,
+      capacity: Math.round(r.capacity * 100) / 100,
+      demand: Math.round(r.demand * 100) / 100,
+      timeSpent: Math.round(r.timeSpent * 100) / 100,
+      issueCount: r.issueCount,
+      loadPercent,
+      utilizationPercent,
+      status
+    };
+  }).sort((a, b) => b.demand - a.demand);
 }

@@ -5,6 +5,13 @@ import FeasibilityChart from './components/FeasibilityChart';
 import CompliancePanel from './components/CompliancePanel';
 import DependencyView from './components/DependencyView';
 import ConfigPanel from './components/ConfigPanel';
+import ConfidenceIndicator from './components/ConfidenceIndicator';
+import TeamHealthView from './components/TeamHealthView';
+import WhatIfPanel from './components/WhatIfPanel';
+import ScopeGraph from './components/ScopeGraph';
+import ScopeChangeTrend from './components/ScopeChangeTrend';
+import StatusReport from './components/StatusReport';
+import ExportMenu from './components/ExportMenu';
 import './App.css';
 
 // Error boundary to catch rendering errors
@@ -37,13 +44,17 @@ class ErrorBoundary extends Component {
 
 const TABS = {
   FEASIBILITY: 'feasibility',
+  SCOPE: 'scope',
+  TEAM: 'team',
   COMPLIANCE: 'compliance',
-  DEPENDENCIES: 'dependencies'
+  DEPENDENCIES: 'dependencies',
+  REPORT: 'report'
 };
 
 function App() {
   const [activeTab, setActiveTab] = useState(TABS.FEASIBILITY);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showWhatIf, setShowWhatIf] = useState(false);
   const { data, loading, error, config, updateConfig, refresh } = useGadgetData();
 
   // Detect if gadget is in edit/configure mode
@@ -124,6 +135,29 @@ function App() {
             </span>
             <span className="summary-label">Cycles</span>
           </div>
+          <div className="summary-item">
+            <ConfidenceIndicator confidence={data.envelope?.confidence} />
+          </div>
+          <div className="summary-item" style={{ marginLeft: 'auto' }}>
+            <ExportMenu data={data} />
+          </div>
+        </div>
+      )}
+
+      {/* Forecast Warning */}
+      {data?.envelope?.forecast?.extraDays > 0 && (
+        <div className="forecast-warning" style={{
+          padding: '8px 12px',
+          backgroundColor: data.envelope.forecast.status === 'critical' ? '#FFEBE6' :
+                          data.envelope.forecast.status === 'warning' ? '#FFFAE6' : '#E3FCEF',
+          borderLeft: `4px solid ${
+            data.envelope.forecast.status === 'critical' ? '#DE350B' :
+            data.envelope.forecast.status === 'warning' ? '#FF8B00' : '#00875A'
+          }`,
+          marginBottom: '12px',
+          fontSize: '13px'
+        }}>
+          {data.envelope.forecast.message}
         </div>
       )}
 
@@ -134,6 +168,24 @@ function App() {
           onClick={() => setActiveTab(TABS.FEASIBILITY)}
         >
           Feasibility
+        </button>
+        <button
+          className={`tab-button ${activeTab === TABS.SCOPE ? 'active' : ''}`}
+          onClick={() => setActiveTab(TABS.SCOPE)}
+        >
+          Scope
+          {data?.scope?.alerts?.length > 0 && (
+            <span className="badge danger">{data.scope.alerts.length}</span>
+          )}
+        </button>
+        <button
+          className={`tab-button ${activeTab === TABS.TEAM ? 'active' : ''}`}
+          onClick={() => setActiveTab(TABS.TEAM)}
+        >
+          Team
+          {data?.envelope?.resources?.some(r => r.status === 'overloaded') && (
+            <span className="badge danger">!</span>
+          )}
         </button>
         <button
           className={`tab-button ${activeTab === TABS.COMPLIANCE ? 'active' : ''}`}
@@ -153,18 +205,71 @@ function App() {
             <span className="badge danger">{data.dependencies.circularDependencies.length}</span>
           )}
         </button>
+        <button
+          className={`tab-button ${activeTab === TABS.REPORT ? 'active' : ''}`}
+          onClick={() => setActiveTab(TABS.REPORT)}
+        >
+          Report
+        </button>
       </div>
 
       {/* Tab Content */}
       <div className="tab-content">
         {activeTab === TABS.FEASIBILITY && (
-          <FeasibilityChart envelope={data?.envelope} />
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+              <button
+                onClick={() => setShowWhatIf(!showWhatIf)}
+                style={{
+                  padding: '6px 12px',
+                  background: showWhatIf ? '#0052CC' : '#F4F5F7',
+                  color: showWhatIf ? 'white' : '#172B4D',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  fontWeight: 500
+                }}
+              >
+                {showWhatIf ? 'Hide' : 'Show'} What-If
+              </button>
+            </div>
+            <FeasibilityChart envelope={data?.envelope} />
+            <WhatIfPanel
+              envelope={data?.envelope}
+              isOpen={showWhatIf}
+              onClose={() => setShowWhatIf(false)}
+            />
+          </div>
+        )}
+        {activeTab === TABS.SCOPE && (
+          <div>
+            <ScopeGraph
+              scopeTimeline={data?.scope?.scopeTimeline}
+              totals={data?.scope?.totals}
+            />
+            <div style={{ marginTop: '32px' }}>
+              <ScopeChangeTrend
+                trend={data?.scope?.trend}
+                alerts={data?.scope?.alerts}
+              />
+            </div>
+          </div>
+        )}
+        {activeTab === TABS.TEAM && (
+          <TeamHealthView resources={data?.envelope?.resources} />
         )}
         {activeTab === TABS.COMPLIANCE && (
           <CompliancePanel compliance={data?.compliance} />
         )}
         {activeTab === TABS.DEPENDENCIES && (
           <DependencyView dependencies={data?.dependencies} />
+        )}
+        {activeTab === TABS.REPORT && (
+          <StatusReport
+            report={data?.statusReport}
+            confidence={data?.envelope?.confidence}
+          />
         )}
       </div>
     </div>

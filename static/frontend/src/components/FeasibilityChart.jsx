@@ -147,6 +147,25 @@ function aggregateTimeline(timeline, period) {
 function FeasibilityChart({ envelope }) {
   const [period, setPeriod] = useState(PERIODS.DAILY);
 
+  // State for interactive legend - track which lines are visible
+  const [visibleLines, setVisibleLines] = useState({
+    periodCapacity: true,
+    periodDemand: true,
+    capacity: true,
+    demand: true,
+    timeSpent: true,
+    completionPercent: true,
+    forecastCapacity: true
+  });
+
+  // Toggle line visibility
+  const handleLegendClick = (dataKey) => {
+    setVisibleLines(prev => ({
+      ...prev,
+      [dataKey]: !prev[dataKey]
+    }));
+  };
+
   if (!envelope || !envelope.timeline || envelope.timeline.length === 0) {
     return (
       <div className="empty-state">
@@ -156,7 +175,7 @@ function FeasibilityChart({ envelope }) {
     );
   }
 
-  const { timeline, overloadedPeriods, feasibilityScore, totals } = envelope;
+  const { timeline, overloadedPeriods, feasibilityScore, totals, forecast } = envelope;
 
   // Aggregate timeline based on selected period
   const aggregatedTimeline = useMemo(
@@ -165,21 +184,55 @@ function FeasibilityChart({ envelope }) {
   );
 
   // Prepare chart data from aggregated timeline
-  const chartData = aggregatedTimeline.map(item => ({
-    date: item.displayDate,
-    fullDate: item.date,
-    capacity: item.cumulativeCapacity,
-    demand: item.cumulativeDemand,
-    periodCapacity: item.capacity,
-    periodDemand: item.demand,
-    periodOriginalEstimate: item.originalEstimate,
-    cumulativeOriginalEstimate: item.cumulativeOriginalEstimate || 0,
-    timeSpent: item.cumulativeTimeSpent || 0,
-    completionPercent: item.completionPercent || 0,
-    overload: item.overload,
-    isOverloaded: item.isOverloaded,
-    daysInPeriod: item.daysInPeriod || 1
-  }));
+  const chartData = useMemo(() => {
+    const data = aggregatedTimeline.map(item => ({
+      date: item.displayDate,
+      fullDate: item.date,
+      capacity: item.cumulativeCapacity,
+      demand: item.cumulativeDemand,
+      periodCapacity: item.capacity,
+      periodDemand: item.demand,
+      periodOriginalEstimate: item.originalEstimate,
+      cumulativeOriginalEstimate: item.cumulativeOriginalEstimate || 0,
+      timeSpent: item.cumulativeTimeSpent || 0,
+      completionPercent: item.completionPercent || 0,
+      overload: item.overload,
+      isOverloaded: item.isOverloaded,
+      daysInPeriod: item.daysInPeriod || 1,
+      forecastCapacity: null // Will be set for forecast points
+    }));
+
+    // Add forecast extension points if there's a gap
+    if (forecast && forecast.extraDays > 0 && data.length > 0) {
+      const lastPoint = data[data.length - 1];
+      const avgDailyCapacity = forecast.avgDailyCapacity || (totals.totalCapacity / totals.totalDays);
+
+      // Mark the last point as the forecast start
+      lastPoint.forecastCapacity = lastPoint.capacity;
+
+      // Add forecast endpoint
+      const forecastDate = new Date(forecast.forecastDate);
+      data.push({
+        date: forecastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        fullDate: forecast.forecastDate,
+        capacity: null, // Don't continue regular capacity
+        demand: lastPoint.demand, // Demand stays flat
+        periodCapacity: null,
+        periodDemand: null,
+        periodOriginalEstimate: null,
+        cumulativeOriginalEstimate: lastPoint.cumulativeOriginalEstimate,
+        timeSpent: null,
+        completionPercent: null,
+        overload: null,
+        isOverloaded: false,
+        daysInPeriod: null,
+        forecastCapacity: lastPoint.demand, // Capacity extends to meet demand
+        isForecast: true
+      });
+    }
+
+    return data;
+  }, [aggregatedTimeline, forecast, totals]);
 
   // Dynamic labels based on period
   const periodLabel = period === PERIODS.DAILY ? 'Daily' : PERIOD_LABELS[period];
@@ -316,103 +369,234 @@ function FeasibilityChart({ envelope }) {
             <Tooltip content={<CustomTooltip />} />
 
             {/* Period Capacity line */}
-            <Line
-              type="monotone"
-              dataKey="periodCapacity"
-              stroke="#00875A"
-              strokeWidth={2}
-              dot={false}
-              yAxisId="left"
-              name={`${periodLabel} Capacity`}
-            />
+            {visibleLines.periodCapacity && (
+              <Line
+                type="monotone"
+                dataKey="periodCapacity"
+                stroke="#00875A"
+                strokeWidth={2}
+                dot={false}
+                yAxisId="left"
+                name={`${periodLabel} Capacity`}
+                connectNulls={false}
+              />
+            )}
 
             {/* Period Demand line */}
-            <Line
-              type="monotone"
-              dataKey="periodDemand"
-              stroke="#0052CC"
-              strokeWidth={2}
-              dot={false}
-              yAxisId="left"
-              name={`${periodLabel} Demand`}
-            />
+            {visibleLines.periodDemand && (
+              <Line
+                type="monotone"
+                dataKey="periodDemand"
+                stroke="#0052CC"
+                strokeWidth={2}
+                dot={false}
+                yAxisId="left"
+                name={`${periodLabel} Demand`}
+                connectNulls={false}
+              />
+            )}
 
             {/* Cumulative Capacity line */}
-            <Line
-              type="monotone"
-              dataKey="capacity"
-              stroke="#00875A"
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              dot={false}
-              yAxisId="left"
-              name="Cumulative Capacity"
-            />
+            {visibleLines.capacity && (
+              <Line
+                type="monotone"
+                dataKey="capacity"
+                stroke="#00875A"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={false}
+                yAxisId="left"
+                name="Cumulative Capacity"
+                connectNulls={false}
+              />
+            )}
 
             {/* Cumulative Demand line */}
-            <Line
-              type="monotone"
-              dataKey="demand"
-              stroke="#0052CC"
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              dot={false}
-              yAxisId="left"
-              name="Cumulative Demand"
-            />
+            {visibleLines.demand && (
+              <Line
+                type="monotone"
+                dataKey="demand"
+                stroke="#0052CC"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={false}
+                yAxisId="left"
+                name="Cumulative Demand"
+                connectNulls={true}
+              />
+            )}
 
             {/* Cumulative Time Spent line */}
-            <Line
-              type="monotone"
-              dataKey="timeSpent"
-              stroke="#FF8B00"
-              strokeWidth={2}
-              strokeDasharray="5 5"
-              dot={false}
-              yAxisId="left"
-              name="Time Spent"
-            />
+            {visibleLines.timeSpent && (
+              <Line
+                type="monotone"
+                dataKey="timeSpent"
+                stroke="#FF8B00"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={false}
+                yAxisId="left"
+                name="Time Spent"
+                connectNulls={false}
+              />
+            )}
 
             {/* Completion Percentage line */}
-            <Line
-              type="monotone"
-              dataKey="completionPercent"
-              stroke="#9C27B0"
-              strokeWidth={2}
-              dot={false}
-              yAxisId="right"
-              name="Completion %"
-            />
+            {visibleLines.completionPercent && (
+              <Line
+                type="monotone"
+                dataKey="completionPercent"
+                stroke="#9C27B0"
+                strokeWidth={2}
+                dot={false}
+                yAxisId="right"
+                name="Completion %"
+                connectNulls={false}
+              />
+            )}
+
+            {/* Forecast Capacity Extension line */}
+            {visibleLines.forecastCapacity && forecast?.extraDays > 0 && (
+              <Line
+                type="monotone"
+                dataKey="forecastCapacity"
+                stroke="#00875A"
+                strokeWidth={2}
+                strokeDasharray="8 4"
+                dot={false}
+                yAxisId="left"
+                name="Forecast Extension"
+                connectNulls={true}
+              />
+            )}
           </ComposedChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Legend */}
-      <div className="chart-legend" style={{ marginTop: '48px' }}>
-        <div className="legend-item">
-          <div className="legend-color capacity"></div>
-          <span>{periodLabel} Capacity</span>
+      {/* Interactive Legend */}
+      <div className="chart-legend interactive" style={{ marginTop: '16px' }}>
+        <div
+          className={`legend-item ${!visibleLines.periodCapacity ? 'hidden' : ''}`}
+          onClick={() => handleLegendClick('periodCapacity')}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+        >
+          <div
+            className="legend-color"
+            style={{
+              background: visibleLines.periodCapacity ? '#00875A' : '#ccc'
+            }}
+          ></div>
+          <span style={{
+            textDecoration: visibleLines.periodCapacity ? 'none' : 'line-through',
+            color: visibleLines.periodCapacity ? '#172B4D' : '#999'
+          }}>{periodLabel} Capacity</span>
         </div>
-        <div className="legend-item">
-          <div className="legend-color demand"></div>
-          <span>{periodLabel} Demand</span>
+        <div
+          className={`legend-item ${!visibleLines.periodDemand ? 'hidden' : ''}`}
+          onClick={() => handleLegendClick('periodDemand')}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+        >
+          <div
+            className="legend-color"
+            style={{
+              background: visibleLines.periodDemand ? '#0052CC' : '#ccc'
+            }}
+          ></div>
+          <span style={{
+            textDecoration: visibleLines.periodDemand ? 'none' : 'line-through',
+            color: visibleLines.periodDemand ? '#172B4D' : '#999'
+          }}>{periodLabel} Demand</span>
         </div>
-        <div className="legend-item">
-          <div className="legend-color capacity" style={{ borderStyle: 'dashed' }}></div>
-          <span>Cumulative Capacity</span>
+        <div
+          className={`legend-item ${!visibleLines.capacity ? 'hidden' : ''}`}
+          onClick={() => handleLegendClick('capacity')}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+        >
+          <div
+            className="legend-color"
+            style={{
+              background: visibleLines.capacity ? '#00875A' : '#ccc',
+              borderStyle: 'dashed'
+            }}
+          ></div>
+          <span style={{
+            textDecoration: visibleLines.capacity ? 'none' : 'line-through',
+            color: visibleLines.capacity ? '#172B4D' : '#999'
+          }}>Cumulative Capacity</span>
         </div>
-        <div className="legend-item">
-          <div className="legend-color demand" style={{ borderStyle: 'dashed' }}></div>
-          <span>Cumulative Demand</span>
+        <div
+          className={`legend-item ${!visibleLines.demand ? 'hidden' : ''}`}
+          onClick={() => handleLegendClick('demand')}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+        >
+          <div
+            className="legend-color"
+            style={{
+              background: visibleLines.demand ? '#0052CC' : '#ccc',
+              borderStyle: 'dashed'
+            }}
+          ></div>
+          <span style={{
+            textDecoration: visibleLines.demand ? 'none' : 'line-through',
+            color: visibleLines.demand ? '#172B4D' : '#999'
+          }}>Cumulative Demand</span>
         </div>
-        <div className="legend-item">
-          <div className="legend-color" style={{ background: '#FF8B00', borderStyle: 'dashed' }}></div>
-          <span>Cumulative Time Spent</span>
+        <div
+          className={`legend-item ${!visibleLines.timeSpent ? 'hidden' : ''}`}
+          onClick={() => handleLegendClick('timeSpent')}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+        >
+          <div
+            className="legend-color"
+            style={{
+              background: visibleLines.timeSpent ? '#FF8B00' : '#ccc',
+              borderStyle: 'dashed'
+            }}
+          ></div>
+          <span style={{
+            textDecoration: visibleLines.timeSpent ? 'none' : 'line-through',
+            color: visibleLines.timeSpent ? '#172B4D' : '#999'
+          }}>Cumulative Time Spent</span>
         </div>
-        <div className="legend-item">
-          <div className="legend-color" style={{ background: '#9C27B0' }}></div>
-          <span>Completion %</span>
+        <div
+          className={`legend-item ${!visibleLines.completionPercent ? 'hidden' : ''}`}
+          onClick={() => handleLegendClick('completionPercent')}
+          style={{ cursor: 'pointer', userSelect: 'none' }}
+        >
+          <div
+            className="legend-color"
+            style={{
+              background: visibleLines.completionPercent ? '#9C27B0' : '#ccc'
+            }}
+          ></div>
+          <span style={{
+            textDecoration: visibleLines.completionPercent ? 'none' : 'line-through',
+            color: visibleLines.completionPercent ? '#172B4D' : '#999'
+          }}>Completion %</span>
         </div>
+        {forecast?.extraDays > 0 && (
+          <div
+            className={`legend-item ${!visibleLines.forecastCapacity ? 'hidden' : ''}`}
+            onClick={() => handleLegendClick('forecastCapacity')}
+            style={{ cursor: 'pointer', userSelect: 'none' }}
+          >
+            <div
+              className="legend-color"
+              style={{
+                background: visibleLines.forecastCapacity ? '#00875A' : '#ccc',
+                borderStyle: 'dashed',
+                borderWidth: '2px'
+              }}
+            ></div>
+            <span style={{
+              textDecoration: visibleLines.forecastCapacity ? 'none' : 'line-through',
+              color: visibleLines.forecastCapacity ? '#172B4D' : '#999'
+            }}>Forecast Extension</span>
+          </div>
+        )}
+      </div>
+      <div style={{ marginTop: '8px', fontSize: '11px', color: '#5E6C84', textAlign: 'center' }}>
+        Click legend items to show/hide
       </div>
     </div>
   );

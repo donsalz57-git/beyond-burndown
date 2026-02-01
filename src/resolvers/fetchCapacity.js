@@ -14,7 +14,8 @@ export async function fetchCapacityIssues(jql) {
     'summary',
     'duedate',
     'customfield_10015', // Start date
-    'timeoriginalestimate' // Original estimate in seconds
+    'timeoriginalestimate', // Original estimate in seconds
+    'assignee' // Assignee for per-person capacity
   ];
 
   // Fetch up to 500 issues to stay within time limits
@@ -68,6 +69,7 @@ function normalizeCapacityIssue(issue) {
     summary: fields.summary || '',
     startDate: parseJiraDate(fields.customfield_10015),
     dueDate: parseJiraDate(fields.duedate),
-    originalEstimate: secondsToHours(fields.timeoriginalestimate)
+    originalEstimate: secondsToHours(fields.timeoriginalestimate),
+    assignee: fields.assignee?.displayName || null
   };
 }
