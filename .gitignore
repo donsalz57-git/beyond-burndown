@@ -12,6 +12,8 @@ coverage/
 playwright-report/
 playwright/.cache/
 test-results/
+.auth/
+.auth/browser-data/
 
 # Forge
 .forge/
