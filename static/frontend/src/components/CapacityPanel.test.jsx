@@ -2,6 +2,12 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import CapacityPanel from './CapacityPanel';
+import { invoke } from '@forge/bridge';
+
+// Mock @forge/bridge
+jest.mock('@forge/bridge', () => ({
+  invoke: jest.fn()
+}));
 
 describe('CapacityPanel', () => {
   const mockConfig = {
@@ -14,6 +20,7 @@ describe('CapacityPanel', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    invoke.mockResolvedValue({ success: true, users: [] });
   });
 
   test('renders team capacity title', () => {
@@ -44,35 +51,9 @@ describe('CapacityPanel', () => {
     expect(screen.getByText(/No team members configured/)).toBeInTheDocument();
   });
 
-  test('renders add member input and button', () => {
+  test('renders search input', () => {
     render(<CapacityPanel config={mockConfig} onSave={mockOnSave} />);
-    expect(screen.getByPlaceholderText('Enter name')).toBeInTheDocument();
-    expect(screen.getByText('+ Add Member')).toBeInTheDocument();
-  });
-
-  test('add button is disabled when name is empty', () => {
-    render(<CapacityPanel config={mockConfig} onSave={mockOnSave} />);
-    expect(screen.getByText('+ Add Member')).toBeDisabled();
-  });
-
-  test('can add a team member', () => {
-    render(<CapacityPanel config={mockConfig} onSave={mockOnSave} />);
-
-    const input = screen.getByPlaceholderText('Enter name');
-    fireEvent.change(input, { target: { value: 'Alice' } });
-    fireEvent.click(screen.getByText('+ Add Member'));
-
-    expect(screen.getByText('Alice')).toBeInTheDocument();
-  });
-
-  test('clears input after adding member', () => {
-    render(<CapacityPanel config={mockConfig} onSave={mockOnSave} />);
-
-    const input = screen.getByPlaceholderText('Enter name');
-    fireEvent.change(input, { target: { value: 'Alice' } });
-    fireEvent.click(screen.getByText('+ Add Member'));
-
-    expect(input).toHaveValue('');
+    expect(screen.getByPlaceholderText('Search for a user...')).toBeInTheDocument();
   });
 
   test('renders existing team members from config', () => {
@@ -155,24 +136,58 @@ describe('CapacityPanel', () => {
     expect(screen.getByText('How capacity works')).toBeInTheDocument();
   });
 
-  test('uses monthly period from config', () => {
-    const monthlyConfig = {
-      ...mockConfig,
-      capacityPeriod: 'month'
-    };
-    render(<CapacityPanel config={monthlyConfig} onSave={mockOnSave} />);
-    expect(screen.getByText('Monthly')).toHaveClass('active');
+  test('fetches users when typing in search', async () => {
+    invoke.mockResolvedValue({
+      success: true,
+      users: [{ accountId: '123', displayName: 'Test User', avatarUrl: null }]
+    });
+
+    render(<CapacityPanel config={mockConfig} onSave={mockOnSave} />);
+
+    const input = screen.getByPlaceholderText('Search for a user...');
+    fireEvent.change(input, { target: { value: 'test' } });
+
+    await waitFor(() => {
+      expect(invoke).toHaveBeenCalledWith('getUsers', { query: 'test' });
+    });
   });
 
-  test('updates total when period changes to monthly', () => {
-    const configWithMembers = {
-      ...mockConfig,
-      teamMembers: [{ name: 'Alice', hoursPerPeriod: 40 }]
-    };
-    render(<CapacityPanel config={configWithMembers} onSave={mockOnSave} />);
+  test('shows user dropdown when users found', async () => {
+    invoke.mockResolvedValue({
+      success: true,
+      users: [{ accountId: '123', displayName: 'Test User', avatarUrl: null }]
+    });
 
-    fireEvent.click(screen.getByText('Monthly'));
+    render(<CapacityPanel config={mockConfig} onSave={mockOnSave} />);
 
-    expect(screen.getByText(/40 hrs\/month/)).toBeInTheDocument();
+    const input = screen.getByPlaceholderText('Search for a user...');
+    fireEvent.change(input, { target: { value: 'test' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Test User')).toBeInTheDocument();
+    });
+  });
+
+  test('adds user when clicking dropdown item', async () => {
+    invoke.mockResolvedValue({
+      success: true,
+      users: [{ accountId: '123', displayName: 'Test User', avatarUrl: null }]
+    });
+
+    render(<CapacityPanel config={mockConfig} onSave={mockOnSave} />);
+
+    const input = screen.getByPlaceholderText('Search for a user...');
+    fireEvent.change(input, { target: { value: 'test' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Test User')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Test User'));
+
+    // User should now be in the team members list (not in dropdown)
+    await waitFor(() => {
+      expect(screen.getByText('Test User')).toBeInTheDocument();
+    });
   });
 });

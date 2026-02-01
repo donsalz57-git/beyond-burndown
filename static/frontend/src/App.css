@@ -647,10 +647,62 @@
   padding: 8px 0;
 }
 
+.capacity-type-toggle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .capacity-period-toggle {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.capacity-team-section {
+  background: #F4F5F7;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.capacity-team-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #172B4D;
+}
+
+.capacity-team-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.capacity-team-input {
+  width: 120px;
+  padding: 10px 12px;
+  border: 2px solid #DFE1E6;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.capacity-team-input:focus {
+  outline: none;
+  border-color: #0052CC;
+}
+
+.capacity-team-unit {
+  color: #5E6C84;
+  font-size: 14px;
+}
+
+.capacity-team-hint {
+  margin: 12px 0 0 0;
+  color: #5E6C84;
+  font-size: 13px;
 }
 
 .period-button {
@@ -821,4 +873,98 @@
 /* Badge warning style */
 .badge.warning {
   background: #FF8B00;
+}
+
+/* User Dropdown */
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #DFE1E6;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.user-dropdown-item:hover {
+  background: #F4F5F7;
+}
+
+.user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.user-dropdown-empty {
+  padding: 12px;
+  color: #5E6C84;
+  font-style: italic;
+  text-align: center;
+}
+
+.user-dropdown-item.selected {
+  background: #DEEBFF;
+}
+
+.user-checkbox {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.user-dropdown-footer {
+  padding: 8px 12px;
+  border-top: 1px solid #DFE1E6;
+  background: #F4F5F7;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.close-dropdown-button {
+  padding: 6px 16px;
+  background: #0052CC;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.close-dropdown-button:hover {
+  background: #0065FF;
+}
+
+.add-selected-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 12px;
+  background: #00875A;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.add-selected-button:hover {
+  background: #006644;
 }

@@ -75,6 +75,33 @@ function normalizeCapacityIssue(issue) {
 }
 
 /**
+ * Build a single capacity issue from team total hours
+ * @param {number} teamHours - Total team hours per period
+ * @param {string} period - 'week' or 'month'
+ * @param {Date} rangeStart - Start of the analysis date range
+ * @param {Date} rangeEnd - End of the analysis date range
+ * @returns {Array} Array with single capacity issue
+ */
+export function buildTeamCapacityIssue(teamHours, period, rangeStart, rangeEnd) {
+  if (!teamHours || teamHours <= 0) {
+    return [];
+  }
+
+  // Calculate total hours for the date range
+  const totalHours = calculateTotalHours(teamHours, period, rangeStart, rangeEnd);
+
+  return [{
+    key: 'CAPACITY-TEAM',
+    id: 'manual-team',
+    summary: 'Team Capacity',
+    startDate: rangeStart,
+    dueDate: rangeEnd,
+    originalEstimate: totalHours,
+    assignee: null  // No specific assignee for team capacity
+  }];
+}
+
+/**
  * Build capacity issues from manual team capacity entries
  * @param {Array} teamMembers - Array of team member capacity configs
  * @param {string} period - 'week' or 'month'

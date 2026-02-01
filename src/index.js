@@ -1,6 +1,6 @@
 import Resolver from '@forge/resolver';
 import { fetchDemandIssues, fetchWorklogs } from './resolvers/fetchDemand';
-import { fetchCapacityIssues, buildManualCapacityIssues } from './resolvers/fetchCapacity';
+import { fetchCapacityIssues, buildManualCapacityIssues, buildTeamCapacityIssue } from './resolvers/fetchCapacity';
 import { analyzeEnvelope } from './resolvers/analyzeEnvelope';
 import { checkCompliance } from './resolvers/checkCompliance';
 import { buildDependencies } from './resolvers/buildDependencies';
@@ -48,7 +48,9 @@ resolver.define('getData', async ({ payload, context }) => {
     demandJql = 'project = DEV and Summary !~ Capacity',
     capacityJql = 'project = DEV and Summary ~ Capacity',
     capacityMode = 'jira',  // 'manual' or 'jira'
+    capacityType = 'team',  // 'team' or 'individual'
     capacityPeriod = 'week', // 'week' or 'month'
+    teamHours = 160,  // Total team hours (when capacityType is 'team')
     teamMembers = []  // Array of {name, hoursPerPeriod, startDate?, endDate?}
   } = payload || {};
 
@@ -58,16 +60,32 @@ resolver.define('getData', async ({ payload, context }) => {
 
     // Determine capacity issues based on mode
     let capacityIssues;
-    if (capacityMode === 'manual' && teamMembers.length > 0) {
+    if (capacityMode === 'manual') {
       // Calculate date range from demand issues for manual capacity
       const dateRange = calculateDateRangeFromDemand(demandIssues);
-      capacityIssues = buildManualCapacityIssues(
-        teamMembers,
-        capacityPeriod,
-        dateRange.start,
-        dateRange.end
-      );
-      console.log('Using manual capacity:', capacityIssues.length, 'entries');
+
+      if (capacityType === 'team' && teamHours > 0) {
+        // Team total capacity - create a single capacity entry
+        capacityIssues = buildTeamCapacityIssue(
+          teamHours,
+          capacityPeriod,
+          dateRange.start,
+          dateRange.end
+        );
+        console.log('Using team total capacity:', teamHours, 'hours per', capacityPeriod);
+      } else if (capacityType === 'individual' && teamMembers.length > 0) {
+        // Per-user capacity
+        capacityIssues = buildManualCapacityIssues(
+          teamMembers,
+          capacityPeriod,
+          dateRange.start,
+          dateRange.end
+        );
+        console.log('Using individual capacity:', capacityIssues.length, 'entries');
+      } else {
+        capacityIssues = [];
+        console.log('No manual capacity configured');
+      }
     } else {
       // Fetch capacity from Jira
       capacityIssues = await fetchCapacityIssues(capacityJql);
@@ -175,13 +193,55 @@ resolver.define('loadConfig', async ({ context }) => {
         demandJql: 'project = DEV and Summary !~ Capacity',
         capacityJql: 'project = DEV and Summary ~ Capacity',
         capacityMode: 'manual',  // Default to manual for new users
+        capacityType: 'team',
         capacityPeriod: 'week',
+        teamHours: 160,
         teamMembers: []
       }
     };
   } catch (error) {
     console.error('Error loading config:', error);
     return { success: false, error: error.message };
+  }
+});
+
+// Fetch users for capacity dropdown
+resolver.define('getUsers', async ({ payload }) => {
+  const { storage } = await import('@forge/api');
+  const api = (await import('@forge/api')).default;
+  const { route } = await import('@forge/api');
+
+  try {
+    // Search for assignable users (project members)
+    const query = payload?.query || '';
+    const response = await api.asApp().requestJira(
+      route`/rest/api/3/user/search?query=${query}&maxResults=50`,
+      {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Failed to fetch users:', error);
+      return { success: false, users: [] };
+    }
+
+    const users = await response.json();
+    return {
+      success: true,
+      users: users.map(u => ({
+        accountId: u.accountId,
+        displayName: u.displayName,
+        avatarUrl: u.avatarUrls?.['24x24'] || null
+      }))
+    };
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return { success: false, users: [] };
   }
 });
 
