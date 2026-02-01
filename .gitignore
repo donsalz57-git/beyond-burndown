@@ -8,6 +8,11 @@ dist/
 # Test coverage
 coverage/
 
+# Playwright
+playwright-report/
+playwright/.cache/
+test-results/
+
 # Forge
 .forge/
 
