@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 function ConfigPanel({ config, onSave, onCancel }) {
   const [formData, setFormData] = useState({
-    demandJql: 'project = DEV and Summary !~ Capacity',
-    capacityJql: 'project = DEV and Summary ~ Capacity'
+    demandJql: 'project = DEV and Summary !~ Capacity'
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -11,8 +10,7 @@ function ConfigPanel({ config, onSave, onCancel }) {
   useEffect(() => {
     if (config) {
       setFormData({
-        demandJql: config.demandJql || formData.demandJql,
-        capacityJql: config.capacityJql || formData.capacityJql
+        demandJql: config.demandJql || formData.demandJql
       });
     }
   }, [config]);
@@ -25,7 +23,12 @@ function ConfigPanel({ config, onSave, onCancel }) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await onSave(formData);
+      // Preserve existing capacity settings when saving demand JQL
+      const newConfig = {
+        ...config,
+        ...formData
+      };
+      await onSave(newConfig);
       setSaved(true);
     } catch (error) {
       console.error('Failed to save config:', error);
@@ -54,18 +57,15 @@ function ConfigPanel({ config, onSave, onCancel }) {
         </p>
       </div>
 
-      <div className="config-field">
-        <label htmlFor="capacityJql">Capacity JQL Query</label>
-        <textarea
-          id="capacityJql"
-          value={formData.capacityJql}
-          onChange={(e) => handleChange('capacityJql', e.target.value)}
-          placeholder="e.g., project = DEV and Summary ~ Capacity"
-        />
-        <p className="help-text">
-          JQL query to fetch capacity issues. Each issue should have Start Date,
-          Due Date, and a custom field indicating hours per day available.
-        </p>
+      <div style={{
+        padding: '12px 16px',
+        background: '#DEEBFF',
+        borderRadius: '4px',
+        marginBottom: '16px',
+        fontSize: '13px'
+      }}>
+        <strong>Team Capacity:</strong> Use the Capacity tab to configure team member capacity.
+        Manual capacity entry has replaced Jira-based capacity issues.
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -107,8 +107,8 @@ function ConfigPanel({ config, onSave, onCancel }) {
             Their remaining estimates are spread across business days between Start Date and Due Date.
           </li>
           <li style={{ marginTop: '8px' }}>
-            <strong>Capacity issues</strong> represent available bandwidth.
-            Each issue contributes its hours-per-day value to the capacity for each business day in its date range.
+            <strong>Team capacity</strong> is configured in the Capacity tab.
+            Set each team member's available hours per week or month.
           </li>
           <li style={{ marginTop: '8px' }}>
             The <strong>Feasibility Envelope</strong> compares cumulative demand vs capacity over time

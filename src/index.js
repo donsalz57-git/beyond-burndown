@@ -1,6 +1,6 @@
 import Resolver from '@forge/resolver';
 import { fetchDemandIssues, fetchWorklogs } from './resolvers/fetchDemand';
-import { fetchCapacityIssues } from './resolvers/fetchCapacity';
+import { fetchCapacityIssues, buildManualCapacityIssues } from './resolvers/fetchCapacity';
 import { analyzeEnvelope } from './resolvers/analyzeEnvelope';
 import { checkCompliance } from './resolvers/checkCompliance';
 import { buildDependencies } from './resolvers/buildDependencies';
@@ -9,19 +9,70 @@ import { generateStatusReport } from './resolvers/generateStatusReport';
 
 const resolver = new Resolver();
 
+/**
+ * Calculate date range from demand issues for manual capacity
+ * Uses the earliest start date and latest due date from demand issues
+ * Falls back to today + 30 days if no dates found
+ */
+function calculateDateRangeFromDemand(demandIssues) {
+  let minDate = null;
+  let maxDate = null;
+
+  for (const issue of demandIssues) {
+    if (issue.startDate) {
+      const start = new Date(issue.startDate);
+      if (!minDate || start < minDate) minDate = start;
+    }
+    if (issue.dueDate) {
+      const due = new Date(issue.dueDate);
+      if (!maxDate || due > maxDate) maxDate = due;
+    }
+  }
+
+  // Default to today + 30 days if no dates found
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (!minDate) minDate = today;
+  if (!maxDate) {
+    maxDate = new Date(today);
+    maxDate.setDate(maxDate.getDate() + 30);
+  }
+
+  return { start: minDate, end: maxDate };
+}
+
 // Main data fetching endpoint - returns all analysis data
 resolver.define('getData', async ({ payload, context }) => {
   const {
     demandJql = 'project = DEV and Summary !~ Capacity',
-    capacityJql = 'project = DEV and Summary ~ Capacity'
+    capacityJql = 'project = DEV and Summary ~ Capacity',
+    capacityMode = 'jira',  // 'manual' or 'jira'
+    capacityPeriod = 'week', // 'week' or 'month'
+    teamMembers = []  // Array of {name, hoursPerPeriod, startDate?, endDate?}
   } = payload || {};
 
   try {
-    // Fetch demand and capacity issues in parallel
-    const [demandIssues, capacityIssues] = await Promise.all([
-      fetchDemandIssues(demandJql),
-      fetchCapacityIssues(capacityJql)
-    ]);
+    // Fetch demand issues first (always needed)
+    const demandIssues = await fetchDemandIssues(demandJql);
+
+    // Determine capacity issues based on mode
+    let capacityIssues;
+    if (capacityMode === 'manual' && teamMembers.length > 0) {
+      // Calculate date range from demand issues for manual capacity
+      const dateRange = calculateDateRangeFromDemand(demandIssues);
+      capacityIssues = buildManualCapacityIssues(
+        teamMembers,
+        capacityPeriod,
+        dateRange.start,
+        dateRange.end
+      );
+      console.log('Using manual capacity:', capacityIssues.length, 'entries');
+    } else {
+      // Fetch capacity from Jira
+      capacityIssues = await fetchCapacityIssues(capacityJql);
+      console.log('Using Jira capacity:', capacityIssues.length, 'issues');
+    }
 
     // Fetch worklogs for demand issues (non-blocking - continue if fails)
     let worklogs = [];
@@ -122,7 +173,10 @@ resolver.define('loadConfig', async ({ context }) => {
       success: true,
       config: config || {
         demandJql: 'project = DEV and Summary !~ Capacity',
-        capacityJql: 'project = DEV and Summary ~ Capacity'
+        capacityJql: 'project = DEV and Summary ~ Capacity',
+        capacityMode: 'manual',  // Default to manual for new users
+        capacityPeriod: 'week',
+        teamMembers: []
       }
     };
   } catch (error) {

@@ -12,6 +12,7 @@ import ScopeGraph from './components/ScopeGraph';
 import ScopeChangeTrend from './components/ScopeChangeTrend';
 import StatusReport from './components/StatusReport';
 import ExportMenu from './components/ExportMenu';
+import CapacityPanel from './components/CapacityPanel';
 import './App.css';
 
 // Error boundary to catch rendering errors
@@ -46,6 +47,7 @@ const TABS = {
   FEASIBILITY: 'feasibility',
   SCOPE: 'scope',
   TEAM: 'team',
+  CAPACITY: 'capacity',
   COMPLIANCE: 'compliance',
   DEPENDENCIES: 'dependencies',
   REPORT: 'report'
@@ -188,6 +190,15 @@ function App() {
           )}
         </button>
         <button
+          className={`tab-button ${activeTab === TABS.CAPACITY ? 'active' : ''}`}
+          onClick={() => setActiveTab(TABS.CAPACITY)}
+        >
+          Capacity
+          {(!config?.teamMembers || config.teamMembers.length === 0) && (
+            <span className="badge warning">!</span>
+          )}
+        </button>
+        <button
           className={`tab-button ${activeTab === TABS.COMPLIANCE ? 'active' : ''}`}
           onClick={() => setActiveTab(TABS.COMPLIANCE)}
         >
@@ -258,6 +269,15 @@ function App() {
         )}
         {activeTab === TABS.TEAM && (
           <TeamHealthView resources={data?.envelope?.resources} />
+        )}
+        {activeTab === TABS.CAPACITY && (
+          <CapacityPanel
+            config={config}
+            onSave={async (newConfig) => {
+              await updateConfig(newConfig);
+              refresh();
+            }}
+          />
         )}
         {activeTab === TABS.COMPLIANCE && (
           <CompliancePanel compliance={data?.compliance} />

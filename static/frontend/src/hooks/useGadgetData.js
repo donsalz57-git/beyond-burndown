@@ -23,7 +23,9 @@ export function useGadgetData() {
         const defaultConfig = {
           demandJql: 'project = DEV and Summary !~ Capacity',
           capacityJql: 'project = DEV and Summary ~ Capacity',
-          hoursPerDayField: 'customfield_10000'
+          capacityMode: 'manual',
+          capacityPeriod: 'week',
+          teamMembers: []
         };
         setConfig(defaultConfig);
         return defaultConfig;
@@ -33,7 +35,9 @@ export function useGadgetData() {
       const defaultConfig = {
         demandJql: 'project = DEV and Summary !~ Capacity',
         capacityJql: 'project = DEV and Summary ~ Capacity',
-        hoursPerDayField: 'customfield_10000'
+        capacityMode: 'manual',
+        capacityPeriod: 'week',
+        teamMembers: []
       };
       setConfig(defaultConfig);
       return defaultConfig;
@@ -49,7 +53,9 @@ export function useGadgetData() {
       const result = await invoke('getData', {
         demandJql: currentConfig.demandJql,
         capacityJql: currentConfig.capacityJql,
-        hoursPerDayField: currentConfig.hoursPerDayField
+        capacityMode: currentConfig.capacityMode || 'jira',
+        capacityPeriod: currentConfig.capacityPeriod || 'week',
+        teamMembers: currentConfig.teamMembers || []
       });
 
       if (result.success) {

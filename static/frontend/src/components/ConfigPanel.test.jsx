@@ -1,12 +1,13 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import ConfigPanel from './ConfigPanel';
 
 describe('ConfigPanel', () => {
   const mockConfig = {
     demandJql: 'project = TEST',
-    capacityJql: 'project = TEST AND type = Capacity'
+    capacityMode: 'manual',
+    capacityPeriod: 'week',
+    teamMembers: []
   };
 
   const mockOnSave = jest.fn();
@@ -26,15 +27,14 @@ describe('ConfigPanel', () => {
     expect(screen.getByLabelText('Demand JQL Query')).toBeInTheDocument();
   });
 
-  test('renders capacity JQL field', () => {
+  test('renders capacity tab note', () => {
     render(<ConfigPanel config={mockConfig} onSave={mockOnSave} />);
-    expect(screen.getByLabelText('Capacity JQL Query')).toBeInTheDocument();
+    expect(screen.getByText(/Use the Capacity tab/)).toBeInTheDocument();
   });
 
   test('populates fields from config prop', () => {
     render(<ConfigPanel config={mockConfig} onSave={mockOnSave} />);
     expect(screen.getByLabelText('Demand JQL Query')).toHaveValue('project = TEST');
-    expect(screen.getByLabelText('Capacity JQL Query')).toHaveValue('project = TEST AND type = Capacity');
   });
 
   test('uses default values when config is null', () => {
@@ -67,15 +67,6 @@ describe('ConfigPanel', () => {
     expect(demandField).toHaveValue('project = NEW');
   });
 
-  test('updates capacity JQL on input change', async () => {
-    render(<ConfigPanel config={mockConfig} onSave={mockOnSave} />);
-    const capacityField = screen.getByLabelText('Capacity JQL Query');
-
-    fireEvent.change(capacityField, { target: { value: 'project = NEW AND capacity' } });
-
-    expect(capacityField).toHaveValue('project = NEW AND capacity');
-  });
-
   test('calls onSave with form data when save button clicked', async () => {
     mockOnSave.mockResolvedValue();
     render(<ConfigPanel config={mockConfig} onSave={mockOnSave} />);
@@ -84,10 +75,9 @@ describe('ConfigPanel', () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => {
-      expect(mockOnSave).toHaveBeenCalledWith({
-        demandJql: 'project = TEST',
-        capacityJql: 'project = TEST AND type = Capacity'
-      });
+      expect(mockOnSave).toHaveBeenCalledWith(expect.objectContaining({
+        demandJql: 'project = TEST'
+      }));
     });
   });
 
@@ -161,9 +151,9 @@ describe('ConfigPanel', () => {
     expect(screen.getByText(/JQL query to fetch demand issues/)).toBeInTheDocument();
   });
 
-  test('renders help text for capacity field', () => {
+  test('renders help text about capacity tab', () => {
     render(<ConfigPanel config={mockConfig} onSave={mockOnSave} />);
-    expect(screen.getByText(/JQL query to fetch capacity issues/)).toBeInTheDocument();
+    expect(screen.getByText(/is configured in the Capacity tab/)).toBeInTheDocument();
   });
 
   test('clears success message when input changes after save', async () => {
@@ -181,5 +171,22 @@ describe('ConfigPanel', () => {
 
     // Success message should be gone
     expect(screen.queryByText('Configuration saved successfully')).not.toBeInTheDocument();
+  });
+
+  test('preserves existing capacity config when saving', async () => {
+    mockOnSave.mockResolvedValue();
+    const configWithCapacity = {
+      ...mockConfig,
+      teamMembers: [{ name: 'Alice', hoursPerPeriod: 40 }]
+    };
+    render(<ConfigPanel config={configWithCapacity} onSave={mockOnSave} />);
+
+    fireEvent.click(screen.getByText('Save Configuration'));
+
+    await waitFor(() => {
+      expect(mockOnSave).toHaveBeenCalledWith(expect.objectContaining({
+        teamMembers: [{ name: 'Alice', hoursPerPeriod: 40 }]
+      }));
+    });
   });
 });
