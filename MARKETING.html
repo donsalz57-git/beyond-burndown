@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beyond Burndown - Jira Delivery Forecasting</title>
+  <style>
+    :root {
+      --primary: #0052CC;
+      --primary-dark: #0747A6;
+      --success: #00875A;
+      --warning: #FF8B00;
+      --danger: #DE350B;
+      --text: #172B4D;
+      --text-light: #5E6C84;
+      --bg-light: #F4F5F7;
+      --border: #DFE1E6;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .hero .tagline {
+      font-size: 24px;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto 32px;
+    }
+
+    .hero .cta-button {
+      display: inline-block;
+      background: white;
+      color: var(--primary);
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .hero .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    /* Value Proposition */
+    .value-prop {
+      padding: 80px 0;
+      background: var(--bg-light);
+      text-align: center;
+    }
+
+    .value-prop h2 {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .value-prop p {
+      font-size: 18px;
+      color: var(--text-light);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 0;
+    }
+
+    .features h2 {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+
+    .feature-card h3 {
+      font-size: 22px;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .feature-card p {
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    .feature-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-card li {
+      padding: 8px 0;
+      padding-left: 24px;
+      position: relative;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    .feature-card li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    /* Comparison Table */
+    .comparison {
+      padding: 80px 0;
+      background: var(--bg-light);
+    }
+
+    .comparison h2 {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .comparison-table {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .comparison-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th {
+      background: var(--primary);
+      color: white;
+      padding: 20px 24px;
+      text-align: left;
+      font-size: 18px;
+    }
+
+    .comparison-table td {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comparison-table td:first-child {
+      color: var(--text-light);
+    }
+
+    .comparison-table td:last-child {
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    /* What-If Section */
+    .what-if {
+      padding: 80px 0;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+    }
+
+    .what-if h2 {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .what-if .subtitle {
+      text-align: center;
+      opacity: 0.8;
+      font-size: 18px;
+      margin-bottom: 48px;
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .scenario-card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .scenario-card .icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .scenario-card h4 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .scenario-card p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    /* Compliance Section */
+    .compliance {
+      padding: 80px 0;
+    }
+
+    .compliance h2 {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .compliance .subtitle {
+      text-align: center;
+      color: var(--text-light);
+      font-size: 18px;
+      margin-bottom: 48px;
+    }
+
+    .violation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .violation-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--bg-light);
+      border-radius: 8px;
+      border-left: 4px solid var(--danger);
+    }
+
+    .violation-item.warning {
+      border-left-color: var(--warning);
+    }
+
+    .violation-item.info {
+      border-left-color: var(--primary);
+    }
+
+    .violation-item span {
+      font-size: 14px;
+    }
+
+    /* Stats Section */
+    .stats {
+      padding: 60px 0;
+      background: var(--primary);
+      color: white;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      text-align: center;
+    }
+
+    .stat-item .number {
+      font-size: 48px;
+      font-weight: 700;
+    }
+
+    .stat-item .label {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    /* Technical Section */
+    .technical {
+      padding: 80px 0;
+      background: var(--bg-light);
+    }
+
+    .technical h2 {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .tech-item {
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .tech-item .icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .tech-item h4 {
+      margin-bottom: 8px;
+    }
+
+    .tech-item p {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    /* CTA Section */
+    .cta {
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .cta p {
+      font-size: 18px;
+      color: var(--text-light);
+      margin-bottom: 32px;
+    }
+
+    .cta .cta-button {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .cta .cta-button:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--text);
+      color: white;
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    footer p {
+      opacity: 0.7;
+      font-size: 14px;
+    }
+
+    footer .tagline {
+      font-style: italic;
+      margin-top: 16px;
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero .tagline {
+        font-size: 18px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .scenario-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-item .number {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Beyond Burndown</h1>
+      <p class="tagline">The Jira Dashboard Gadget That Tells You If You'll Actually Ship On Time</p>
+      <a href="#features" class="cta-button">Explore Features</a>
+    </div>
+  </section>
+
+  <!-- Value Proposition -->
+  <section class="value-prop">
+    <div class="container">
+      <h2>Stop Guessing. Start Knowing.</h2>
+      <p>Traditional burndown charts show you where you've been. Beyond Burndown shows you where you're going. Get real-time delivery forecasts, identify risks before they derail your project, and answer "what if" questions without disrupting your team.</p>
+    </div>
+  </section>
+
+  <!-- Key Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2>Key Features</h2>
+      <div class="feature-grid">
+
+        <!-- Feasibility Analysis -->
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Feasibility Analysis</h3>
+          <p>See at a glance whether your team can deliver the planned scope by the deadline.</p>
+          <ul>
+            <li>Capacity vs. Demand Visualization</li>
+            <li>Feasibility Score (0-100%)</li>
+            <li>Automatic Delivery Forecast</li>
+            <li>Target Date Reference Line</li>
+            <li>Daily, Weekly, Monthly Views</li>
+            <li>Interactive Legend Controls</li>
+          </ul>
+        </div>
+
+        <!-- What-If Scenarios -->
+        <div class="feature-card">
+          <div class="feature-icon">🔮</div>
+          <h3>What-If Scenarios</h3>
+          <p>Model changes before committing to them. Answer critical planning questions instantly.</p>
+          <ul>
+            <li>Add or Remove Developers</li>
+            <li>Increase or Decrease Scope</li>
+            <li>Adjust Target Deadlines</li>
+            <li>Stack Multiple Scenarios</li>
+            <li>Toggle Individual Scenarios</li>
+            <li>Live Chart Updates</li>
+          </ul>
+        </div>
+
+        <!-- Capacity Management -->
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h3>Capacity Management</h3>
+          <p>Flexible capacity configuration that adapts to how your team actually works.</p>
+          <ul>
+            <li>Manual Capacity Entry</li>
+            <li>Team or Individual Mode</li>
+            <li>Weekly or Monthly Periods</li>
+            <li>Variable Capacity Schedules</li>
+            <li>Jira User Integration</li>
+            <li>No Jira Issues Required</li>
+          </ul>
+        </div>
+
+        <!-- Data Quality -->
+        <div class="feature-card">
+          <div class="feature-icon">✅</div>
+          <h3>Data Quality</h3>
+          <p>Catch data quality issues before they cause planning problems.</p>
+          <ul>
+            <li>Missing Dates Detection</li>
+            <li>Missing Estimates Alerts</li>
+            <li>Overdue Issue Tracking</li>
+            <li>Done with Remaining Work</li>
+            <li>Parent/Child Date Conflicts</li>
+            <li>Severity-Based Categorization</li>
+          </ul>
+        </div>
+
+        <!-- Dependency Visualization -->
+        <div class="feature-card">
+          <div class="feature-icon">🔗</div>
+          <h3>Dependency Visualization</h3>
+          <p>Understand the critical path through your project.</p>
+          <ul>
+            <li>Full Dependency Graph</li>
+            <li>Circular Dependency Detection</li>
+            <li>Date Conflict Highlighting</li>
+            <li>Root Issues Identification</li>
+            <li>Leaf Issues Tracking</li>
+            <li>Chain Depth Analysis</li>
+          </ul>
+        </div>
+
+        <!-- Team Health -->
+        <div class="feature-card">
+          <div class="feature-icon">💪</div>
+          <h3>Team Health View</h3>
+          <p>Monitor workload distribution across your team.</p>
+          <ul>
+            <li>Per-Person Load Metrics</li>
+            <li>Overload Detection</li>
+            <li>Unassigned Work Tracking</li>
+            <li>Time Spent vs Estimate</li>
+            <li>Capacity Utilization %</li>
+            <li>Visual Status Indicators</li>
+          </ul>
+        </div>
+
+        <!-- Scope Tracking -->
+        <div class="feature-card">
+          <div class="feature-icon">📈</div>
+          <h3>Scope Change Tracking</h3>
+          <p>Know whether scope is growing faster than your team can deliver.</p>
+          <ul>
+            <li>Scope Timeline Visualization</li>
+            <li>Added vs Removed Tracking</li>
+            <li>Trend Analysis</li>
+            <li>Velocity Comparison</li>
+            <li>Scope Creep Alerts</li>
+            <li>Historical Analysis</li>
+          </ul>
+        </div>
+
+        <!-- Status Reports -->
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Status Reports</h3>
+          <p>Generate stakeholder-ready reports with one click.</p>
+          <ul>
+            <li>Headline Metrics Summary</li>
+            <li>Schedule & Buffer Status</li>
+            <li>Capacity Gap Analysis</li>
+            <li>Risk Summary Dashboard</li>
+            <li>Auto-Generated Decisions</li>
+            <li>Export to Text or Markdown</li>
+          </ul>
+        </div>
+
+        <!-- Data Confidence -->
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>Data Confidence Scoring</h3>
+          <p>Know how much to trust your forecast.</p>
+          <ul>
+            <li>Overall Confidence Score</li>
+            <li>Estimates Completion %</li>
+            <li>Dates Completion %</li>
+            <li>Assignment Coverage %</li>
+            <li>High/Medium/Low Levels</li>
+            <li>Actionable Recommendations</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- What-If Deep Dive -->
+  <section class="what-if">
+    <div class="container">
+      <h2>Plan With Confidence</h2>
+      <p class="subtitle">Model any scenario and see the impact instantly</p>
+      <div class="scenario-grid">
+        <div class="scenario-card">
+          <div class="icon">👨‍💻</div>
+          <h4>Add Capacity</h4>
+          <p>"What if we add 2 developers at 8 hours/day?"</p>
+        </div>
+        <div class="scenario-card">
+          <div class="icon">✂️</div>
+          <h4>Cut Scope</h4>
+          <p>"What if we defer 40 hours of low-priority work?"</p>
+        </div>
+        <div class="scenario-card">
+          <div class="icon">📅</div>
+          <h4>Move Deadline</h4>
+          <p>"What if we push the release date by 2 weeks?"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Compliance Deep Dive -->
+  <section class="compliance">
+    <div class="container">
+      <h2>Automated Data Quality</h2>
+      <p class="subtitle">Catch data quality issues before they derail your forecast</p>
+      <div class="violation-grid">
+        <div class="violation-item">
+          <span>Missing Dates - Issues without start or due dates</span>
+        </div>
+        <div class="violation-item">
+          <span>Missing Estimates - Unestimated work items</span>
+        </div>
+        <div class="violation-item warning">
+          <span>Overdue - Issues past their due date</span>
+        </div>
+        <div class="violation-item warning">
+          <span>Done with Remaining - Closed issues with remaining work</span>
+        </div>
+        <div class="violation-item info">
+          <span>Child After Parent - Epic date conflicts</span>
+        </div>
+        <div class="violation-item info">
+          <span>Dependency Conflict - Blocking date mismatches</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="comparison">
+    <div class="container">
+      <h2>Why Beyond Burndown?</h2>
+      <div class="comparison-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Traditional Burndown</th>
+              <th>Beyond Burndown</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Shows work completed</td>
+              <td>Shows if you'll finish on time</td>
+            </tr>
+            <tr>
+              <td>Single metric</td>
+              <td>Multi-dimensional analysis</td>
+            </tr>
+            <tr>
+              <td>Reactive (see problems after they happen)</td>
+              <td>Proactive (see problems before they happen)</td>
+            </tr>
+            <tr>
+              <td>Manual capacity tracking</td>
+              <td>Integrated capacity management</td>
+            </tr>
+            <tr>
+              <td>No scenario planning</td>
+              <td>Full what-if analysis</td>
+            </tr>
+            <tr>
+              <td>No data quality checks</td>
+              <td>Automated data quality checks</td>
+            </tr>
+            <tr>
+              <td>No dependency analysis</td>
+              <td>Full dependency graph with cycle detection</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Details -->
+  <section class="technical">
+    <div class="container">
+      <h2>Technical Details</h2>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <div class="icon">☁️</div>
+          <h4>Atlassian Forge</h4>
+          <p>Runs securely in Atlassian's cloud infrastructure</p>
+        </div>
+        <div class="tech-item">
+          <div class="icon">🔒</div>
+          <h4>Read-Only Access</h4>
+          <p>Only reads Jira issues and users - never modifies data</p>
+        </div>
+        <div class="tech-item">
+          <div class="icon">🔍</div>
+          <h4>JQL-Based</h4>
+          <p>Configure scope using standard Jira Query Language</p>
+        </div>
+        <div class="tech-item">
+          <div class="icon">⚡</div>
+          <h4>Real-Time Data</h4>
+          <p>Always reflects the current state of your Jira project</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <h2>Ready to Ship On Time?</h2>
+      <p>Add Beyond Burndown to your Jira dashboard today.</p>
+      <a href="#" class="cta-button">Get Started</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Beyond Burndown. All rights reserved.</p>
+      <p class="tagline">"Because 'it'll be done when it's done' isn't a project plan."</p>
+    </div>
+  </footer>
+
+</body>
+</html>
