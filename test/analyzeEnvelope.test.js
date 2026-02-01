@@ -5,7 +5,17 @@
 import { analyzeEnvelope } from '../src/resolvers/analyzeEnvelope.js';
 
 describe('analyzeEnvelope', () => {
-  // Helper to create dates
+  // Helper to create future dates relative to today
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const futureDate = (daysFromNow) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() + daysFromNow);
+    return d;
+  };
+
+  // For tests that need specific dates
   const date = (str) => new Date(str + 'T00:00:00Z');
 
   describe('basic functionality', () => {
@@ -23,8 +33,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test issue',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 8,
           originalEstimate: 8,
           status: { category: 'in_progress' }
@@ -35,8 +45,8 @@ describe('analyzeEnvelope', () => {
 
       expect(result.rangeStart).toBeDefined();
       expect(result.rangeEnd).toBeDefined();
-      expect(new Date(result.rangeStart) <= date('2026-01-20')).toBe(true);
-      expect(new Date(result.rangeEnd) >= date('2026-01-24')).toBe(true);
+      expect(new Date(result.rangeStart) <= futureDate(1)).toBe(true);
+      expect(new Date(result.rangeEnd) >= futureDate(5)).toBe(true);
     });
   });
 
@@ -45,8 +55,8 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'), // Monday
-          dueDate: date('2026-01-24'), // Friday
+          startDate: futureDate(1), // Monday
+          dueDate: futureDate(5), // Friday
           originalEstimate: 40 // 40 hours across 5 days = 8h/day
         }
       ];
@@ -62,14 +72,14 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: 20
         },
         {
           key: 'CAP-2',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: 20
         }
       ];
@@ -84,7 +94,7 @@ describe('analyzeEnvelope', () => {
         {
           key: 'CAP-1',
           startDate: null,
-          dueDate: date('2026-01-24'),
+          dueDate: futureDate(5),
           originalEstimate: 40
         }
       ];
@@ -98,8 +108,8 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: null
         }
       ];
@@ -116,8 +126,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 40,
           originalEstimate: 40,
           status: { category: 'in_progress' }
@@ -134,8 +144,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 40,
           originalEstimate: 40,
           status: { category: 'done' }
@@ -152,8 +162,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 0,
           originalEstimate: 40,
           status: { category: 'in_progress' }
@@ -172,8 +182,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 40,
           originalEstimate: 40,
           status: { category: 'in_progress' }
@@ -181,9 +191,9 @@ describe('analyzeEnvelope', () => {
       ];
 
       const worklogs = [
-        { date: date('2026-01-20'), hours: 4 },
-        { date: date('2026-01-21'), hours: 6 },
-        { date: date('2026-01-20'), hours: 2 } // Same day as first
+        { date: futureDate(1), hours: 4 },
+        { date: futureDate(2), hours: 6 },
+        { date: futureDate(1), hours: 2 } // Same day as first
       ];
 
       const result = await analyzeEnvelope(demandIssues, [], worklogs);
@@ -196,8 +206,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 40,
           originalEstimate: 40,
           status: { category: 'in_progress' }
@@ -215,8 +225,8 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: 40
         }
       ];
@@ -231,8 +241,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 20,
           originalEstimate: 20,
           status: { category: 'in_progress' }
@@ -242,8 +252,8 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: 40
         }
       ];
@@ -258,8 +268,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 80,
           originalEstimate: 80,
           status: { category: 'in_progress' }
@@ -269,8 +279,8 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: 20
         }
       ];
@@ -285,8 +295,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 40,
           originalEstimate: 40,
           status: { category: 'in_progress' }
@@ -305,8 +315,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 80,
           originalEstimate: 80,
           status: { category: 'in_progress' }
@@ -316,8 +326,8 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: 20
         }
       ];
@@ -332,8 +342,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 20,
           originalEstimate: 20,
           status: { category: 'in_progress' }
@@ -343,8 +353,8 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: 80
         }
       ];
@@ -359,8 +369,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 80,
           originalEstimate: 80,
           status: { category: 'in_progress' }
@@ -385,8 +395,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 40,
           originalEstimate: 40,
           status: { category: 'in_progress' }
@@ -412,8 +422,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 40,
           originalEstimate: 40,
           status: { category: 'in_progress' }
@@ -423,8 +433,8 @@ describe('analyzeEnvelope', () => {
       const capacityIssues = [
         {
           key: 'CAP-1',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           originalEstimate: 40
         }
       ];
@@ -449,8 +459,8 @@ describe('analyzeEnvelope', () => {
         {
           key: 'TEST-1',
           summary: 'Test',
-          startDate: date('2026-01-20'),
-          dueDate: date('2026-01-24'),
+          startDate: futureDate(1),
+          dueDate: futureDate(5),
           remainingEstimate: 20,
           originalEstimate: 40,
           status: { category: 'in_progress' }
@@ -458,7 +468,7 @@ describe('analyzeEnvelope', () => {
       ];
 
       const worklogs = [
-        { date: date('2026-01-20'), hours: 20 }
+        { date: futureDate(1), hours: 20 }
       ];
 
       const result = await analyzeEnvelope(demandIssues, [], worklogs);
