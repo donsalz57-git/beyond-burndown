@@ -117,7 +117,7 @@ export function generateStatusReport(envelope, compliance, dependencies, demandI
     overdueIssues: {
       count: (compliance.byType?.overdue || []).length,
       hours: (compliance.byType?.overdue || []).reduce(
-        (sum, v) => sum + (demandIssues.find(i => i.key === v.issue.key)?.remainingEstimate || 0),
+        (sum, v) => sum + (demandIssues.find(i => i.key === v.issueKey)?.remainingEstimate || 0),
         0
       )
     }
