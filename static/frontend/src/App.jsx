@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect, useMemo, Component } from 'react';
 import { view } from '@forge/bridge';
 import { useGadgetData } from './hooks/useGadgetData';
 import FeasibilityChart from './components/FeasibilityChart';
@@ -57,7 +57,72 @@ function App() {
   const [activeTab, setActiveTab] = useState(TABS.FEASIBILITY);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showWhatIf, setShowWhatIf] = useState(false);
+  const [appliedScenarios, setAppliedScenarios] = useState([]);
   const { data, loading, error, config, updateConfig, refresh } = useGadgetData();
+
+  // Create modified envelope when scenarios are applied
+  const displayEnvelope = useMemo(() => {
+    const enabledScenarios = appliedScenarios.filter(s => s.enabled);
+    if (enabledScenarios.length === 0 || !data?.envelope) return data?.envelope;
+
+    const originalEnvelope = data.envelope;
+    const totalDays = originalEnvelope.totals?.totalDays || originalEnvelope.timeline?.length || 1;
+
+    // Calculate combined adjustments from all enabled scenarios
+    let totalCapacityChange = 0;
+    let totalDemandChange = 0;
+
+    enabledScenarios.forEach(scenario => {
+      totalCapacityChange += scenario.delta?.capacity || 0;
+      totalDemandChange += scenario.delta?.demand || 0;
+    });
+
+    const dailyCapacityAdjustment = totalCapacityChange / totalDays;
+    const dailyDemandAdjustment = totalDemandChange / totalDays;
+
+    // Modify timeline with adjusted values - recalculate cumulatives
+    let runningCumulativeCapacity = 0;
+    let runningCumulativeDemand = 0;
+
+    const modifiedTimeline = originalEnvelope.timeline?.map((day) => {
+      // Add adjustment to daily values
+      const adjustedDailyCapacity = (day.capacity || 0) + dailyCapacityAdjustment;
+      const adjustedDailyDemand = Math.max(0, (day.demand || 0) + dailyDemandAdjustment);
+
+      // Accumulate for cumulative values
+      runningCumulativeCapacity += adjustedDailyCapacity;
+      runningCumulativeDemand += adjustedDailyDemand;
+
+      return {
+        ...day,
+        capacity: Math.round(adjustedDailyCapacity * 100) / 100,
+        demand: Math.round(adjustedDailyDemand * 100) / 100,
+        cumulativeCapacity: Math.round(runningCumulativeCapacity * 100) / 100,
+        cumulativeDemand: Math.round(runningCumulativeDemand * 100) / 100,
+        isOverloaded: runningCumulativeDemand > runningCumulativeCapacity
+      };
+    }) || [];
+
+    // Calculate new feasibility
+    const newCapacity = originalEnvelope.totals.totalCapacity + totalCapacityChange;
+    const newDemand = Math.max(0, originalEnvelope.totals.totalDemand + totalDemandChange);
+    const newFeasibility = newDemand > 0 ? Math.round(Math.min(100, (newCapacity / newDemand) * 100)) : 100;
+
+    const newTotals = {
+      ...originalEnvelope.totals,
+      totalCapacity: Math.round(newCapacity * 100) / 100,
+      totalDemand: Math.round(newDemand * 100) / 100
+    };
+
+    return {
+      ...originalEnvelope,
+      timeline: modifiedTimeline,
+      feasibilityScore: newFeasibility,
+      totals: newTotals,
+      isScenario: true,
+      scenarioCount: enabledScenarios.length
+    };
+  }, [appliedScenarios, data?.envelope]);
 
   // Detect if gadget is in edit/configure mode
   useEffect(() => {
@@ -246,17 +311,51 @@ function App() {
               </button>
             </div>
             <FeasibilityChart
-              envelope={data?.envelope}
+              envelope={displayEnvelope}
               targetDate={config?.targetDate}
               onTargetDateChange={async (date) => {
                 const newConfig = { ...config, targetDate: date };
                 await updateConfig(newConfig);
               }}
             />
+            {appliedScenarios.filter(s => s.enabled).length > 0 && (
+              <div style={{
+                marginTop: '8px',
+                padding: '8px 12px',
+                background: '#DEEBFF',
+                borderRadius: '4px',
+                fontSize: '12px',
+                color: '#0052CC',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span>
+                  Viewing {appliedScenarios.filter(s => s.enabled).length} scenario(s) •
+                  {' '}{displayEnvelope?.feasibilityScore}% feasibility
+                </span>
+                <button
+                  onClick={() => setAppliedScenarios([])}
+                  style={{
+                    background: '#DE350B',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '4px 12px',
+                    fontSize: '12px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Clear All
+                </button>
+              </div>
+            )}
             <WhatIfPanel
               envelope={data?.envelope}
               isOpen={showWhatIf}
               onClose={() => setShowWhatIf(false)}
+              appliedScenarios={appliedScenarios}
+              onUpdateScenarios={setAppliedScenarios}
             />
           </div>
         )}

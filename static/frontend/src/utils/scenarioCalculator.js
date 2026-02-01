@@ -64,7 +64,7 @@ function calculateNewForecast(capacity, demand, avgDailyCapacity) {
  * @param {number} hoursPerDeveloperPerDay - Hours per developer per day (default 6)
  * @returns {Object} Scenario result
  */
-export function applyAddCapacity(envelope, additionalDevelopers, hoursPerDeveloperPerDay = 6) {
+export function applyAddCapacity(envelope, additionalDevelopers, hoursPerDeveloperPerDay = 8) {
   const { totals, timeline, feasibilityScore, forecast } = envelope;
 
   const additionalCapacity = additionalDevelopers * hoursPerDeveloperPerDay * totals.totalDays;
