@@ -245,7 +245,14 @@ function App() {
                 {showWhatIf ? 'Hide' : 'Show'} What-If
               </button>
             </div>
-            <FeasibilityChart envelope={data?.envelope} />
+            <FeasibilityChart
+              envelope={data?.envelope}
+              targetDate={config?.targetDate}
+              onTargetDateChange={async (date) => {
+                const newConfig = { ...config, targetDate: date };
+                await updateConfig(newConfig);
+              }}
+            />
             <WhatIfPanel
               envelope={data?.envelope}
               isOpen={showWhatIf}

@@ -6,7 +6,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  ReferenceLine
 } from 'recharts';
 
 const PERIODS = {
@@ -142,8 +143,9 @@ function aggregateTimeline(timeline, period) {
   return result;
 }
 
-function FeasibilityChart({ envelope }) {
+function FeasibilityChart({ envelope, targetDate, onTargetDateChange }) {
   const [period, setPeriod] = useState(PERIODS.DAILY);
+  const [showTargetDate, setShowTargetDate] = useState(!!targetDate);
 
   // State for interactive legend - track which lines are visible
   const [visibleLines, setVisibleLines] = useState({
@@ -235,6 +237,19 @@ function FeasibilityChart({ envelope }) {
   // Dynamic labels based on period
   const periodLabel = period === PERIODS.DAILY ? 'Daily' : PERIOD_LABELS[period];
 
+  // Find the display label for target date to use in ReferenceLine
+  const targetDateLabel = useMemo(() => {
+    if (!targetDate || !chartData || chartData.length === 0) return null;
+
+    // Find matching data point by fullDate
+    const match = chartData.find(item => item.fullDate === targetDate);
+    if (match) return match.date;
+
+    // If exact match not found, format the date similarly
+    const targetDateObj = new Date(targetDate);
+    return targetDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }, [targetDate, chartData]);
+
   // Custom tooltip
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -304,6 +319,37 @@ function FeasibilityChart({ envelope }) {
           <div style={{ fontSize: '13px', color: '#5E6C84' }}>
             {totals.totalDemand.toFixed(1)}h demand / {totals.totalCapacity.toFixed(1)}h capacity / {(totals.totalTimeSpent || 0).toFixed(1)}h spent
           </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <label style={{ fontSize: '12px', color: '#5E6C84', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <input
+                type="checkbox"
+                checked={showTargetDate}
+                onChange={(e) => {
+                  setShowTargetDate(e.target.checked);
+                  if (!e.target.checked && onTargetDateChange) {
+                    onTargetDateChange(null);
+                  }
+                }}
+                style={{ cursor: 'pointer' }}
+              />
+              Target Date
+            </label>
+            {showTargetDate && (
+              <input
+                type="date"
+                value={targetDate || ''}
+                onChange={(e) => onTargetDateChange && onTargetDateChange(e.target.value)}
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  border: '2px solid #DE350B',
+                  fontSize: '12px',
+                  color: '#172B4D',
+                  background: 'white'
+                }}
+              />
+            )}
+          </div>
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
@@ -365,6 +411,24 @@ function FeasibilityChart({ envelope }) {
               label={{ value: 'Completion %', angle: 90, position: 'insideRight', fontSize: 11, fill: '#9C27B0' }}
             />
             <Tooltip content={<CustomTooltip />} />
+
+            {/* Target Date Reference Line */}
+            {showTargetDate && targetDateLabel && (
+              <ReferenceLine
+                x={targetDateLabel}
+                stroke="#DE350B"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                yAxisId="left"
+                label={{
+                  value: 'Target',
+                  position: 'top',
+                  fill: '#DE350B',
+                  fontSize: 11,
+                  fontWeight: 600
+                }}
+              />
+            )}
 
             {/* Period Capacity line */}
             <Line
