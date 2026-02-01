@@ -346,6 +346,139 @@ describe('App', () => {
   });
 });
 
+describe('What-If Scenarios', () => {
+  const mockData = {
+    envelope: {
+      timeline: [
+        { date: '2026-01-19', displayDate: 'Jan 19', capacity: 8, demand: 6 }
+      ],
+      overloadedPeriods: [],
+      feasibilityScore: 85,
+      totals: { totalDemand: 100, totalCapacity: 120, totalTimeSpent: 50, totalDays: 20 }
+    },
+    compliance: {
+      violations: [],
+      byType: {},
+      summary: { total: 0, bySeverity: { error: 0, warning: 0, info: 0 } }
+    },
+    dependencies: {
+      dependencies: [],
+      circularDependencies: [],
+      rootIssues: [],
+      leafIssues: [],
+      summary: { totalDependencies: 0, totalCircular: 0, rootCount: 0, maxDepth: 0 }
+    },
+    summary: {
+      totalDemandIssues: 25,
+      feasibilityScore: 85,
+      totalViolations: 0,
+      circularDependencies: 0
+    }
+  };
+
+  const mockConfig = {
+    demandJql: 'project = TEST',
+    capacityJql: 'project = TEST AND type = Capacity'
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    view.getContext.mockResolvedValue({ extension: { entryPoint: 'view' } });
+  });
+
+  test('renders Show What-If button on Feasibility tab', () => {
+    useGadgetData.mockReturnValue({
+      data: mockData,
+      loading: false,
+      error: null,
+      config: mockConfig,
+      updateConfig: jest.fn(),
+      refresh: jest.fn()
+    });
+
+    render(<App />);
+    expect(screen.getByText('Show What-If')).toBeInTheDocument();
+  });
+
+  test('toggles What-If panel visibility when button clicked', () => {
+    useGadgetData.mockReturnValue({
+      data: mockData,
+      loading: false,
+      error: null,
+      config: mockConfig,
+      updateConfig: jest.fn(),
+      refresh: jest.fn()
+    });
+
+    render(<App />);
+
+    // Click to show What-If panel
+    const showButton = screen.getByText('Show What-If');
+    fireEvent.click(showButton);
+
+    // Button should now say "Hide What-If"
+    expect(screen.getByText('Hide What-If')).toBeInTheDocument();
+    // What-If panel should be visible
+    expect(screen.getByText('What-If Scenarios')).toBeInTheDocument();
+  });
+
+  test('shows scenario indicator when scenarios are applied', async () => {
+    useGadgetData.mockReturnValue({
+      data: mockData,
+      loading: false,
+      error: null,
+      config: mockConfig,
+      updateConfig: jest.fn(),
+      refresh: jest.fn()
+    });
+
+    render(<App />);
+
+    // Open What-If panel
+    fireEvent.click(screen.getByText('Show What-If'));
+
+    // Add a scenario by clicking the Add button
+    const addButton = screen.getByText('Add');
+    fireEvent.click(addButton);
+
+    // Should show scenario indicator with "Viewing 1 scenario(s)"
+    await waitFor(() => {
+      expect(screen.getByText(/viewing 1 scenario/i)).toBeInTheDocument();
+    });
+  });
+
+  test('Clear All button removes all scenarios', async () => {
+    useGadgetData.mockReturnValue({
+      data: mockData,
+      loading: false,
+      error: null,
+      config: mockConfig,
+      updateConfig: jest.fn(),
+      refresh: jest.fn()
+    });
+
+    render(<App />);
+
+    // Open What-If panel and add a scenario
+    fireEvent.click(screen.getByText('Show What-If'));
+    fireEvent.click(screen.getByText('Add'));
+
+    // Wait for scenario to be added
+    await waitFor(() => {
+      expect(screen.getByText(/viewing 1 scenario/i)).toBeInTheDocument();
+    });
+
+    // Click Clear All in the scenario indicator (not the panel's Clear All)
+    const clearButtons = screen.getAllByText('Clear All');
+    fireEvent.click(clearButtons[clearButtons.length - 1]); // Click the last one (in indicator)
+
+    // Scenario indicator should be gone
+    await waitFor(() => {
+      expect(screen.queryByText(/viewing.*scenario/i)).not.toBeInTheDocument();
+    });
+  });
+});
+
 describe('ErrorBoundary', () => {
   // Suppress console.error for error boundary tests
   const originalError = console.error;
