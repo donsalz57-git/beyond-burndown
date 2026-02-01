@@ -2,7 +2,12 @@
  * Unit tests for fetchCapacity.js resolver
  */
 
-import { fetchCapacityIssues } from '../src/resolvers/fetchCapacity.js';
+import {
+  fetchCapacityIssues,
+  buildManualCapacityIssues,
+  buildTeamCapacityIssue,
+  buildVariableCapacityIssues
+} from '../src/resolvers/fetchCapacity.js';
 import api, { __resetMocks, __setMockResponse } from './__mocks__/@forge/api.js';
 
 describe('fetchCapacity', () => {
@@ -269,6 +274,234 @@ describe('fetchCapacity', () => {
       const result = await fetchCapacityIssues('project = TEST');
 
       expect(result[0].id).toBe('99999');
+    });
+  });
+
+  describe('buildManualCapacityIssues', () => {
+    const rangeStart = new Date('2026-02-01');
+    const rangeEnd = new Date('2026-02-28');
+
+    test('returns empty array for no team members', () => {
+      const result = buildManualCapacityIssues([], 'week', rangeStart, rangeEnd);
+      expect(result).toEqual([]);
+    });
+
+    test('returns empty array for null team members', () => {
+      const result = buildManualCapacityIssues(null, 'week', rangeStart, rangeEnd);
+      expect(result).toEqual([]);
+    });
+
+    test('creates capacity issues for team members', () => {
+      const teamMembers = [
+        { name: 'Alice', hoursPerPeriod: 40 },
+        { name: 'Bob', hoursPerPeriod: 32 }
+      ];
+
+      const result = buildManualCapacityIssues(teamMembers, 'week', rangeStart, rangeEnd);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].assignee).toBe('Alice');
+      expect(result[1].assignee).toBe('Bob');
+    });
+
+    test('generates unique keys for each member', () => {
+      const teamMembers = [
+        { name: 'Alice', hoursPerPeriod: 40 },
+        { name: 'Bob', hoursPerPeriod: 32 }
+      ];
+
+      const result = buildManualCapacityIssues(teamMembers, 'week', rangeStart, rangeEnd);
+
+      expect(result[0].key).toBe('CAPACITY-1');
+      expect(result[1].key).toBe('CAPACITY-2');
+    });
+
+    test('uses member start/end dates if provided', () => {
+      const teamMembers = [
+        {
+          name: 'Alice',
+          hoursPerPeriod: 40,
+          startDate: '2026-02-10',
+          endDate: '2026-02-20'
+        }
+      ];
+
+      const result = buildManualCapacityIssues(teamMembers, 'week', rangeStart, rangeEnd);
+
+      expect(result[0].startDate.toISOString()).toContain('2026-02-10');
+      expect(result[0].dueDate.toISOString()).toContain('2026-02-20');
+    });
+
+    test('uses range dates if member dates not provided', () => {
+      const teamMembers = [
+        { name: 'Alice', hoursPerPeriod: 40 }
+      ];
+
+      const result = buildManualCapacityIssues(teamMembers, 'week', rangeStart, rangeEnd);
+
+      expect(result[0].startDate).toEqual(rangeStart);
+      expect(result[0].dueDate).toEqual(rangeEnd);
+    });
+
+    test('calculates hours correctly for weekly period', () => {
+      const teamMembers = [
+        { name: 'Alice', hoursPerPeriod: 40 }
+      ];
+      const start = new Date('2026-02-02'); // Monday
+      const end = new Date('2026-02-06'); // Friday - 5 days
+
+      const result = buildManualCapacityIssues(teamMembers, 'week', start, end);
+
+      // 5 days, ~4 business days (5/7 ratio), 40hrs/5days = 8hrs/day
+      expect(result[0].originalEstimate).toBeGreaterThan(0);
+    });
+  });
+
+  describe('buildTeamCapacityIssue', () => {
+    const rangeStart = new Date('2026-02-01');
+    const rangeEnd = new Date('2026-02-28');
+
+    test('returns empty array for zero hours', () => {
+      const result = buildTeamCapacityIssue(0, 'week', rangeStart, rangeEnd);
+      expect(result).toEqual([]);
+    });
+
+    test('returns empty array for negative hours', () => {
+      const result = buildTeamCapacityIssue(-10, 'week', rangeStart, rangeEnd);
+      expect(result).toEqual([]);
+    });
+
+    test('creates single capacity issue for team', () => {
+      const result = buildTeamCapacityIssue(160, 'week', rangeStart, rangeEnd);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].key).toBe('CAPACITY-TEAM');
+      expect(result[0].summary).toBe('Team Capacity');
+      expect(result[0].assignee).toBeNull();
+    });
+
+    test('sets correct date range', () => {
+      const result = buildTeamCapacityIssue(160, 'week', rangeStart, rangeEnd);
+
+      expect(result[0].startDate).toEqual(rangeStart);
+      expect(result[0].dueDate).toEqual(rangeEnd);
+    });
+
+    test('calculates total hours for date range', () => {
+      const result = buildTeamCapacityIssue(160, 'week', rangeStart, rangeEnd);
+
+      expect(result[0].originalEstimate).toBeGreaterThan(0);
+    });
+  });
+
+  describe('buildVariableCapacityIssues', () => {
+    test('returns empty array for empty schedule', () => {
+      const result = buildVariableCapacityIssues([], 'team', 'week');
+      expect(result).toEqual([]);
+    });
+
+    test('returns empty array for null schedule', () => {
+      const result = buildVariableCapacityIssues(null, 'team', 'week');
+      expect(result).toEqual([]);
+    });
+
+    test('creates capacity issues for team schedule', () => {
+      const schedule = [
+        { id: '1', startDate: '2026-02-01', teamHours: 160, memberHours: {} },
+        { id: '2', startDate: '2026-02-08', teamHours: 120, memberHours: {} }
+      ];
+
+      const result = buildVariableCapacityIssues(schedule, 'team', 'week');
+
+      expect(result).toHaveLength(2);
+      expect(result[0].originalEstimate).toBe(160);
+      expect(result[1].originalEstimate).toBe(120);
+    });
+
+    test('sorts schedule by date', () => {
+      const schedule = [
+        { id: '2', startDate: '2026-02-08', teamHours: 120, memberHours: {} },
+        { id: '1', startDate: '2026-02-01', teamHours: 160, memberHours: {} }
+      ];
+
+      const result = buildVariableCapacityIssues(schedule, 'team', 'week');
+
+      expect(result[0].startDate.toISOString()).toContain('2026-02-01');
+      expect(result[1].startDate.toISOString()).toContain('2026-02-08');
+    });
+
+    test('creates per-member issues for individual schedule', () => {
+      const schedule = [
+        {
+          id: '1',
+          startDate: '2026-02-01',
+          teamHours: 0,
+          memberHours: { 'Alice': 40, 'Bob': 32 }
+        }
+      ];
+
+      const result = buildVariableCapacityIssues(schedule, 'individual', 'week');
+
+      expect(result).toHaveLength(2);
+      const alice = result.find(r => r.assignee === 'Alice');
+      const bob = result.find(r => r.assignee === 'Bob');
+      expect(alice.originalEstimate).toBe(40);
+      expect(bob.originalEstimate).toBe(32);
+    });
+
+    test('skips members with zero hours', () => {
+      const schedule = [
+        {
+          id: '1',
+          startDate: '2026-02-01',
+          teamHours: 0,
+          memberHours: { 'Alice': 40, 'Bob': 0 }
+        }
+      ];
+
+      const result = buildVariableCapacityIssues(schedule, 'individual', 'week');
+
+      expect(result).toHaveLength(1);
+      expect(result[0].assignee).toBe('Alice');
+    });
+
+    test('calculates end date based on next entry', () => {
+      const schedule = [
+        { id: '1', startDate: '2026-02-01', teamHours: 160, memberHours: {} },
+        { id: '2', startDate: '2026-02-08', teamHours: 120, memberHours: {} }
+      ];
+
+      const result = buildVariableCapacityIssues(schedule, 'team', 'week');
+
+      // First entry should end day before second entry
+      expect(result[0].dueDate.toISOString()).toContain('2026-02-07');
+    });
+
+    test('handles single entry schedule', () => {
+      const schedule = [
+        { id: '1', startDate: '2026-02-01', teamHours: 160, memberHours: {} }
+      ];
+
+      const result = buildVariableCapacityIssues(schedule, 'team', 'week');
+
+      expect(result).toHaveLength(1);
+      expect(result[0].startDate).toBeInstanceOf(Date);
+      expect(result[0].dueDate).toBeInstanceOf(Date);
+    });
+
+    test('handles monthly period for last entry', () => {
+      const schedule = [
+        { id: '1', startDate: '2026-02-01', teamHours: 160, memberHours: {} }
+      ];
+
+      const result = buildVariableCapacityIssues(schedule, 'team', 'month');
+
+      expect(result).toHaveLength(1);
+      // End date should be roughly a month after start
+      const startDate = result[0].startDate;
+      const dueDate = result[0].dueDate;
+      const daysDiff = (dueDate - startDate) / (1000 * 60 * 60 * 24);
+      expect(daysDiff).toBeGreaterThanOrEqual(27);
     });
   });
 });

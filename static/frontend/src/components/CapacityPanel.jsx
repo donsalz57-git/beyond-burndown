@@ -20,7 +20,7 @@ function CapacityPanel({ config, onSave }) {
   useEffect(() => {
     if (config) {
       setCapacityType(config.capacityType || 'team');
-      setCapacityMode(config.capacityMode || 'fixed');
+      setCapacityMode(config.variableCapacity ? 'variable' : 'fixed');
       setPeriod(config.capacityPeriod || 'week');
       setTeamHours(config.teamHours || 160);
       setTeamMembers(config.teamMembers || []);
