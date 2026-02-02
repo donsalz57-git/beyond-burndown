@@ -1251,9 +1251,10 @@
       }
 
       // Chart view - always update when step has chartView
-      if (s.chartView) {
-        console.log('Step', step, 'requesting chart view:', s.chartView);
-        updateChartView(s.chartView);
+      console.log('render() - step:', step, 'chartView:', s.chartView, 'chartData.labels exists:', !!chartData.labels);
+      if (s.chartView && chartData.labels) {
+        console.log('Calling createChart with:', s.chartView);
+        createChart(s.chartView);
       }
     }
 
@@ -1390,6 +1391,7 @@
       }
 
       legend.innerHTML = legendHtml;
+      console.log('Creating chart with', datasets.length, 'datasets, view:', view);
 
       chart = new Chart(ctx, {
         type: 'line',
@@ -1402,6 +1404,7 @@
           scales
         }
       });
+      console.log('Chart created successfully');
     }
 
     function updateChartView(view) {
