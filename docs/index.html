@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Beyond Burndown - Feasibility & Compliance Analyzer for Jira</title>
-  <meta name="description" content="Beyond Burndown provides physics-based feasibility analysis, compliance checking, dependency modeling, and What-If scenarios for Jira. Plan realistic projects with confidence.">
+  <meta name="description" content="Beyond Burndown provides feasibility analysis, compliance checking, dependency modeling, and What-If scenarios for Jira. Plan realistic projects with confidence.">
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,8 +33,9 @@
     <div class="container">
       <h1>Project Planning,<br><span class="highlight">Beyond Guesswork</span></h1>
       <p class="hero-subtitle">
-        Beyond Burndown provides physics-based feasibility analysis, data quality checks,
+        Beyond Burndown provides feasibility analysis, data quality checks,
         dependency modeling, and What-If scenarios. Know if your project is realistic before you commit.
+        Know if your active project is on schedule or at risk.
       </p>
       <div class="hero-cta">
         <a href="#install" class="btn btn-primary btn-large">Install on Jira</a>
@@ -50,16 +51,6 @@
       <h2>Four Questions Every Project Needs to Answer</h2>
       <div class="problem-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
         <div class="problem-card">
-          <div class="problem-icon">📋</div>
-          <h3>Is the plan up to date?</h3>
-          <p>Are there overdue issues, missing dates, or missing estimates that need fixing?</p>
-        </div>
-        <div class="problem-card">
-          <div class="problem-icon">📈</div>
-          <h3>Is the plan on track?</h3>
-          <p>Is planned work getting done on schedule? Are we keeping pace?</p>
-        </div>
-        <div class="problem-card">
           <div class="problem-icon">⚖️</div>
           <h3>Is the plan feasible?</h3>
           <p>Can we deliver this scope by the deadline with available capacity?</p>
@@ -69,48 +60,77 @@
           <h3>Are resources working as planned?</h3>
           <p>Is available capacity being applied to the work? Who's overloaded?</p>
         </div>
+        <div class="problem-card">
+          <div class="problem-icon">📋</div>
+          <h3>Is the plan up to date?</h3>
+          <p>Are there overdue issues, missing dates, or missing estimates that need fixing?</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">📈</div>
+          <h3>Is the plan on track?</h3>
+          <p>Is planned work getting done on schedule? Are we keeping pace?</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- How It Answers Section -->
-  <section class="comparison">
+  <section class="answers-section">
     <div class="container">
-      <h2>How Beyond Burndown Answers Each Question</h2>
-      <p class="comparison-subtitle">Every view is designed to give you clear, actionable answers</p>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Question</th>
-              <th>What to Look At</th>
-              <th>What It Tells You</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>1. Is the plan up to date?</strong></td>
-              <td>Data Quality tab</td>
-              <td>Overdue issues, missing dates/estimates that need fixing</td>
-            </tr>
-            <tr>
-              <td><strong>2. Is the plan on track?</strong></td>
-              <td>Completion % (purple line)</td>
-              <td>Is planned work getting done on schedule?</td>
-            </tr>
-            <tr>
-              <td><strong>3. Is the plan feasible?</strong></td>
-              <td>Demand vs Capacity chart, Dependencies tab</td>
-              <td>Can we deliver this scope by the deadline?</td>
-            </tr>
-            <tr>
-              <td><strong>4. Are resources working as planned?</strong></td>
-              <td>Time Spent vs Capacity, Team tab</td>
-              <td>Is available capacity being applied to the work?</td>
-            </tr>
-          </tbody>
-        </table>
+      <h2>How Beyond Burndown Answers Each Question in One Dashboard</h2>
+      <p class="comparison-subtitle">Everything you need to answer them — in one dashboard gadget.</p>
+      <div class="answers-grid">
+        <div class="answer-card">
+          <div class="answer-header">
+            <span class="answer-icon">⚖️</span>
+            <h3>Is the plan feasible?</h3>
+          </div>
+          <div class="answer-view">Feasibility View</div>
+          <ul class="answer-list">
+            <li>Capacity vs demand score (0–100%)</li>
+            <li>Overload warnings with dates</li>
+            <li>What-if capacity scenarios</li>
+          </ul>
+        </div>
+        <div class="answer-card">
+          <div class="answer-header">
+            <span class="answer-icon">👥</span>
+            <h3>Are resources working as planned?</h3>
+          </div>
+          <div class="answer-view">Capacity & Team Views</div>
+          <ul class="answer-list">
+            <li>Workload distribution by person</li>
+            <li>Capacity utilization by period</li>
+            <li>Assignment gaps and imbalances</li>
+          </ul>
+        </div>
+        <div class="answer-card">
+          <div class="answer-header">
+            <span class="answer-icon">📋</span>
+            <h3>Is the plan up to date?</h3>
+          </div>
+          <div class="answer-view">Compliance, Dependencies & Report Views</div>
+          <ul class="answer-list">
+            <li>Missing dates or estimates</li>
+            <li>Overdue issues</li>
+            <li>Dependency conflicts</li>
+          </ul>
+        </div>
+        <div class="answer-card">
+          <div class="answer-header">
+            <span class="answer-icon">📈</span>
+            <h3>Is the plan on track?</h3>
+          </div>
+          <div class="answer-view">Feasibility, Capacity, Team, Compliance & Dependencies</div>
+          <ul class="answer-list">
+            <li>Progress tracking over time</li>
+            <li>Execution order visibility</li>
+            <li>Real-time Jira updates</li>
+            <li>One-click status reports</li>
+          </ul>
+        </div>
       </div>
+      <p class="answers-footer">All views update automatically as your Jira data changes.</p>
     </div>
   </section>
 
@@ -396,7 +416,7 @@
     <div class="container">
       <h2>Understanding the Feasibility Score</h2>
       <p class="technical-subtitle">
-        The feasibility score quantifies how realistic your plan is based on physics-based capacity vs demand analysis.
+        The feasibility score quantifies how realistic your plan is based on capacity vs demand analysis.
       </p>
 
       <div class="formula-box">
@@ -428,8 +448,8 @@
   <!-- Demo Section -->
   <section class="screenshots">
     <div class="container">
-      <h2>See It In Action</h2>
-      <p style="text-align: center; color: #5E6C84; margin-bottom: 24px;">Explore the interactive demo to see how Beyond Burndown answers the four questions.</p>
+      <h2>Try Our Interactive Demo</h2>
+      <p style="text-align: center; color: #5E6C84; margin-bottom: 24px;">Walk through a guided tour to see how Beyond Burndown answers the four questions.</p>
       <div style="border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(9, 30, 66, 0.15); border: 1px solid #DFE1E6;">
         <iframe src="demo.html" style="width: 100%; height: 700px; border: none;"></iframe>
       </div>
