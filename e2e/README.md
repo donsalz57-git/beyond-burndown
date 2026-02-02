@@ -8,32 +8,49 @@ End-to-end tests for the Beyond Burndown Jira gadget using Playwright.
 - Node.js 18+
 - Playwright installed (`npm install`)
 - Access to a Jira Cloud instance with the gadget deployed
+- **Atlassian account with password** (not Google OAuth)
+
+### Setting Up Atlassian Password
+
+If you currently use "Sign in with Google", you need to set up a password:
+
+1. Go to https://id.atlassian.com/manage-profile/security
+2. Under "Password", click "Create password" or "Set password"
+3. Create a strong password
+4. You can now log in with email + password
 
 ### Authentication
 
-The tests require authentication to Jira Cloud. Due to Google OAuth's security measures that block automated browsers, authentication requires manual setup.
-
-#### Option 1: Manual Browser Login (Recommended)
+#### Option 1: Automated Login (Recommended)
 
 ```bash
-# Run the login script - a Chrome browser will open
-node scripts/jira-login.js
+# Set your credentials
+set JIRA_EMAIL=your@email.com
+set JIRA_PASSWORD=your-atlassian-password
 
-# Log in manually in the browser
-# The session will be saved to .auth/jira-state.json
+# Run the login script
+node scripts/jira-login.js
 ```
 
-#### Option 2: Non-Google Atlassian Account
+The script will:
+1. Open a browser
+2. Navigate to Jira
+3. Fill in your email and password
+4. Save the session to `.auth/jira-state.json`
 
-If your Jira uses Atlassian ID (email/password) instead of Google OAuth, the login script will work directly.
+#### Option 2: Interactive Login
 
-### Known Limitations
+If automated login doesn't work, use interactive mode:
 
-**Google OAuth Blocking**: Google detects and blocks automated browsers from completing OAuth login. If you see "Couldn't sign you in - This browser or app may not be secure", you need to:
+```bash
+node scripts/jira-login.js --interactive
+```
 
-1. Use a non-Google Atlassian account, OR
-2. Manually log in through a real browser and export cookies, OR
-3. Use API-based testing instead of UI E2E tests
+This opens a browser where you log in manually.
+
+### Why Not Google OAuth?
+
+Google detects and blocks automated browsers from completing OAuth login. You'll see "Couldn't sign you in - This browser or app may not be secure". Using Atlassian email/password avoids this limitation.
 
 ## Running Tests
 
