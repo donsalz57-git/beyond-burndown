@@ -1378,9 +1378,9 @@
           datasets = [
             { label: 'Completion %', data: chartData.completionPct, borderColor: '#9C27B0', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
-          scales = { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Completion %', font: { weight: 'bold' } }, ticks: { callback: v => v + '%' } } };
+          scales = { y: { beginAtZero: true, max: 160, title: { display: true, text: 'Completion %', font: { weight: 'bold' } }, ticks: { callback: v => v + '%' } } };
           legendHtml = `
-            <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion %</div>
+            <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion % (per week)</div>
           `;
           break;
 
