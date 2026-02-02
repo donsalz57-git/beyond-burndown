@@ -174,6 +174,11 @@ function TeamHealthView({ resources, timeline }) {
       </div>
 
       {/* Per-User Chart */}
+      {(!timeline || timeline.length === 0) && (
+        <div style={{ padding: '12px', background: '#F4F5F7', borderRadius: '4px', marginBottom: '16px', fontSize: '13px', color: '#5E6C84' }}>
+          Timeline data not available for chart view
+        </div>
+      )}
       {userChartData.length > 0 && (
         <div style={{ marginBottom: '20px' }}>
           <ResponsiveContainer width="100%" height={200}>
