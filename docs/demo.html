@@ -1250,8 +1250,9 @@
         document.getElementById('whatif-btn').classList.remove('active');
       }
 
-      // Chart view
+      // Chart view - always update when step has chartView
       if (s.chartView) {
+        console.log('Step', step, 'requesting chart view:', s.chartView);
         updateChartView(s.chartView);
       }
     }
@@ -1310,6 +1311,8 @@
     }
 
     function createChart(view) {
+      console.log('createChart called with view:', view);
+
       // Destroy existing chart
       if (chart) {
         chart.destroy();
@@ -1319,6 +1322,11 @@
       currentChartView = view;
       const ctx = document.getElementById('chart').getContext('2d');
       const legend = document.getElementById('chart-legend');
+
+      if (!chartData.labels || chartData.labels.length === 0) {
+        console.error('chartData not initialized!');
+        return;
+      }
 
       let datasets, scales, legendHtml;
 
@@ -1397,7 +1405,8 @@
     }
 
     function updateChartView(view) {
-      // Always recreate chart for the requested view
+      console.log('updateChartView called with:', view);
+      console.log('chartData exists:', !!chartData.labels);
       createChart(view);
     }
 
