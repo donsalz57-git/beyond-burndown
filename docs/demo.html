@@ -590,7 +590,7 @@
         <div class="summary" id="summary-bar">
           <div class="metric"><div class="metric-val">18</div><div class="metric-label">Issues</div></div>
           <div class="metric"><div class="metric-val warn" id="feas-val">73%</div><div class="metric-label">Feasibility</div></div>
-          <div class="metric"><div class="metric-val bad">9</div><div class="metric-label">Violations</div></div>
+          <div class="metric"><div class="metric-val bad">9</div><div class="metric-label">Alerts</div></div>
           <div class="metric"><div class="metric-val bad">1</div><div class="metric-label">Cycles</div></div>
         </div>
 
@@ -599,7 +599,7 @@
           <button class="tab active" data-tab="feasibility">Feasibility</button>
           <button class="tab" data-tab="team">Team <span class="badge bad">!</span></button>
           <button class="tab" data-tab="capacity">Capacity</button>
-          <button class="tab" data-tab="compliance">Data Quality <span class="badge">9</span></button>
+          <button class="tab" data-tab="alerts">Alerts <span class="badge">9</span></button>
           <button class="tab" data-tab="dependencies">Dependencies <span class="badge bad">1</span></button>
           <button class="tab" data-tab="report">Report</button>
           <button class="tab" data-tab="settings" style="margin-left:auto">⚙️ Settings</button>
@@ -697,8 +697,8 @@
             </div>
           </div>
 
-          <!-- Compliance -->
-          <div class="panel" id="panel-compliance">
+          <!-- Alerts -->
+          <div class="panel" id="panel-alerts">
             <div class="comp-summary">
               <div class="comp-card"><div class="num bad">4</div><div class="lbl">Errors</div></div>
               <div class="comp-card"><div class="num warn">4</div><div class="lbl">Warnings</div></div>
@@ -1141,12 +1141,12 @@
         `
       },
       {
-        name: 'Data Quality',
-        tab: 'compliance',
+        name: 'Alerts',
+        tab: 'alerts',
         highlight: null,
         html: `
           <span class="step-num">Step 12</span>
-          <h2>Data Quality Issues</h2>
+          <h2>Alerts (Data Quality Issues)</h2>
 
           <div class="explanation">
             <h3>Finding Planning Problems</h3>

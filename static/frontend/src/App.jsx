@@ -47,7 +47,7 @@ const TABS = {
   SCOPE: 'scope',
   TEAM: 'team',
   CAPACITY: 'capacity',
-  COMPLIANCE: 'compliance',
+  ALERTS: 'alerts',
   DEPENDENCIES: 'dependencies',
   REPORT: 'report'
 };
@@ -193,7 +193,7 @@ function App() {
             <span className={`summary-value ${data.summary.totalViolations > 0 ? 'danger' : 'success'}`}>
               {data.summary.totalViolations}
             </span>
-            <span className="summary-label">Violations</span>
+            <span className="summary-label">Alerts</span>
           </div>
           <div className="summary-item">
             <span className={`summary-value ${data.summary.circularDependencies > 0 ? 'danger' : 'success'}`}>
@@ -260,10 +260,10 @@ function App() {
           )}
         </button>
         <button
-          className={`tab-button ${activeTab === TABS.COMPLIANCE ? 'active' : ''}`}
-          onClick={() => setActiveTab(TABS.COMPLIANCE)}
+          className={`tab-button ${activeTab === TABS.ALERTS ? 'active' : ''}`}
+          onClick={() => setActiveTab(TABS.ALERTS)}
         >
-          Compliance
+          Alerts
           {data?.compliance?.summary?.total > 0 && (
             <span className="badge">{data.compliance.summary.total}</span>
           )}
@@ -384,7 +384,7 @@ function App() {
             }}
           />
         )}
-        {activeTab === TABS.COMPLIANCE && (
+        {activeTab === TABS.ALERTS && (
           <CompliancePanel compliance={data?.compliance} />
         )}
         {activeTab === TABS.DEPENDENCIES && (
