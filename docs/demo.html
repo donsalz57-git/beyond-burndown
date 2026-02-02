@@ -573,7 +573,7 @@
       <div class="guide-header">
         <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
         <div class="progress-text">
-          <span id="step-text">Step 1 of 12</span>
+          <span id="step-text">Step 1 of 13</span>
           <span id="step-name">Introduction</span>
         </div>
       </div>
@@ -602,6 +602,7 @@
           <button class="tab" data-tab="compliance">Data Quality <span class="badge">9</span></button>
           <button class="tab" data-tab="dependencies">Dependencies <span class="badge bad">1</span></button>
           <button class="tab" data-tab="report">Report</button>
+          <button class="tab" data-tab="settings" style="margin-left:auto">⚙️ Settings</button>
         </div>
 
         <div class="content">
@@ -726,6 +727,40 @@
               </div>
             </div>
           </div>
+
+          <!-- Settings -->
+          <div class="panel" id="panel-settings">
+            <h3 style="margin-bottom:20px">Gadget Configuration</h3>
+            <div class="settings-form" style="max-width:600px">
+              <div class="setting-group" style="margin-bottom:24px">
+                <label style="display:block;font-weight:600;margin-bottom:8px">Target Date</label>
+                <p style="font-size:0.85rem;color:var(--gray);margin-bottom:8px">The deadline for completing all work. Shown as a vertical line on cumulative charts.</p>
+                <input type="date" id="settings-target" style="padding:10px 14px;border:2px solid var(--border);border-radius:6px;font-size:0.95rem;width:200px" value="2026-07-15">
+              </div>
+              <div class="setting-group" style="margin-bottom:24px">
+                <label style="display:block;font-weight:600;margin-bottom:8px">Display Period</label>
+                <p style="font-size:0.85rem;color:var(--gray);margin-bottom:8px">How to aggregate data in charts.</p>
+                <div style="display:flex;gap:8px">
+                  <button class="cap-toggle-btn" style="padding:10px 20px;border:2px solid var(--border);border-radius:6px;background:white;cursor:pointer">Daily</button>
+                  <button class="cap-toggle-btn active" style="padding:10px 20px;border:2px solid var(--green);border-radius:6px;background:#E3FCEF;color:var(--green);font-weight:600;cursor:pointer">Weekly</button>
+                </div>
+              </div>
+              <div class="setting-group" style="margin-bottom:24px">
+                <label style="display:block;font-weight:600;margin-bottom:8px">Demand JQL</label>
+                <p style="font-size:0.85rem;color:var(--gray);margin-bottom:8px">Jira query that returns issues representing work to be done.</p>
+                <textarea id="settings-demand-jql" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:6px;font-family:monospace;font-size:0.85rem;resize:vertical;min-height:60px">project = DEMO AND type in (Story, Task, Bug) AND Sprint = "Sprint 23"</textarea>
+              </div>
+              <div class="setting-group" style="margin-bottom:24px;padding:16px;background:var(--light-gray);border-radius:8px">
+                <label style="display:block;font-weight:600;margin-bottom:8px">Current Capacity</label>
+                <p style="font-size:0.85rem;color:var(--gray);margin-bottom:12px">Team capacity is configured in the Capacity tab.</p>
+                <div style="display:flex;gap:20px;flex-wrap:wrap">
+                  <div><span style="font-size:1.5rem;font-weight:700;color:var(--green)">152</span> <span style="color:var(--gray);font-size:0.85rem">hrs/week</span></div>
+                  <div><span style="font-size:1.5rem;font-weight:700">4</span> <span style="color:var(--gray);font-size:0.85rem">team members</span></div>
+                </div>
+              </div>
+              <button class="save-btn" style="padding:12px 24px;background:var(--green);color:white;border:none;border-radius:6px;font-weight:600;cursor:pointer">Save Configuration</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -745,32 +780,68 @@
 
           <div class="explanation">
             <h3>The Problem It Solves</h3>
-            <p>Traditional burndown charts show work remaining but don't account for <strong>who</strong> is available to do it. Beyond Burndown compares <em>demand</em> (work to be done) against <em>capacity</em> (hours available) to answer: <strong>"Do we have enough people?"</strong></p>
+            <p style="font-size:0.85rem">Beyond Burndown answers four questions burndown charts can't:</p>
+            <ul style="margin-top:8px;font-size:0.8rem">
+              <li><strong>Is the plan up to date?</strong> — Overdue issues, missing dates/estimates</li>
+              <li><strong>Is the plan on track?</strong> — Is work getting done on schedule?</li>
+              <li><strong>Is the plan feasible?</strong> — Can we deliver by the deadline?</li>
+              <li><strong>Are resources working as planned?</strong> — Is capacity being applied?</li>
+            </ul>
+          </div>
+
+          <div class="details" style="font-size:0.8rem">
+            <h3>The Summary Bar Shows</h3>
+            <ul>
+              <li><strong>18 Issues</strong> — Total work items being analyzed</li>
+              <li><strong>73% Feasibility</strong> — Can complete 73% of planned work. Yellow = at risk.</li>
+              <li><strong>9 Violations</strong> — Data quality problems to fix</li>
+              <li><strong>1 Cycle</strong> — Circular dependency detected</li>
+            </ul>
+          </div>
+
+          <div class="action-box" style="font-size:0.85rem">
+            <h3>This Dashboard</h3>
+            <p>This project is <strong>at risk</strong>. The following steps show you how Beyond Burndown answers each question.</p>
+          </div>
+        `
+      },
+      {
+        name: 'Configuration',
+        tab: 'settings',
+        highlight: 'panel-settings',
+        chartView: null,
+        html: `
+          <span class="step-num">Step 2</span>
+          <h2>Configuration</h2>
+
+          <div class="explanation">
+            <h3>Setting Up Your Analysis</h3>
+            <p>The Settings tab is where you configure Beyond Burndown for your project. These settings control what data is analyzed and how results are displayed.</p>
           </div>
 
           <div class="details">
-            <h3>The Summary Bar Shows</h3>
+            <h3>Key Settings</h3>
             <ul>
-              <li><strong>18 Issues</strong> — The total work items being analyzed</li>
-              <li><strong>73% Feasibility</strong> — You can complete 73% of planned work with current capacity. Yellow means at risk.</li>
-              <li><strong>9 Violations</strong> — Planning problems like missing dates, overdue issues, or scheduling conflicts</li>
-              <li><strong>1 Cycle</strong> — A circular dependency where issues block each other in a loop</li>
+              <li><strong>Target Date</strong> — Your delivery deadline. The red vertical line on charts marks this date.</li>
+              <li><strong>Display Period</strong> — Show data aggregated by day or by week</li>
+              <li><strong>Demand JQL</strong> — The Jira query that finds work items to analyze</li>
+              <li><strong>Capacity</strong> — Team hours are configured separately in the Capacity tab</li>
             </ul>
           </div>
 
           <div class="action-box">
-            <h3>What This Dashboard Tells You</h3>
-            <p>Right now, this project is <strong>at risk</strong>. The team doesn't have enough capacity to complete all planned work by the deadline. The following steps will show you exactly where the problems are and how to fix them.</p>
+            <h3>Getting Started</h3>
+            <p>After installing the gadget, set your target date and enter a JQL query that returns your project's issues. The analysis runs automatically when you save.</p>
           </div>
         `
       },
       {
         name: 'Feasibility Score',
         tab: 'feasibility',
-        highlight: 'feas-header',
+        highlight: 'score',
         chartView: 'overview',
         html: `
-          <span class="step-num">Step 2</span>
+          <span class="step-num">Step 3</span>
           <h2>The Feasibility Score</h2>
 
           <div class="explanation">
@@ -804,7 +875,7 @@
         highlight: 'overload-bar',
         chartView: 'daily',
         html: `
-          <span class="step-num">Step 3</span>
+          <span class="step-num">Step 4</span>
           <h2>Weekly Demand vs Capacity</h2>
 
           <div class="explanation">
@@ -833,7 +904,7 @@
         highlight: 'chart-legend',
         chartView: 'cumulative',
         html: `
-          <span class="step-num">Step 4</span>
+          <span class="step-num">Step 5</span>
           <h2>Cumulative Demand vs Capacity</h2>
 
           <div class="explanation">
@@ -861,7 +932,7 @@
         highlight: 'chart-legend',
         chartView: 'spent',
         html: `
-          <span class="step-num">Step 5</span>
+          <span class="step-num">Step 6</span>
           <h2>Time Spent vs Capacity</h2>
 
           <div class="explanation">
@@ -889,7 +960,7 @@
         highlight: 'chart-legend',
         chartView: 'completion',
         html: `
-          <span class="step-num">Step 6</span>
+          <span class="step-num">Step 7</span>
           <h2>Completion Percentage</h2>
 
           <div class="explanation">
@@ -919,7 +990,7 @@
         showWhatIf: true,
         chartView: 'cumulative',
         html: `
-          <span class="step-num">Step 7</span>
+          <span class="step-num">Step 8</span>
           <h2>What-If Scenario Modeling</h2>
 
           <div class="explanation">
@@ -947,7 +1018,7 @@
         tab: 'team',
         highlight: null,
         html: `
-          <span class="step-num">Step 8</span>
+          <span class="step-num">Step 9</span>
           <h2>Team Workload Distribution</h2>
 
           <div class="explanation">
@@ -976,7 +1047,7 @@
         tab: 'capacity',
         highlight: 'cap-config',
         html: `
-          <span class="step-num">Step 9</span>
+          <span class="step-num">Step 10</span>
           <h2>Capacity Configuration</h2>
 
           <div class="explanation">
@@ -1015,7 +1086,7 @@
         tab: 'compliance',
         highlight: null,
         html: `
-          <span class="step-num">Step 10</span>
+          <span class="step-num">Step 11</span>
           <h2>Data Quality Issues</h2>
 
           <div class="explanation">
@@ -1045,7 +1116,7 @@
         tab: 'dependencies',
         highlight: 'cycle-alert',
         html: `
-          <span class="step-num">Step 11</span>
+          <span class="step-num">Step 12</span>
           <h2>Dependency Analysis</h2>
 
           <div class="explanation">
@@ -1082,7 +1153,7 @@
         tab: 'report',
         highlight: 'report-grid',
         html: `
-          <span class="step-num">Step 12</span>
+          <span class="step-num">Step 13</span>
           <h2>Executive Report</h2>
 
           <div class="explanation">
