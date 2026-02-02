@@ -573,7 +573,7 @@
       <div class="guide-header">
         <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
         <div class="progress-text">
-          <span id="step-text">Step 1 of 13</span>
+          <span id="step-text">Step 1 of 12</span>
           <span id="step-name">Introduction</span>
         </div>
       </div>
@@ -797,59 +797,31 @@
         `
       },
       {
-        name: 'Overload Detection',
+        name: 'Weekly Demand vs Capacity',
         tab: 'feasibility',
         highlight: 'overload-bar',
         chartView: 'daily',
         html: `
           <span class="step-num">Step 3</span>
-          <h2>Overload Detection</h2>
-
-          <div class="explanation">
-            <h3>Identifying Problem Periods</h3>
-            <p>Even if total capacity matches total demand, you can still have problems if work is unevenly distributed. This shows when the team will be <strong>overloaded</strong>.</p>
-          </div>
-
-          <div class="details">
-            <h3>What the Warning Shows</h3>
-            <ul>
-              <li><strong>Weeks 1–10:</strong> The specific periods when overload occurs</li>
-              <li><strong>10 weeks:</strong> How many weeks are affected</li>
-              <li><strong>30 hours over:</strong> The maximum weekly overload (demand exceeding capacity)</li>
-            </ul>
-          </div>
-
-          <div class="action-box">
-            <h3>How to Fix Overloads</h3>
-            <p>Move work out of overloaded periods by adjusting start dates, or bring in temporary help during those specific dates. The chart below shows the full timeline.</p>
-          </div>
-        `
-      },
-      {
-        name: 'Weekly Demand vs Capacity',
-        tab: 'feasibility',
-        highlight: 'chart-legend',
-        chartView: 'daily',
-        html: `
-          <span class="step-num">Step 4</span>
           <h2>Weekly Demand vs Capacity</h2>
 
           <div class="explanation">
-            <h3>Are You Overloaded This Week?</h3>
-            <p>This view compares how much work is due each week against how many hours the team can work that week.</p>
+            <h3>Finding Overloaded Periods</h3>
+            <p>This view compares how much work is due each week against available capacity. Even if totals match, uneven distribution causes problems.</p>
           </div>
 
           <div class="details">
-            <h3>Reading the Lines</h3>
+            <h3>Reading the Chart</h3>
             <ul>
-              <li><strong style="color:#00875A">Weekly Capacity</strong> — Hours your team can work per week (160h)</li>
-              <li><strong style="color:#0052CC">Weekly Demand</strong> — Hours of work due that week</li>
+              <li><strong style="color:#00875A">Green line</strong> — Weekly capacity (160h)</li>
+              <li><strong style="color:#0052CC">Blue line</strong> — Weekly demand (hours of work due)</li>
+              <li><strong>Blue above green</strong> — That week is overloaded</li>
             </ul>
           </div>
 
           <div class="action-box">
-            <h3>Key Insight</h3>
-            <p>When blue exceeds green, you have more work due than hours available. Notice the early weeks where demand spikes above the 160h capacity line — those periods are overloaded.</p>
+            <h3>How to Fix</h3>
+            <p>Move work out of overloaded weeks by adjusting start dates, or add temporary capacity during peak periods.</p>
           </div>
         `
       },
@@ -859,7 +831,7 @@
         highlight: 'chart-legend',
         chartView: 'cumulative',
         html: `
-          <span class="step-num">Step 5</span>
+          <span class="step-num">Step 4</span>
           <h2>Cumulative Demand vs Capacity</h2>
 
           <div class="explanation">
@@ -887,7 +859,7 @@
         highlight: 'chart-legend',
         chartView: 'spent',
         html: `
-          <span class="step-num">Step 6</span>
+          <span class="step-num">Step 5</span>
           <h2>Time Spent vs Capacity</h2>
 
           <div class="explanation">
@@ -915,7 +887,7 @@
         highlight: 'chart-legend',
         chartView: 'completion',
         html: `
-          <span class="step-num">Step 7</span>
+          <span class="step-num">Step 6</span>
           <h2>Completion Percentage</h2>
 
           <div class="explanation">
@@ -945,7 +917,7 @@
         showWhatIf: true,
         chartView: 'cumulative',
         html: `
-          <span class="step-num">Step 8</span>
+          <span class="step-num">Step 7</span>
           <h2>What-If Scenario Modeling</h2>
 
           <div class="explanation">
@@ -973,7 +945,7 @@
         tab: 'team',
         highlight: null,
         html: `
-          <span class="step-num">Step 9</span>
+          <span class="step-num">Step 8</span>
           <h2>Team Workload Distribution</h2>
 
           <div class="explanation">
@@ -1002,7 +974,7 @@
         tab: 'capacity',
         highlight: 'cap-config',
         html: `
-          <span class="step-num">Step 10</span>
+          <span class="step-num">Step 9</span>
           <h2>Capacity Configuration</h2>
 
           <div class="explanation">
@@ -1041,7 +1013,7 @@
         tab: 'compliance',
         highlight: null,
         html: `
-          <span class="step-num">Step 11</span>
+          <span class="step-num">Step 10</span>
           <h2>Data Quality Issues</h2>
 
           <div class="explanation">
@@ -1071,7 +1043,7 @@
         tab: 'dependencies',
         highlight: 'cycle-alert',
         html: `
-          <span class="step-num">Step 12</span>
+          <span class="step-num">Step 11</span>
           <h2>Dependency Analysis</h2>
 
           <div class="explanation">
@@ -1108,7 +1080,7 @@
         tab: 'report',
         highlight: 'report-grid',
         html: `
-          <span class="step-num">Step 13</span>
+          <span class="step-num">Step 12</span>
           <h2>Executive Report</h2>
 
           <div class="explanation">
