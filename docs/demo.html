@@ -736,6 +736,7 @@
         name: 'Introduction',
         tab: 'feasibility',
         highlight: 'summary-bar',
+        chartView: 'overview',
         html: `
           <span class="step-num">Welcome</span>
           <h2>What is Beyond Burndown?</h2>
@@ -765,6 +766,7 @@
         name: 'Feasibility Score',
         tab: 'feasibility',
         highlight: 'feas-header',
+        chartView: 'overview',
         html: `
           <span class="step-num">Step 2</span>
           <h2>The Feasibility Score</h2>
@@ -798,6 +800,7 @@
         name: 'Overload Detection',
         tab: 'feasibility',
         highlight: 'overload-bar',
+        chartView: 'overview',
         html: `
           <span class="step-num">Step 3</span>
           <h2>Overload Detection</h2>
@@ -1291,7 +1294,7 @@
 
     function initChart() {
       initChartData();
-      createChart('cumulative'); // Default view
+      createChart('overview'); // Default view
     }
 
     function createChart(view) {
@@ -1315,6 +1318,24 @@
       let datasets, scales, legendHtml;
 
       switch (view) {
+        case 'overview':
+          datasets = [
+            { label: 'Weekly Capacity', data: chartData.periodCap, borderColor: '#00875A', fill: false, tension: 0.1, borderWidth: 2, pointRadius: 0 },
+            { label: 'Weekly Demand', data: chartData.periodDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 2, pointRadius: 0 },
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', borderDash: [6, 4], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'yCum' },
+            { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', borderDash: [6, 4], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'yCum' }
+          ];
+          scales = {
+            y: { beginAtZero: true, position: 'left', title: { display: true, text: 'Hours/Week', font: { size: 11 } } },
+            yCum: { beginAtZero: true, position: 'right', title: { display: true, text: 'Cumulative', font: { size: 11 } }, grid: { drawOnChartArea: false } }
+          };
+          legendHtml = `
+            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Capacity</div>
+            <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Demand</div>
+            <div class="legend-item" style="margin-left:12px;padding-left:12px;border-left:1px solid #ddd"><span style="font-size:0.65rem;color:#999">solid=weekly, dashed=cumulative</span></div>
+          `;
+          break;
+
         case 'daily':
           datasets = [
             { label: 'Weekly Capacity', data: chartData.periodCap, borderColor: '#00875A', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 4 },
