@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Create Jira issues that demonstrate all alert types
- * detected by Beyond Burndown's Alerts tab.
+ * detected by Beyond Burndown's Alerts and Dependencies tabs.
  *
  * Alert Types:
  *   1. Missing Dates - No start date and/or no due date
@@ -10,6 +10,7 @@
  *   4. Overdue - Past due date but not Done
  *   5. Child After Parent - Child due after parent Epic
  *   6. Dependency Conflict - Blocker finishes after dependent starts
+ *   7. Circular Dependency - A blocks B, B blocks C, C blocks A
  *
  * Usage:
  *   set JIRA_EMAIL=your.email@example.com
@@ -172,6 +173,35 @@ const DEMO_ISSUES = [
     startDate: getDate(7),   // Starts day 7
     dueDate: getDate(21),    // Ends day 21
     estimate: '16h'
+  },
+
+  // ============================================
+  // 7. CIRCULAR DEPENDENCY - Shown in Dependencies tab
+  // (These form a cycle: A blocks B, B blocks C, C blocks A)
+  // ============================================
+  {
+    summary: '[Alert Demo] Circular A - Blocks B',
+    description: 'Part of circular dependency cycle.\n\nThis issue blocks B, which blocks C, which blocks this issue.\n\nResult: None of these can ever start!',
+    alertType: 'circular_a',
+    startDate: getDate(0),
+    dueDate: getDate(14),
+    estimate: '8h'
+  },
+  {
+    summary: '[Alert Demo] Circular B - Blocks C',
+    description: 'Part of circular dependency cycle.\n\nBlocked by A, blocks C.\n\nResult: None of these can ever start!',
+    alertType: 'circular_b',
+    startDate: getDate(0),
+    dueDate: getDate(14),
+    estimate: '8h'
+  },
+  {
+    summary: '[Alert Demo] Circular C - Blocks A',
+    description: 'Part of circular dependency cycle.\n\nBlocked by B, blocks A (completing the cycle).\n\nResult: None of these can ever start!',
+    alertType: 'circular_c',
+    startDate: getDate(0),
+    dueDate: getDate(14),
+    estimate: '8h'
   },
 
   // ============================================
@@ -343,6 +373,7 @@ async function main() {
   console.log('  4. Done with Remaining Work (Error)');
   console.log('  5. Child After Parent (Error)');
   console.log('  6. Dependency Conflict (Error)');
+  console.log('  7. Circular Dependency (Dependencies tab)');
   console.log('');
   console.log('-'.repeat(60));
 
@@ -432,6 +463,36 @@ async function main() {
     }
   }
 
+  // Create circular dependency (A → B → C → A)
+  if (createdByType['circular_a'] && createdByType['circular_b'] && createdByType['circular_c']) {
+    console.log(`\nCreating circular dependency...`);
+
+    // A blocks B
+    const link1 = await createBlockingLink(createdByType['circular_a'], createdByType['circular_b']);
+    if (link1.success) {
+      console.log(`  ✓ ${createdByType['circular_a']} blocks ${createdByType['circular_b']}`);
+    } else {
+      console.log(`  ⚠ Could not create A→B link`);
+    }
+
+    // B blocks C
+    const link2 = await createBlockingLink(createdByType['circular_b'], createdByType['circular_c']);
+    if (link2.success) {
+      console.log(`  ✓ ${createdByType['circular_b']} blocks ${createdByType['circular_c']}`);
+    } else {
+      console.log(`  ⚠ Could not create B→C link`);
+    }
+
+    // C blocks A (completes the cycle)
+    const link3 = await createBlockingLink(createdByType['circular_c'], createdByType['circular_a']);
+    if (link3.success) {
+      console.log(`  ✓ ${createdByType['circular_c']} blocks ${createdByType['circular_a']}`);
+      console.log(`  ★ Circular dependency created: ${createdByType['circular_a']} → ${createdByType['circular_b']} → ${createdByType['circular_c']} → ${createdByType['circular_a']}`);
+    } else {
+      console.log(`  ⚠ Could not create C→A link`);
+    }
+  }
+
   // Summary
   console.log('\n' + '='.repeat(60));
   console.log('SUMMARY');
@@ -474,7 +535,7 @@ async function main() {
   console.log(`   project = ${CONFIG.projectKey} AND labels = "alert-demo"`);
   console.log('3. Go to the Alerts tab to see all alert types');
   console.log('');
-  console.log('Expected Alerts:');
+  console.log('Expected Alerts (Alerts tab):');
   console.log('  - 3x Missing Dates (2 Warning, 1 Info)');
   console.log('  - 1x Missing Estimate (Warning)');
   console.log('  - 2x Overdue (1 Warning, 1 Error)');
@@ -482,6 +543,9 @@ async function main() {
   console.log('  - 1x Child After Parent (Error)');
   console.log('  - 1x Dependency Conflict (Error)');
   console.log('  - 0x for Clean Issue');
+  console.log('');
+  console.log('Expected in Dependencies tab:');
+  console.log('  - 1x Circular Dependency (3 issues in cycle)');
   console.log('='.repeat(60));
 }
 
