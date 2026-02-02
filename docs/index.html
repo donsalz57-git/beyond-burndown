@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Beyond Burndown - Feasibility & Compliance Analyzer for Jira</title>
-  <meta name="description" content="Beyond Burndown provides physics-based feasibility analysis, compliance checking, dependency modeling, and What-If scenarios for Jira. Plan realistic sprints with confidence.">
+  <meta name="description" content="Beyond Burndown provides physics-based feasibility analysis, compliance checking, dependency modeling, and What-If scenarios for Jira. Plan realistic projects with confidence.">
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,10 +31,10 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
-      <h1>Sprint Planning,<br><span class="highlight">Beyond Guesswork</span></h1>
+      <h1>Project Planning,<br><span class="highlight">Beyond Guesswork</span></h1>
       <p class="hero-subtitle">
         Beyond Burndown provides physics-based feasibility analysis, data quality checks,
-        dependency modeling, and What-If scenarios. Know if your sprint is realistic before you commit.
+        dependency modeling, and What-If scenarios. Know if your project is realistic before you commit.
       </p>
       <div class="hero-cta">
         <a href="#install" class="btn btn-primary btn-large">Install on Jira</a>
@@ -44,26 +44,72 @@
     </div>
   </section>
 
-  <!-- Problem Section -->
+  <!-- Four Questions Section -->
   <section class="problem">
     <div class="container">
-      <h2>Burndown Charts Don't Tell the Whole Story</h2>
-      <div class="problem-grid">
+      <h2>Four Questions Every Project Needs to Answer</h2>
+      <div class="problem-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+        <div class="problem-card">
+          <div class="problem-icon">📋</div>
+          <h3>Is the plan up to date?</h3>
+          <p>Are there overdue issues, missing dates, or missing estimates that need fixing?</p>
+        </div>
         <div class="problem-card">
           <div class="problem-icon">📈</div>
-          <h3>Burndowns Are Reactive</h3>
-          <p>Traditional burndown charts only show progress after work begins. By then, it's too late to adjust scope.</p>
+          <h3>Is the plan on track?</h3>
+          <p>Is planned work getting done on schedule? Are we keeping pace?</p>
         </div>
         <div class="problem-card">
-          <div class="problem-icon">⚠️</div>
-          <h3>No Early Warning System</h3>
-          <p>Without comparing capacity to demand over time, teams can't see overload periods before they happen.</p>
+          <div class="problem-icon">⚖️</div>
+          <h3>Is the plan feasible?</h3>
+          <p>Can we deliver this scope by the deadline with available capacity?</p>
         </div>
         <div class="problem-card">
-          <div class="problem-icon">🔍</div>
-          <h3>Missing Data Quality Checks</h3>
-          <p>Issues with missing dates, estimates, or conflicting dependencies slip through unnoticed until they cause problems.</p>
+          <div class="problem-icon">👥</div>
+          <h3>Are resources working as planned?</h3>
+          <p>Is available capacity being applied to the work? Who's overloaded?</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Answers Section -->
+  <section class="comparison">
+    <div class="container">
+      <h2>How Beyond Burndown Answers Each Question</h2>
+      <p class="comparison-subtitle">Every view is designed to give you clear, actionable answers</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>What to Look At</th>
+              <th>What It Tells You</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Is the plan up to date?</strong></td>
+              <td>Data Quality tab</td>
+              <td>Overdue issues, missing dates/estimates that need fixing</td>
+            </tr>
+            <tr>
+              <td><strong>2. Is the plan on track?</strong></td>
+              <td>Completion % (purple line)</td>
+              <td>Is planned work getting done on schedule?</td>
+            </tr>
+            <tr>
+              <td><strong>3. Is the plan feasible?</strong></td>
+              <td>Demand vs Capacity chart, Dependencies tab</td>
+              <td>Can we deliver this scope by the deadline?</td>
+            </tr>
+            <tr>
+              <td><strong>4. Are resources working as planned?</strong></td>
+              <td>Time Spent vs Capacity, Team tab</td>
+              <td>Is available capacity being applied to the work?</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -76,7 +122,7 @@
         <div class="feature-card">
           <div class="feature-icon">📊</div>
           <h3>Feasibility Analysis</h3>
-          <p>Get a 0-100% score showing how realistic your sprint is. See capacity vs demand plotted day by day with overload warnings.</p>
+          <p>Get a 0-100% score showing how realistic your plan is. See capacity vs demand plotted day by day with overload warnings.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">✅</div>
@@ -171,7 +217,7 @@
             <span class="tab-icon">📋</span>
             <h3>Report</h3>
           </div>
-          <p>Generate professional status reports instantly. Perfect for stakeholder updates and sprint reviews.</p>
+          <p>Generate professional status reports instantly. Perfect for stakeholder updates and project reviews.</p>
           <ul>
             <li>Executive summary</li>
             <li>Key metrics and scores</li>
@@ -205,6 +251,77 @@
             <li>Start/end date support</li>
           </ul>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="comparison">
+    <div class="container">
+      <h2>What You Get Beyond Standard Jira</h2>
+      <p class="comparison-subtitle">Capabilities that standard Jira dashboards don't provide</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Standard Jira</th>
+              <th>Beyond Burndown</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Show work remaining</td>
+              <td class="check">✔</td>
+              <td class="check">✔</td>
+            </tr>
+            <tr>
+              <td><strong>Predict feasibility before work starts</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔</td>
+            </tr>
+            <tr>
+              <td><strong>Show capacity vs demand over time</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔</td>
+            </tr>
+            <tr>
+              <td><strong>Identify overloaded periods</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔ with dates</td>
+            </tr>
+            <tr>
+              <td><strong>What-If scenario modeling</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔</td>
+            </tr>
+            <tr>
+              <td><strong>Data quality checking</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔</td>
+            </tr>
+            <tr>
+              <td><strong>Circular dependency detection</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔</td>
+            </tr>
+            <tr>
+              <td><strong>Team workload distribution</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔</td>
+            </tr>
+            <tr>
+              <td><strong>Status report generation</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔</td>
+            </tr>
+            <tr>
+              <td><strong>Manual capacity configuration</strong></td>
+              <td class="cross">✘</td>
+              <td class="check">✔</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -308,91 +425,13 @@
     </div>
   </section>
 
-  <!-- Screenshots Section -->
+  <!-- Demo Section -->
   <section class="screenshots">
     <div class="container">
       <h2>See It In Action</h2>
-      <div class="screenshot-list">
-        <div class="screenshot-item">
-          <div class="screenshot-image">
-            <img src="Feasibility.PNG" alt="Beyond Burndown - Feasibility analysis chart">
-          </div>
-          <div class="screenshot-caption">
-            <h3>Feasibility Analysis at a Glance</h3>
-            <p>See capacity vs demand plotted over time with your feasibility score prominently displayed. Green means go, red means reconsider your plan before committing.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Comparison Section -->
-  <section id="comparison" class="comparison">
-    <div class="container">
-      <h2>Beyond Burndown vs Traditional Charts</h2>
-      <p class="comparison-subtitle">See what proactive planning provides over reactive monitoring</p>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Capability</th>
-              <th>Burndown Chart</th>
-              <th>Beyond Burndown</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Show work remaining</td>
-              <td class="check">✔</td>
-              <td class="check">✔</td>
-            </tr>
-            <tr>
-              <td><strong>Predict feasibility before sprint starts</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔</td>
-            </tr>
-            <tr>
-              <td><strong>Show capacity vs demand over time</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔</td>
-            </tr>
-            <tr>
-              <td><strong>Identify overloaded periods</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔ with dates</td>
-            </tr>
-            <tr>
-              <td><strong>What-If scenario modeling</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔</td>
-            </tr>
-            <tr>
-              <td><strong>Data quality/compliance checking</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔</td>
-            </tr>
-            <tr>
-              <td><strong>Dependency analysis</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔</td>
-            </tr>
-            <tr>
-              <td><strong>Team workload distribution</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔</td>
-            </tr>
-            <tr>
-              <td><strong>Status report generation</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔</td>
-            </tr>
-            <tr>
-              <td><strong>Manual capacity configuration</strong></td>
-              <td class="cross">✘</td>
-              <td class="check">✔</td>
-            </tr>
-          </tbody>
-        </table>
+      <p style="text-align: center; color: #5E6C84; margin-bottom: 24px;">Explore the interactive demo to see how Beyond Burndown answers the four questions.</p>
+      <div style="text-align: center;">
+        <a href="demo.html" class="btn btn-primary btn-large">Try Interactive Demo</a>
       </div>
     </div>
   </section>
