@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beyond Burndown - Interactive Demo</title>
+  <meta name="description" content="Try Beyond Burndown's feasibility analysis, compliance checking, and dependency modeling with realistic demo data.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Demo-specific styles */
+    .demo-header {
+      background: linear-gradient(135deg, #00875A 0%, #006644 100%);
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .demo-header h1 {
+      font-size: 1.25rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-badge {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+      background: #fff;
+      min-height: calc(100vh - 60px);
+    }
+    .gadget-container {
+      background: #fff;
+      border: 1px solid #DFE1E6;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .summary-bar {
+      display: flex;
+      gap: 24px;
+      padding: 12px 16px;
+      background: #F4F5F7;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .summary-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #172B4D;
+    }
+    .summary-value.success { color: #00875A; }
+    .summary-value.warning { color: #FF8B00; }
+    .summary-value.danger { color: #DE350B; }
+    .summary-label {
+      font-size: 0.75rem;
+      color: #5E6C84;
+      text-transform: uppercase;
+    }
+    .tab-navigation {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid #DFE1E6;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .tab-button {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #5E6C84;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-button:hover { color: #172B4D; }
+    .tab-button.active {
+      color: #00875A;
+      border-bottom-color: #00875A;
+    }
+    .badge {
+      background: #5E6C84;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .badge.danger { background: #DE350B; }
+    .badge.warning { background: #FF8B00; }
+    .tab-content {
+      min-height: 400px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Chart container */
+    .chart-container {
+      position: relative;
+      height: 350px;
+      margin-bottom: 16px;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      color: #5E6C84;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    /* Score display */
+    .score-display {
+      text-align: center;
+      padding: 24px;
+      background: #F4F5F7;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .score-value {
+      font-size: 4rem;
+      font-weight: 700;
+    }
+    .score-value.good { color: #00875A; }
+    .score-value.warning { color: #FF8B00; }
+    .score-value.danger { color: #DE350B; }
+    .score-label { font-size: 1.25rem; color: #5E6C84; }
+
+    /* Forecast warning */
+    .forecast-warning {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .forecast-warning.warning {
+      background: #FFFAE6;
+      border-left: 4px solid #FF8B00;
+      color: #172B4D;
+    }
+
+    /* Violations list */
+    .violations-section {
+      margin-bottom: 24px;
+    }
+    .violations-section h4 {
+      margin: 0 0 12px 0;
+      font-size: 0.875rem;
+      color: #5E6C84;
+      text-transform: uppercase;
+    }
+    .violation-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: #F4F5F7;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border-left: 4px solid #DFE1E6;
+    }
+    .violation-item.error { border-left-color: #DE350B; background: #FFEBE6; }
+    .violation-item.warning { border-left-color: #FF8B00; background: #FFFAE6; }
+    .violation-item.info { border-left-color: #0052CC; background: #DEEBFF; }
+    .violation-icon { font-size: 1.25rem; }
+    .violation-content { flex: 1; }
+    .violation-key {
+      font-weight: 600;
+      color: #0052CC;
+      font-size: 0.875rem;
+    }
+    .violation-summary {
+      color: #172B4D;
+      font-size: 0.875rem;
+    }
+    .violation-message {
+      color: #5E6C84;
+      font-size: 0.8rem;
+      margin-top: 4px;
+    }
+
+    /* Dependencies */
+    .dependency-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #F4F5F7;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #172B4D;
+    }
+    .stat-value.danger { color: #DE350B; }
+    .stat-label {
+      font-size: 0.75rem;
+      color: #5E6C84;
+      text-transform: uppercase;
+    }
+    .cycle-warning {
+      background: #FFEBE6;
+      border: 1px solid #DE350B;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .cycle-warning h4 {
+      color: #DE350B;
+      margin: 0 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cycle-path {
+      font-family: 'Fira Code', monospace;
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+    .dependency-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .dep-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #DFE1E6;
+    }
+    .dep-depth {
+      width: 24px;
+      height: 24px;
+      background: #00875A;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .dep-key { font-weight: 600; color: #0052CC; }
+    .dep-summary { color: #5E6C84; font-size: 0.875rem; }
+
+    /* Team health */
+    .team-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .team-member {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: #F4F5F7;
+      border-radius: 8px;
+    }
+    .member-avatar {
+      width: 48px;
+      height: 48px;
+      background: #00875A;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+    .member-info { flex: 1; }
+    .member-name { font-weight: 600; color: #172B4D; }
+    .member-stats {
+      display: flex;
+      gap: 16px;
+      margin-top: 4px;
+      font-size: 0.875rem;
+      color: #5E6C84;
+    }
+    .member-status {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .member-status.on_track { background: #E3FCEF; color: #00875A; }
+    .member-status.overloaded { background: #FFEBE6; color: #DE350B; }
+    .member-status.under_utilized { background: #FFFAE6; color: #FF8B00; }
+    .member-status.no_capacity { background: #DFE1E6; color: #5E6C84; }
+    .load-bar {
+      height: 8px;
+      background: #DFE1E6;
+      border-radius: 4px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .load-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+    .load-fill.good { background: #00875A; }
+    .load-fill.warning { background: #FF8B00; }
+    .load-fill.danger { background: #DE350B; }
+
+    /* Scope chart */
+    .scope-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .scope-stat {
+      text-align: center;
+      padding: 12px;
+      background: #F4F5F7;
+      border-radius: 6px;
+    }
+    .scope-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #172B4D;
+    }
+    .scope-value.positive { color: #DE350B; }
+    .scope-value.negative { color: #00875A; }
+    .alert-item {
+      padding: 12px;
+      background: #FFFAE6;
+      border-left: 4px solid #FF8B00;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    /* Status Report */
+    .report-section {
+      margin-bottom: 24px;
+    }
+    .report-section h3 {
+      font-size: 1rem;
+      margin: 0 0 12px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #DFE1E6;
+    }
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .report-metric {
+      padding: 16px;
+      background: #F4F5F7;
+      border-radius: 8px;
+    }
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .metric-value.green { color: #00875A; }
+    .metric-value.yellow { color: #FF8B00; }
+    .metric-value.red { color: #DE350B; }
+    .metric-label {
+      font-size: 0.875rem;
+      color: #5E6C84;
+    }
+    .decision-card {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border-left: 4px solid #DFE1E6;
+    }
+    .decision-card.high {
+      background: #FFEBE6;
+      border-left-color: #DE350B;
+    }
+    .decision-card.medium {
+      background: #FFFAE6;
+      border-left-color: #FF8B00;
+    }
+    .decision-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .decision-description {
+      font-size: 0.875rem;
+      color: #5E6C84;
+    }
+
+    /* What-If Panel */
+    .whatif-panel {
+      background: #F4F5F7;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .whatif-panel h4 {
+      margin: 0 0 12px 0;
+      font-size: 0.875rem;
+    }
+    .scenario-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .scenario-btn {
+      padding: 8px 16px;
+      border: 1px solid #DFE1E6;
+      background: white;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scenario-btn:hover {
+      border-color: #00875A;
+      background: #E3FCEF;
+    }
+    .scenario-btn.active {
+      background: #00875A;
+      color: white;
+      border-color: #00875A;
+    }
+    .scenario-result {
+      padding: 12px;
+      background: #DEEBFF;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+
+    /* Confidence indicator */
+    .confidence-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .confidence-bar {
+      width: 60px;
+      height: 6px;
+      background: #DFE1E6;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .confidence-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+    .confidence-fill.high { background: #00875A; }
+    .confidence-fill.medium { background: #FF8B00; }
+    .confidence-fill.low { background: #DE350B; }
+    .confidence-label {
+      font-size: 0.75rem;
+      color: #5E6C84;
+    }
+
+    /* Capacity Panel */
+    .capacity-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .capacity-card {
+      background: #F4F5F7;
+      padding: 16px;
+      border-radius: 8px;
+    }
+    .capacity-card h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.875rem;
+      color: #5E6C84;
+    }
+    .capacity-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #172B4D;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .demo-container { padding: 12px; }
+      .summary-bar { gap: 16px; }
+      .tab-button { padding: 8px 12px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-header">
+    <h1><span>📊</span> Beyond Burndown <span class="demo-badge">INTERACTIVE DEMO</span></h1>
+    <a href="index.html" style="color: white; text-decoration: none; font-size: 0.875rem;">← Back to Home</a>
+  </div>
+
+  <div class="demo-container">
+    <div class="gadget-container">
+      <!-- Summary Bar -->
+      <div class="summary-bar">
+        <div class="summary-item">
+          <span class="summary-value" id="issues-count">18</span>
+          <span class="summary-label">Issues</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-value warning" id="feasibility-score">73%</span>
+          <span class="summary-label">Feasibility</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-value danger" id="violations-count">9</span>
+          <span class="summary-label">Violations</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-value danger" id="cycles-count">1</span>
+          <span class="summary-label">Cycles</span>
+        </div>
+        <div class="summary-item">
+          <div class="confidence-indicator">
+            <div class="confidence-bar">
+              <div class="confidence-fill medium" style="width: 78%"></div>
+            </div>
+            <span class="confidence-label">78% Confidence</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Forecast Warning -->
+      <div class="forecast-warning warning">
+        <span>⚠️</span>
+        <span id="forecast-message">Work completes Feb 18 (2 days after deadline)</span>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button class="tab-button active" data-tab="feasibility">Feasibility</button>
+        <button class="tab-button" data-tab="scope">Scope <span class="badge warning">2</span></button>
+        <button class="tab-button" data-tab="team">Team <span class="badge danger">!</span></button>
+        <button class="tab-button" data-tab="capacity">Capacity</button>
+        <button class="tab-button" data-tab="compliance">Compliance <span class="badge">9</span></button>
+        <button class="tab-button" data-tab="dependencies">Dependencies <span class="badge danger">1</span></button>
+        <button class="tab-button" data-tab="report">Report</button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Feasibility Tab -->
+        <div class="tab-panel active" id="tab-feasibility">
+          <div class="score-display">
+            <div class="score-value warning">73%</div>
+            <div class="score-label">Feasibility Score</div>
+          </div>
+          <div class="chart-container">
+            <canvas id="feasibilityChart"></canvas>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: #00875A;"></div>
+              <span>Cumulative Capacity</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #0052CC;"></div>
+              <span>Cumulative Demand</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #FF8B00;"></div>
+              <span>Time Spent</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: rgba(222,53,11,0.2);"></div>
+              <span>Overload Period</span>
+            </div>
+          </div>
+
+          <!-- What-If Panel -->
+          <div class="whatif-panel">
+            <h4>What-If Scenarios</h4>
+            <div class="scenario-buttons">
+              <button class="scenario-btn" data-scenario="capacity-10">+10% Capacity</button>
+              <button class="scenario-btn" data-scenario="capacity-25">+25% Capacity</button>
+              <button class="scenario-btn" data-scenario="scope-10">-10% Scope</button>
+              <button class="scenario-btn" data-scenario="scope-20">-20% Scope</button>
+              <button class="scenario-btn" data-scenario="deadline-5">+5 Days Deadline</button>
+            </div>
+            <div class="scenario-result" id="scenario-result">
+              Select a scenario to see its impact on feasibility
+            </div>
+          </div>
+        </div>
+
+        <!-- Scope Tab -->
+        <div class="tab-panel" id="tab-scope">
+          <div class="scope-stats">
+            <div class="scope-stat">
+              <div class="scope-value">120h</div>
+              <div class="stat-label">Original Scope</div>
+            </div>
+            <div class="scope-stat">
+              <div class="scope-value">215h</div>
+              <div class="stat-label">Current Scope</div>
+            </div>
+            <div class="scope-stat">
+              <div class="scope-value positive">+140h</div>
+              <div class="stat-label">Added</div>
+            </div>
+            <div class="scope-stat">
+              <div class="scope-value negative">-45h</div>
+              <div class="stat-label">Removed</div>
+            </div>
+            <div class="scope-stat">
+              <div class="scope-value positive">+79%</div>
+              <div class="stat-label">Net Change</div>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="scopeChart"></canvas>
+          </div>
+          <h4 style="margin-top: 24px;">Scope Alerts</h4>
+          <div class="alert-item">
+            <strong>⚠️ Scope Creep Warning:</strong> Scope increased 79% since project start (120h → 215h)
+          </div>
+          <div class="alert-item">
+            <strong>ℹ️ Recent Additions:</strong> 65 hours added in the last 5 days
+          </div>
+        </div>
+
+        <!-- Team Tab -->
+        <div class="tab-panel" id="tab-team">
+          <div class="team-grid" id="team-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Capacity Tab -->
+        <div class="tab-panel" id="tab-capacity">
+          <div class="capacity-summary">
+            <div class="capacity-card">
+              <h4>Capacity Mode</h4>
+              <div class="capacity-value">Manual</div>
+            </div>
+            <div class="capacity-card">
+              <h4>Time Period</h4>
+              <div class="capacity-value">Weekly</div>
+            </div>
+            <div class="capacity-card">
+              <h4>Total Team Capacity</h4>
+              <div class="capacity-value">152 hrs/week</div>
+            </div>
+          </div>
+          <h4>Team Members</h4>
+          <div class="team-grid">
+            <div class="team-member">
+              <div class="member-avatar">AC</div>
+              <div class="member-info">
+                <div class="member-name">Alice Chen</div>
+                <div class="member-stats">
+                  <span>40 hrs/week</span>
+                </div>
+              </div>
+            </div>
+            <div class="team-member">
+              <div class="member-avatar">BM</div>
+              <div class="member-info">
+                <div class="member-name">Bob Martinez</div>
+                <div class="member-stats">
+                  <span>40 hrs/week</span>
+                </div>
+              </div>
+            </div>
+            <div class="team-member">
+              <div class="member-avatar">CK</div>
+              <div class="member-info">
+                <div class="member-name">Carol Kim</div>
+                <div class="member-stats">
+                  <span>40 hrs/week</span>
+                </div>
+              </div>
+            </div>
+            <div class="team-member">
+              <div class="member-avatar">DP</div>
+              <div class="member-info">
+                <div class="member-name">David Patel</div>
+                <div class="member-stats">
+                  <span>32 hrs/week (part-time)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compliance Tab -->
+        <div class="tab-panel" id="tab-compliance">
+          <div class="dependency-stats">
+            <div class="stat-card">
+              <div class="stat-value danger">4</div>
+              <div class="stat-label">Errors</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" style="color: #FF8B00;">4</div>
+              <div class="stat-label">Warnings</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" style="color: #0052CC;">1</div>
+              <div class="stat-label">Info</div>
+            </div>
+          </div>
+          <div id="violations-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Dependencies Tab -->
+        <div class="tab-panel" id="tab-dependencies">
+          <div class="dependency-stats">
+            <div class="stat-card">
+              <div class="stat-value">15</div>
+              <div class="stat-label">Total Issues</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">5</div>
+              <div class="stat-label">Max Depth</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value danger">1</div>
+              <div class="stat-label">Circular Deps</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">4</div>
+              <div class="stat-label">Leaf Issues</div>
+            </div>
+          </div>
+
+          <div class="cycle-warning">
+            <h4>⚠️ Circular Dependency Detected</h4>
+            <div class="cycle-path">DEMO-120 → DEMO-121 → DEMO-122 → DEMO-120</div>
+            <p style="margin: 8px 0 0; font-size: 0.875rem; color: #5E6C84;">
+              This cycle must be broken before these issues can be completed.
+            </p>
+          </div>
+
+          <h4>Dependency Chain</h4>
+          <div class="dependency-list" id="dependency-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Report Tab -->
+        <div class="tab-panel" id="tab-report">
+          <div class="report-section">
+            <h3>Executive Summary</h3>
+            <div class="report-grid">
+              <div class="report-metric">
+                <div class="metric-value yellow">73%</div>
+                <div class="metric-label">Feasibility Score</div>
+              </div>
+              <div class="report-metric">
+                <div class="metric-value red">101%</div>
+                <div class="metric-label">Capacity Utilization</div>
+              </div>
+              <div class="report-metric">
+                <div class="metric-value">5%</div>
+                <div class="metric-label">Completion</div>
+              </div>
+              <div class="report-metric">
+                <div class="metric-value red">2 days</div>
+                <div class="metric-label">Behind Schedule</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h3>Capacity vs Demand</h3>
+            <div class="report-grid">
+              <div class="report-metric">
+                <div class="metric-value green">608h</div>
+                <div class="metric-label">Available Capacity</div>
+              </div>
+              <div class="report-metric">
+                <div class="metric-value red">613h</div>
+                <div class="metric-label">Total Demand</div>
+              </div>
+              <div class="report-metric">
+                <div class="metric-value">32.5h</div>
+                <div class="metric-label">Time Spent</div>
+              </div>
+              <div class="report-metric">
+                <div class="metric-value red">-5h</div>
+                <div class="metric-label">Capacity Gap</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h3>Decisions Needed</h3>
+            <div class="decision-card high">
+              <div class="decision-title">Capacity Gap</div>
+              <div class="decision-description">
+                Demand exceeds capacity by 5 hours. Options: Add overtime, reduce scope, or extend deadline by 2 days.
+              </div>
+            </div>
+            <div class="decision-card high">
+              <div class="decision-title">Circular Dependencies Detected</div>
+              <div class="decision-description">
+                1 circular dependency chain blocking work. Break dependency cycles between DEMO-120, DEMO-121, DEMO-122.
+              </div>
+            </div>
+            <div class="decision-card medium">
+              <div class="decision-title">Overdue Issues</div>
+              <div class="decision-description">
+                2 issues are overdue (48h of work). Review blockers and reassign if needed.
+              </div>
+            </div>
+            <div class="decision-card medium">
+              <div class="decision-title">Scope Creep Alert</div>
+              <div class="decision-description">
+                Scope has increased 79% since project start. Review scope additions and prioritize.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demo Info -->
+    <div style="margin-top: 32px; padding: 24px; background: #F4F5F7; border-radius: 8px;">
+      <h3 style="margin: 0 0 12px 0;">About This Demo</h3>
+      <p style="color: #5E6C84; margin: 0 0 16px 0;">
+        This interactive demo shows Beyond Burndown with realistic sample data. The data represents a typical
+        software project with:
+      </p>
+      <ul style="color: #5E6C84; margin: 0; padding-left: 24px;">
+        <li>18 issues across a 4-week sprint</li>
+        <li>4 team members with varying capacity</li>
+        <li>73% feasibility (slightly overloaded)</li>
+        <li>9 compliance violations including overdue issues</li>
+        <li>1 circular dependency that needs resolution</li>
+        <li>79% scope creep since project start</li>
+      </ul>
+      <div style="margin-top: 24px;">
+        <a href="https://marketplace.atlassian.com/" class="btn btn-primary" style="text-decoration: none;">
+          Install on Your Jira
+        </a>
+        <a href="user-manual.html" class="btn btn-secondary" style="text-decoration: none; margin-left: 12px;">
+          Read User Manual
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="demo-data.js"></script>
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Initialize charts when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const data = window.DEMO_DATA;
+
+      // Feasibility Chart
+      const timeline = data.envelope.timeline;
+      const labels = timeline.map(d => d.displayDate);
+      const capacityData = timeline.map(d => d.cumulativeCapacity);
+      const demandData = timeline.map(d => d.cumulativeDemand);
+      const timeSpentData = timeline.map(d => d.cumulativeTimeSpent);
+      const overloadBg = timeline.map(d => d.isOverloaded ? 'rgba(222,53,11,0.1)' : 'rgba(0,0,0,0)');
+
+      new Chart(document.getElementById('feasibilityChart'), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Cumulative Capacity',
+              data: capacityData,
+              borderColor: '#00875A',
+              backgroundColor: 'rgba(0,135,90,0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Cumulative Demand',
+              data: demandData,
+              borderColor: '#0052CC',
+              backgroundColor: 'rgba(0,82,204,0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Time Spent',
+              data: timeSpentData,
+              borderColor: '#FF8B00',
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Hours' }
+            }
+          }
+        }
+      });
+
+      // Scope Chart
+      const scopeTimeline = data.scope.scopeTimeline;
+      new Chart(document.getElementById('scopeChart'), {
+        type: 'bar',
+        data: {
+          labels: scopeTimeline.map(d => d.date),
+          datasets: [
+            {
+              label: 'Added',
+              data: scopeTimeline.map(d => d.added),
+              backgroundColor: '#DE350B'
+            },
+            {
+              label: 'Removed',
+              data: scopeTimeline.map(d => -d.removed),
+              backgroundColor: '#00875A'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          },
+          scales: {
+            x: { stacked: true },
+            y: {
+              stacked: true,
+              title: { display: true, text: 'Hours' }
+            }
+          }
+        }
+      });
+
+      // Populate Team List
+      const teamHtml = data.envelope.resources.map(r => {
+        const initials = r.assignee.split(' ').map(n => n[0]).join('').substring(0, 2);
+        const loadWidth = Math.min(r.loadPercent || 0, 150);
+        const loadClass = r.loadPercent > 100 ? 'danger' : r.loadPercent > 80 ? 'warning' : 'good';
+        const statusLabels = {
+          on_track: 'On Track',
+          overloaded: 'Overloaded',
+          under_utilized: 'Under-utilized',
+          no_capacity: 'No Capacity'
+        };
+        return `
+          <div class="team-member">
+            <div class="member-avatar">${initials}</div>
+            <div class="member-info">
+              <div class="member-name">${r.assignee}</div>
+              <div class="member-stats">
+                <span>${r.issueCount} issues</span>
+                <span>${r.demand}h demand</span>
+                <span>${r.capacity}h capacity</span>
+              </div>
+              <div class="load-bar">
+                <div class="load-fill ${loadClass}" style="width: ${loadWidth}%"></div>
+              </div>
+            </div>
+            <div class="member-status ${r.status}">${statusLabels[r.status] || r.status}</div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('team-list').innerHTML = teamHtml;
+
+      // Populate Violations List
+      const violationIcons = {
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+      };
+      const violationsHtml = data.compliance.violations.map(v => `
+        <div class="violation-item ${v.severity}">
+          <div class="violation-icon">${violationIcons[v.severity]}</div>
+          <div class="violation-content">
+            <span class="violation-key">${v.issueKey}</span>
+            <span class="violation-summary"> - ${v.issueSummary}</span>
+            <div class="violation-message">${v.message}</div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('violations-list').innerHTML = violationsHtml;
+
+      // Populate Dependencies List
+      const depsHtml = data.dependencies.issues.slice(0, 12).map(d => `
+        <div class="dep-item">
+          <div class="dep-depth">${d.depth}</div>
+          <span class="dep-key">${d.key}</span>
+          <span class="dep-summary">${d.summary}</span>
+        </div>
+      `).join('');
+      document.getElementById('dependency-list').innerHTML = depsHtml;
+
+      // What-If Scenarios
+      const scenarioResults = {
+        'capacity-10': { score: 80, message: 'Adding 10% capacity improves feasibility to 80% and eliminates the capacity gap.' },
+        'capacity-25': { score: 91, message: 'Adding 25% capacity improves feasibility to 91% with 100+ hours of buffer.' },
+        'scope-10': { score: 81, message: 'Cutting 10% scope improves feasibility to 81% and puts project on track.' },
+        'scope-20': { score: 89, message: 'Cutting 20% scope improves feasibility to 89% with comfortable margin.' },
+        'deadline-5': { score: 85, message: 'Extending deadline by 5 days improves feasibility to 85% by adding capacity.' }
+      };
+
+      document.querySelectorAll('.scenario-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const scenario = scenarioResults[btn.dataset.scenario];
+          document.getElementById('scenario-result').innerHTML = `
+            <strong>New Feasibility: ${scenario.score}%</strong><br>
+            ${scenario.message}
+          `;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
