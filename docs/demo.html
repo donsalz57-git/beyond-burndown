@@ -612,17 +612,16 @@
             <div class="feas-header" id="feas-header">
               <div><span class="score" id="score" style="color:var(--yellow)">73%</span><span class="score-label">Feasibility Score</span></div>
               <div class="controls">
-                <select><option>Daily</option><option>Weekly</option></select>
+                <select id="period-select"><option>Daily</option><option>Weekly</option></select>
+                <button id="view-toggle" onclick="toggleChartView()" class="active">Cumulative</button>
                 <button id="whatif-btn" onclick="toggleWhatIf()">What-If</button>
               </div>
             </div>
             <div class="warn-bar" id="overload-bar">⚠️ <strong>Overloaded period:</strong> Feb 1–8 (6 days) — demand exceeds capacity by up to 42 hours</div>
             <div class="chart-box"><canvas id="chart"></canvas></div>
             <div class="legend" id="chart-legend">
-              <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Daily Capacity</div>
-              <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Daily Demand</div>
-              <div class="legend-item"><div class="legend-color" style="background:#00875A;background:repeating-linear-gradient(90deg,#00875A 0,#00875A 5px,transparent 5px,transparent 10px)"></div>Cumulative Capacity</div>
-              <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#0052CC 0,#0052CC 5px,transparent 5px,transparent 10px)"></div>Cumulative Demand</div>
+              <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#00875A 0,#00875A 5px,transparent 5px,transparent 10px)"></div>Cum. Capacity</div>
+              <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#0052CC 0,#0052CC 5px,transparent 5px,transparent 10px)"></div>Cum. Demand</div>
               <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#FF8B00 0,#FF8B00 5px,transparent 5px,transparent 10px)"></div>Time Spent</div>
               <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion %</div>
             </div>
@@ -866,25 +865,31 @@
           <h2>The Timeline Chart</h2>
 
           <div class="explanation">
-            <h3>Visualizing Capacity vs Demand</h3>
-            <p>This chart shows 6 key metrics over time. <strong>Solid lines</strong> show daily values (how much work per day), while <strong>dashed lines</strong> show cumulative totals (running sum over time).</p>
+            <h3>Two Views of Your Data</h3>
+            <p>Click the <strong>Cumulative/Period</strong> button to toggle between views. Cumulative shows running totals; Period shows per-day values.</p>
           </div>
 
           <div class="details">
-            <h3>The 6 Lines Explained</h3>
+            <h3>Cumulative View (Default)</h3>
             <ul>
-              <li><strong style="color:#00875A">Daily Capacity (solid green)</strong> — Hours available per day</li>
-              <li><strong style="color:#0052CC">Daily Demand (solid blue)</strong> — Hours of work due per day</li>
-              <li><strong style="color:#00875A">Cumulative Capacity (dashed green)</strong> — Running total of available hours</li>
-              <li><strong style="color:#0052CC">Cumulative Demand (dashed blue)</strong> — Running total of work needed</li>
-              <li><strong style="color:#FF8B00">Time Spent (dashed orange)</strong> — Actual hours logged (worklogs)</li>
-              <li><strong style="color:#9C27B0">Completion % (purple, right axis)</strong> — Time spent ÷ original estimate</li>
+              <li><strong style="color:#00875A">Cumulative Capacity</strong> — Running total of available hours</li>
+              <li><strong style="color:#0052CC">Cumulative Demand</strong> — Running total of work needed</li>
+              <li><strong style="color:#FF8B00">Time Spent</strong> — Actual hours logged (worklogs)</li>
+              <li><strong style="color:#9C27B0">Completion %</strong> — Progress toward completion (right axis)</li>
+            </ul>
+          </div>
+
+          <div class="details">
+            <h3>Period View</h3>
+            <ul>
+              <li><strong style="color:#00875A">Daily Capacity</strong> — Hours available per day</li>
+              <li><strong style="color:#0052CC">Daily Demand</strong> — Hours of work due per day</li>
             </ul>
           </div>
 
           <div class="action-box">
-            <h3>Key Insights</h3>
-            <p><strong>Feasibility:</strong> Where dashed blue exceeds dashed green, you're behind. <strong>Progress:</strong> Compare time spent to capacity — if you've used 50% of capacity but only 25% complete, you're burning hours inefficiently.</p>
+            <h3>Try It</h3>
+            <p>Click <strong>Cumulative</strong> to switch to Period view. When blue exceeds green, demand outpaces capacity for that time period.</p>
           </div>
         `
       },
@@ -1186,6 +1191,10 @@
       document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
     }
 
+    // Chart data storage
+    let chartData = { labels: [], dailyCap: [], dailyDem: [], cumCap: [], cumDem: [], cumSpent: [], completionPct: [] };
+    let chartView = 'cumulative'; // 'cumulative' or 'period'
+
     function initChart() {
       const ctx = document.getElementById('chart').getContext('2d');
       const labels = [];
@@ -1194,46 +1203,32 @@
       const completionPct = [];
 
       let cC = 0, cD = 0, cS = 0;
-      const totalOriginalEstimate = 650; // Total original estimate for completion calc
+      const totalOriginalEstimate = 650;
 
       for (let i = 0; i < 20; i++) {
         const d = new Date(); d.setDate(d.getDate() - 5 + i);
         labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
 
-        // Daily values (solid lines)
-        const dCap = 32; // 32h/day capacity
-        const dDem = 28 + Math.sin(i * 0.5) * 12 + (i < 8 ? 10 : 0); // Variable demand
+        const dCap = 32;
+        const dDem = 28 + Math.sin(i * 0.5) * 12 + (i < 8 ? 10 : 0);
         dailyCap.push(dCap);
         dailyDem.push(Math.round(dDem * 10) / 10);
 
-        // Cumulative values (dashed lines)
         cC += dCap;
         cD += dDem;
-        cS = i < 5 ? cS + 6.5 : 32.5; // Time spent grows then plateaus
+        cS = i < 5 ? cS + 6.5 : 32.5;
         cumCap.push(cC);
         cumDem.push(Math.round(cD * 10) / 10);
         cumSpent.push(Math.round(cS * 10) / 10);
-
-        // Completion % (time spent / original estimate)
         completionPct.push(Math.round((cS / totalOriginalEstimate) * 100));
       }
 
+      // Store for view toggling
+      chartData = { labels, dailyCap, dailyDem, cumCap, cumDem, cumSpent, completionPct };
+
       chart = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels,
-          datasets: [
-            // Solid lines - Daily/Period values
-            { label: 'Daily Capacity', data: dailyCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'y' },
-            { label: 'Daily Demand', data: dailyDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'y' },
-            // Dashed lines - Cumulative values
-            { label: 'Cumulative Capacity', data: cumCap, borderColor: '#00875A', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'y' },
-            { label: 'Cumulative Demand', data: cumDem, borderColor: '#0052CC', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'y' },
-            { label: 'Cumulative Time Spent', data: cumSpent, borderColor: '#FF8B00', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'y' },
-            // Completion % on right axis
-            { label: 'Completion %', data: completionPct, borderColor: '#9C27B0', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'y1' }
-          ]
-        },
+        data: { labels, datasets: getCumulativeDatasets() },
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -1245,6 +1240,52 @@
           }
         }
       });
+      updateLegend();
+    }
+
+    function getCumulativeDatasets() {
+      return [
+        { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+        { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+        { label: 'Time Spent', data: chartData.cumSpent, borderColor: '#FF8B00', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+        { label: 'Completion %', data: chartData.completionPct, borderColor: '#9C27B0', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'y1' }
+      ];
+    }
+
+    function getPeriodDatasets() {
+      return [
+        { label: 'Daily Capacity', data: chartData.dailyCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 3, yAxisID: 'y' },
+        { label: 'Daily Demand', data: chartData.dailyDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 3, yAxisID: 'y' },
+        { label: 'Completion %', data: chartData.completionPct, borderColor: '#9C27B0', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'y1' }
+      ];
+    }
+
+    function toggleChartView() {
+      chartView = chartView === 'cumulative' ? 'period' : 'cumulative';
+      const btn = document.getElementById('view-toggle');
+      btn.textContent = chartView === 'cumulative' ? 'Cumulative' : 'Period';
+
+      chart.data.datasets = chartView === 'cumulative' ? getCumulativeDatasets() : getPeriodDatasets();
+      chart.update();
+      updateLegend();
+    }
+
+    function updateLegend() {
+      const legend = document.getElementById('chart-legend');
+      if (chartView === 'cumulative') {
+        legend.innerHTML = `
+          <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#00875A 0,#00875A 5px,transparent 5px,transparent 10px)"></div>Cum. Capacity</div>
+          <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#0052CC 0,#0052CC 5px,transparent 5px,transparent 10px)"></div>Cum. Demand</div>
+          <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#FF8B00 0,#FF8B00 5px,transparent 5px,transparent 10px)"></div>Time Spent</div>
+          <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion %</div>
+        `;
+      } else {
+        legend.innerHTML = `
+          <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Daily Capacity</div>
+          <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Daily Demand</div>
+          <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion %</div>
+        `;
+      }
     }
 
     function renderTeam() {
