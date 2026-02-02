@@ -11,7 +11,6 @@ import WhatIfPanel from './components/WhatIfPanel';
 import ScopeGraph from './components/ScopeGraph';
 import ScopeChangeTrend from './components/ScopeChangeTrend';
 import StatusReport from './components/StatusReport';
-import ExportMenu from './components/ExportMenu';
 import CapacityPanel from './components/CapacityPanel';
 import './App.css';
 
@@ -205,9 +204,6 @@ function App() {
           <div className="summary-item">
             <ConfidenceIndicator confidence={data.envelope?.confidence} />
           </div>
-          <div className="summary-item" style={{ marginLeft: 'auto' }}>
-            <ExportMenu data={data} />
-          </div>
         </div>
       )}
 
@@ -374,7 +370,10 @@ function App() {
           </div>
         )}
         {activeTab === TABS.TEAM && (
-          <TeamHealthView resources={data?.envelope?.resources} />
+          <TeamHealthView
+            resources={data?.envelope?.resources}
+            timeline={data?.envelope?.timeline}
+          />
         )}
         {activeTab === TABS.CAPACITY && (
           <CapacityPanel
