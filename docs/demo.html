@@ -610,6 +610,8 @@
             <div class="feas-header" id="feas-header">
               <div><span class="score" id="score" style="color:var(--yellow)">73%</span><span class="score-label">Feasibility Score</span></div>
               <div class="controls">
+                <label style="font-size:0.8rem;color:var(--gray)">Target:</label>
+                <input type="date" id="target-date" style="padding:6px 10px;border:2px solid var(--border);border-radius:4px;font-size:0.8rem;">
                 <select id="period-select"><option>Daily</option><option>Weekly</option></select>
                 <button id="whatif-btn" onclick="toggleWhatIf()">What-If</button>
               </div>
@@ -1157,6 +1159,11 @@
 
     // Init
     document.addEventListener('DOMContentLoaded', () => {
+      // Set default target date (3 months from now)
+      const targetDate = new Date();
+      targetDate.setMonth(targetDate.getMonth() + 3);
+      document.getElementById('target-date').value = targetDate.toISOString().split('T')[0];
+
       initChart();  // Initialize chart FIRST
       render();     // Then render (which updates chart view)
       renderTeam();
