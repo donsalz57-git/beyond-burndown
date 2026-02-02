@@ -646,7 +646,29 @@
 
           <!-- Team -->
           <div class="panel" id="panel-team">
-            <div class="team-list" id="team-list"></div>
+            <div class="team-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+              <div style="display:flex;align-items:center;gap:12px">
+                <label style="font-size:0.85rem;color:var(--gray)">Team Member:</label>
+                <select id="team-member-select" onchange="updateTeamChart()" style="padding:8px 12px;border:2px solid var(--border);border-radius:4px;font-size:0.85rem">
+                  <option value="all">All Team</option>
+                </select>
+              </div>
+              <div id="team-summary" style="display:flex;gap:16px;font-size:0.85rem">
+                <span><strong id="team-util">85%</strong> utilized</span>
+                <span><strong id="team-load">92%</strong> load</span>
+                <span id="team-status" style="color:var(--green)">On track</span>
+              </div>
+            </div>
+            <div class="chart-box" style="height:220px"><canvas id="team-chart"></canvas></div>
+            <div class="legend" style="margin-top:12px">
+              <div class="legend-item"><div class="legend-color" style="background:#00875A;height:2px;border-style:dashed"></div>Capacity</div>
+              <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Demand</div>
+              <div class="legend-item"><div class="legend-color" style="background:#FF8B00"></div>Time Spent</div>
+            </div>
+            <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+              <h4 style="font-size:0.9rem;margin-bottom:12px">Team Overview</h4>
+              <div class="team-list" id="team-list"></div>
+            </div>
           </div>
 
           <!-- Capacity -->
@@ -1192,6 +1214,8 @@
     // State
     let step = 0;
     let chart = null;
+    let teamChart = null;
+    let teamChartData = {};
 
     // Data
     const team = [
@@ -1238,6 +1262,7 @@
       initChart();  // Initialize chart FIRST
       render();     // Then render (which updates chart view)
       renderTeam();
+      initTeamChart();  // Initialize team chart
       renderCapacity();
       renderViolations();
       renderDeps();
@@ -1509,6 +1534,160 @@
           <div class="status-tag ${cls}">${lbl}</div>
         </div>`;
       }).join('');
+    }
+
+    function initTeamChartData() {
+      const labels = chartData.labels.slice(0, 12); // Use first 12 weeks
+
+      // Generate per-user data
+      teamChartData = {
+        labels,
+        users: {}
+      };
+
+      team.forEach((member, idx) => {
+        const weeklyCapacity = capacity[idx]?.hours || 40;
+        const capacityData = [];
+        const demandData = [];
+        const spentData = [];
+
+        for (let i = 0; i < 12; i++) {
+          // Capacity is constant per week
+          capacityData.push(weeklyCapacity);
+
+          // Demand varies - simulate based on member's load factor
+          const baseDemand = weeklyCapacity * (member.load / 100);
+          const variance = Math.sin(i * 0.5 + idx) * 8;
+          demandData.push(Math.round(baseDemand + variance));
+
+          // Time spent - gradually catches up to demand
+          const spentRatio = 0.7 + (i / 12) * 0.25; // 70% to 95% over time
+          spentData.push(Math.round(demandData[i] * spentRatio));
+        }
+
+        teamChartData.users[member.name] = { capacityData, demandData, spentData };
+      });
+
+      // Calculate "All Team" aggregate
+      const allCapacity = [], allDemand = [], allSpent = [];
+      for (let i = 0; i < 12; i++) {
+        let capSum = 0, demSum = 0, spentSum = 0;
+        team.forEach(m => {
+          capSum += teamChartData.users[m.name].capacityData[i];
+          demSum += teamChartData.users[m.name].demandData[i];
+          spentSum += teamChartData.users[m.name].spentData[i];
+        });
+        allCapacity.push(capSum);
+        allDemand.push(demSum);
+        allSpent.push(spentSum);
+      }
+      teamChartData.users['all'] = { capacityData: allCapacity, demandData: allDemand, spentData: allSpent };
+
+      // Populate dropdown
+      const select = document.getElementById('team-member-select');
+      team.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.name;
+        opt.textContent = m.name;
+        select.appendChild(opt);
+      });
+    }
+
+    function initTeamChart() {
+      initTeamChartData();
+      updateTeamChart();
+    }
+
+    function updateTeamChart() {
+      const selected = document.getElementById('team-member-select').value;
+      const userData = teamChartData.users[selected];
+
+      if (!userData) return;
+
+      // Update summary
+      const totalCap = userData.capacityData.reduce((a, b) => a + b, 0);
+      const totalDemand = userData.demandData.reduce((a, b) => a + b, 0);
+      const totalSpent = userData.spentData.reduce((a, b) => a + b, 0);
+
+      const util = Math.round((totalSpent / totalCap) * 100);
+      const load = Math.round((totalDemand / totalCap) * 100);
+
+      document.getElementById('team-util').textContent = util + '%';
+      document.getElementById('team-load').textContent = load + '%';
+
+      const statusEl = document.getElementById('team-status');
+      if (load > 100) {
+        statusEl.textContent = 'Overloaded';
+        statusEl.style.color = 'var(--red)';
+      } else if (load > 85) {
+        statusEl.textContent = 'Near capacity';
+        statusEl.style.color = 'var(--yellow)';
+      } else {
+        statusEl.textContent = 'On track';
+        statusEl.style.color = 'var(--green)';
+      }
+
+      // Destroy existing chart
+      if (teamChart) {
+        teamChart.destroy();
+      }
+
+      const ctx = document.getElementById('team-chart').getContext('2d');
+
+      teamChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: teamChartData.labels,
+          datasets: [
+            {
+              label: 'Capacity',
+              data: userData.capacityData,
+              borderColor: '#00875A',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              borderDash: [6, 4],
+              tension: 0,
+              pointRadius: 0
+            },
+            {
+              label: 'Demand',
+              data: userData.demandData,
+              borderColor: '#0052CC',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              tension: 0.3,
+              pointRadius: 3,
+              pointBackgroundColor: '#0052CC'
+            },
+            {
+              label: 'Time Spent',
+              data: userData.spentData,
+              borderColor: '#FF8B00',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              tension: 0.3,
+              pointRadius: 3,
+              pointBackgroundColor: '#FF8B00'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { intersect: false, mode: 'index' },
+          plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Hours', font: { size: 11 } },
+              grid: { color: '#DFE1E6' }
+            },
+            x: {
+              grid: { display: false }
+            }
+          }
+        }
+      });
     }
 
     function renderCapacity() {
