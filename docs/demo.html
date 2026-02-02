@@ -4,11 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Beyond Burndown - Guided Demo</title>
-  <meta name="description" content="Step-by-step walkthrough of Beyond Burndown's features.">
-  <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
@@ -16,25 +13,17 @@
       --yellow: #FF8B00;
       --red: #DE350B;
       --blue: #0052CC;
-      --purple: #9C27B0;
       --gray: #5E6C84;
       --light-gray: #F4F5F7;
       --border: #DFE1E6;
       --text: #172B4D;
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f0f0f0; color: var(--text); }
 
-    * { box-sizing: border-box; }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      margin: 0;
-      background: #f0f0f0;
-      color: var(--text);
-    }
-
-    /* Demo Header */
-    .demo-header {
-      background: linear-gradient(135deg, var(--green) 0%, #006644 100%);
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--green), #006644);
       color: white;
       padding: 12px 24px;
       display: flex;
@@ -46,604 +35,322 @@
       right: 0;
       z-index: 200;
     }
+    .header h1 { font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+    .header a { color: white; text-decoration: none; font-size: 0.85rem; }
 
-    .demo-header h1 {
-      font-size: 1.125rem;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    /* Layout */
+    .layout { display: flex; min-height: 100vh; padding-top: 52px; }
 
-    .demo-badge {
-      background: rgba(255,255,255,0.2);
-      padding: 3px 10px;
-      border-radius: 10px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-
-    /* Main Layout */
-    .demo-layout {
-      display: flex;
-      min-height: 100vh;
-      padding-top: 52px;
-    }
-
-    /* Guide Panel (Left) */
-    .guide-panel {
-      width: 380px;
+    /* Guide Panel */
+    .guide {
+      width: 420px;
       background: white;
       border-right: 1px solid var(--border);
       position: fixed;
       top: 52px;
       left: 0;
       bottom: 0;
-      overflow-y: auto;
-      z-index: 100;
       display: flex;
       flex-direction: column;
+      z-index: 100;
     }
-
-    .guide-progress {
+    .guide-header {
       padding: 16px 20px;
       background: var(--light-gray);
       border-bottom: 1px solid var(--border);
     }
-
     .progress-bar {
       height: 6px;
       background: var(--border);
       border-radius: 3px;
-      overflow: hidden;
       margin-bottom: 8px;
     }
-
     .progress-fill {
       height: 100%;
       background: var(--green);
       border-radius: 3px;
-      transition: width 0.3s ease;
+      transition: width 0.3s;
     }
-
     .progress-text {
-      font-size: 0.75rem;
-      color: var(--gray);
       display: flex;
       justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--gray);
     }
-
-    .guide-content {
+    .guide-body {
       flex: 1;
-      padding: 24px 20px;
+      padding: 20px;
       overflow-y: auto;
     }
-
-    .step-badge {
+    .step-num {
       display: inline-block;
       background: var(--green);
       color: white;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-bottom: 16px;
     }
-
-    .guide-content h2 {
-      font-size: 1.5rem;
-      margin: 0 0 12px 0;
+    .guide-body h2 {
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+    .explanation {
+      background: #F0F7FF;
+      border-left: 4px solid var(--blue);
+      padding: 16px;
+      margin: 16px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .explanation h3 {
+      font-size: 0.85rem;
+      color: var(--blue);
+      margin-bottom: 8px;
+    }
+    .explanation p {
+      font-size: 0.9rem;
+      line-height: 1.6;
       color: var(--text);
     }
-
-    .guide-content .subtitle {
-      font-size: 1rem;
-      color: var(--gray);
-      margin-bottom: 20px;
-      line-height: 1.5;
+    .details {
+      margin: 20px 0;
     }
-
-    .guide-section {
-      margin-bottom: 24px;
-    }
-
-    .guide-section h3 {
-      font-size: 0.8rem;
+    .details h3 {
+      font-size: 0.75rem;
       text-transform: uppercase;
       color: var(--gray);
-      margin: 0 0 12px 0;
+      margin-bottom: 12px;
       letter-spacing: 0.5px;
     }
-
-    .guide-section ul {
-      margin: 0;
-      padding: 0;
+    .details ul {
       list-style: none;
     }
-
-    .guide-section li {
-      padding: 8px 0;
-      padding-left: 24px;
+    .details li {
+      padding: 10px 0 10px 28px;
       position: relative;
       font-size: 0.9rem;
       line-height: 1.5;
+      border-bottom: 1px solid var(--light-gray);
     }
-
-    .guide-section li::before {
-      content: "";
+    .details li:last-child { border-bottom: none; }
+    .details li::before {
+      content: "→";
       position: absolute;
       left: 0;
-      top: 14px;
-      width: 8px;
-      height: 8px;
-      background: var(--green);
-      border-radius: 50%;
+      color: var(--green);
+      font-weight: bold;
     }
-
-    .highlight-box {
-      background: linear-gradient(135deg, #E3FCEF 0%, #DEEBFF 100%);
+    .action-box {
+      background: #E3FCEF;
+      border: 1px solid var(--green);
       border-radius: 8px;
       padding: 16px;
       margin: 20px 0;
     }
-
-    .highlight-box h4 {
-      margin: 0 0 8px 0;
-      font-size: 0.9rem;
-      color: var(--green);
-    }
-
-    .highlight-box p {
-      margin: 0;
+    .action-box h3 {
       font-size: 0.85rem;
-      color: var(--text);
+      color: var(--green);
+      margin-bottom: 8px;
+    }
+    .action-box p {
+      font-size: 0.9rem;
       line-height: 1.5;
     }
+    .guide-nav {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+    }
+    .guide-nav button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-prev { background: var(--light-gray); color: var(--gray); }
+    .btn-prev:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-next { background: var(--green); color: white; }
 
-    .try-it {
-      background: #FFFAE6;
-      border: 1px solid #FFAB00;
+    /* Gadget Panel */
+    .gadget-area {
+      flex: 1;
+      margin-left: 420px;
+      padding: 20px;
+    }
+    .gadget {
+      background: white;
       border-radius: 8px;
-      padding: 14px;
-      margin: 16px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 900px;
     }
 
-    .try-it h4 {
-      margin: 0 0 8px 0;
+    /* Highlight */
+    .highlight {
+      animation: pulse 2s infinite;
+      outline: 3px solid var(--green);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+    @keyframes pulse {
+      0%, 100% { outline-color: var(--green); }
+      50% { outline-color: transparent; }
+    }
+
+    /* Summary Bar */
+    .summary {
+      display: flex;
+      gap: 24px;
+      padding: 14px 20px;
+      background: var(--light-gray);
+      border-bottom: 1px solid var(--border);
+    }
+    .metric { text-align: center; min-width: 70px; }
+    .metric-val { font-size: 1.3rem; font-weight: 700; }
+    .metric-val.ok { color: var(--green); }
+    .metric-val.warn { color: var(--yellow); }
+    .metric-val.bad { color: var(--red); }
+    .metric-label { font-size: 0.65rem; color: var(--gray); text-transform: uppercase; }
+
+    /* Alert */
+    .alert {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .alert.warn { background: #FFFAE6; border-left: 4px solid var(--yellow); }
+    .alert.bad { background: #FFEBE6; border-left: 4px solid var(--red); }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      padding: 0 20px;
+      border-bottom: 2px solid var(--border);
+      background: white;
+    }
+    .tab {
+      padding: 14px 16px;
       font-size: 0.85rem;
-      color: #FF8B00;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--green); border-bottom-color: var(--green); }
+    .badge { background: var(--gray); color: white; padding: 2px 6px; border-radius: 8px; font-size: 0.65rem; }
+    .badge.bad { background: var(--red); }
 
-    .try-it p {
-      margin: 0;
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
+    .content { padding: 20px; min-height: 420px; }
+    .panel { display: none; }
+    .panel.active { display: block; }
 
-    .guide-nav {
-      padding: 16px 20px;
-      border-top: 1px solid var(--border);
-      background: white;
-      display: flex;
-      gap: 10px;
-    }
-
-    .guide-nav button {
-      flex: 1;
-      padding: 12px 16px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-prev {
-      background: var(--light-gray);
-      border: none;
-      color: var(--gray);
-    }
-
-    .btn-prev:hover:not(:disabled) {
-      background: #E4E6E9;
-      color: var(--text);
-    }
-
-    .btn-prev:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-next {
-      background: var(--green);
-      border: none;
-      color: white;
-    }
-
-    .btn-next:hover {
-      background: #006644;
-    }
-
-    /* Gadget Panel (Right) */
-    .gadget-panel {
-      flex: 1;
-      margin-left: 380px;
-      padding: 20px;
-    }
-
-    .gadget-container {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      overflow: hidden;
-      max-width: 900px;
-    }
-
-    /* Highlight Animation */
-    .highlight-element {
-      animation: pulse-highlight 2s infinite;
-      position: relative;
-    }
-
-    .highlight-element::after {
-      content: "";
-      position: absolute;
-      top: -4px;
-      left: -4px;
-      right: -4px;
-      bottom: -4px;
-      border: 3px solid var(--green);
-      border-radius: 8px;
-      animation: pulse-border 2s infinite;
-      pointer-events: none;
-    }
-
-    @keyframes pulse-highlight {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(0, 135, 90, 0.4); }
-      50% { box-shadow: 0 0 0 10px rgba(0, 135, 90, 0); }
-    }
-
-    @keyframes pulse-border {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    /* Summary Bar */
-    .summary-bar {
-      display: flex;
-      gap: 20px;
-      padding: 12px 16px;
-      background: var(--light-gray);
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .summary-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 60px;
-    }
-
-    .summary-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    .summary-value.success { color: var(--green); }
-    .summary-value.warning { color: var(--yellow); }
-    .summary-value.danger { color: var(--red); }
-
-    .summary-label {
-      font-size: 0.65rem;
-      color: var(--gray);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Forecast Warning */
-    .forecast-warning {
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.85rem;
-      border-bottom: 1px solid var(--border);
-      background: #FFFAE6;
-      border-left: 4px solid var(--yellow);
-    }
-
-    /* Tabs */
-    .tab-navigation {
-      display: flex;
-      gap: 2px;
-      padding: 0 16px;
-      background: white;
-      border-bottom: 2px solid var(--border);
-      overflow-x: auto;
-    }
-
-    .tab-button {
-      padding: 12px 14px;
-      background: transparent;
-      border: none;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--gray);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.2s;
-    }
-
-    .tab-button:hover { color: var(--text); }
-
-    .tab-button.active {
-      color: var(--green);
-      border-bottom-color: var(--green);
-    }
-
-    .badge {
-      background: var(--gray);
-      color: white;
-      padding: 1px 5px;
-      border-radius: 8px;
-      font-size: 0.65rem;
-      font-weight: 600;
-    }
-
-    .badge.danger { background: var(--red); }
-    .badge.warning { background: var(--yellow); }
-
-    .tab-content {
-      padding: 16px;
-      min-height: 400px;
-    }
-
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    /* Feasibility Tab */
-    .feasibility-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .score-display-inline {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    .score-display-inline .score {
-      font-size: 1.75rem;
-      font-weight: 700;
-    }
-
-    .score-display-inline .label {
-      font-size: 0.85rem;
-      color: var(--gray);
-    }
-
-    .controls-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .period-select, .whatif-toggle {
-      padding: 6px 12px;
+    /* Feasibility */
+    .feas-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+    .score { font-size: 2rem; font-weight: 700; }
+    .score-label { font-size: 0.9rem; color: var(--gray); margin-left: 8px; }
+    .controls { display: flex; gap: 10px; align-items: center; }
+    .controls select, .controls button {
+      padding: 8px 14px;
       border: 2px solid var(--border);
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       background: white;
       cursor: pointer;
     }
-
-    .whatif-toggle.active {
-      background: var(--blue);
-      color: white;
-      border-color: var(--blue);
-    }
-
-    .overload-warning {
+    .controls button.active { background: var(--blue); color: white; border-color: var(--blue); }
+    .warn-bar {
       background: #FFEBE6;
       border-left: 4px solid var(--red);
-      padding: 8px 12px;
-      margin-bottom: 12px;
-      border-radius: 0 4px 4px 0;
-      font-size: 0.8rem;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.85rem;
     }
-
-    .chart-container {
-      position: relative;
-      height: 280px;
-      margin: 16px 0;
-    }
-
-    .chart-legend {
+    .chart-box { height: 260px; margin: 20px 0; }
+    .legend {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 6px 16px;
-      padding: 10px;
+      gap: 20px;
+      padding: 12px;
       background: #FAFBFC;
-      border-radius: 4px;
-      margin-top: 8px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.7rem;
-      color: var(--gray);
-      cursor: pointer;
-      padding: 3px 6px;
-      border-radius: 3px;
-    }
-
-    .legend-item:hover { background: #E4E6E9; }
-    .legend-item.disabled { opacity: 0.4; text-decoration: line-through; }
-
-    .legend-color {
-      width: 14px;
-      height: 3px;
-      border-radius: 1px;
-    }
-
-    /* What-If Panel */
-    .whatif-panel {
-      background: var(--light-gray);
       border-radius: 6px;
-      padding: 14px;
-      margin-top: 16px;
     }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--gray); }
+    .legend-color { width: 16px; height: 4px; border-radius: 2px; }
 
-    .whatif-panel h4 {
-      margin: 0 0 12px 0;
-      font-size: 0.9rem;
+    /* What-If */
+    .whatif {
+      background: var(--light-gray);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
     }
-
-    .scenario-type-tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 12px;
-    }
-
-    .scenario-type-tabs button {
+    .whatif h4 { margin-bottom: 14px; font-size: 0.95rem; }
+    .scenario-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+    .scenario-tabs button {
       flex: 1;
-      padding: 8px;
+      padding: 10px;
       border: none;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
       cursor: pointer;
     }
-
-    .scenario-type-tabs button.active {
-      background: var(--blue);
-      color: white;
-      font-weight: 600;
-    }
-
-    .scenario-type-tabs button:not(.active) {
-      background: white;
-      color: var(--gray);
-    }
-
-    .scenario-controls {
-      margin-bottom: 12px;
-    }
-
-    .scenario-input-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .scenario-input-row input {
+    .scenario-tabs button.active { background: var(--blue); color: white; font-weight: 600; }
+    .scenario-tabs button:not(.active) { background: white; color: var(--gray); }
+    .scenario-input { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; flex-wrap: wrap; }
+    .scenario-input input {
       width: 60px;
-      padding: 6px;
+      padding: 8px;
       text-align: center;
       border: 2px solid var(--border);
       border-radius: 4px;
-      font-size: 0.75rem;
     }
-
-    .scenario-input-row span {
-      font-size: 0.75rem;
-      color: var(--gray);
-    }
-
-    .scenario-preview {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 12px;
-      padding-top: 12px;
+    .scenario-result {
+      margin-top: 16px;
+      padding-top: 16px;
       border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
-    .scenario-preview .preview-text {
-      flex: 1;
-      font-size: 0.8rem;
-    }
-
-    .scenario-preview .add-btn {
-      padding: 8px 16px;
+    .scenario-result .preview { font-size: 0.9rem; }
+    .scenario-result button {
+      padding: 10px 20px;
       background: var(--blue);
       color: white;
       border: none;
-      border-radius: 4px;
-      font-size: 0.75rem;
+      border-radius: 6px;
       font-weight: 600;
       cursor: pointer;
     }
 
-    .active-scenarios {
-      background: white;
-      border-radius: 4px;
-      padding: 10px;
-      margin-bottom: 12px;
-    }
-
-    .scenario-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 8px;
-      background: var(--light-gray);
-      border-radius: 4px;
-      margin-bottom: 4px;
-      font-size: 0.75rem;
-    }
-
-    .combined-effect {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-      font-size: 0.75rem;
-    }
-
-    .combined-effect .row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    /* Team Tab */
-    .team-grid {
-      display: grid;
-      gap: 12px;
-    }
-
+    /* Team */
+    .team-list { display: flex; flex-direction: column; gap: 12px; }
     .team-member {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px;
+      gap: 14px;
+      padding: 16px;
       background: var(--light-gray);
       border-radius: 8px;
     }
-
-    .member-avatar {
-      width: 44px;
-      height: 44px;
+    .avatar {
+      width: 48px;
+      height: 48px;
       background: var(--green);
       color: white;
       border-radius: 50%;
@@ -653,565 +360,369 @@
       font-weight: 600;
       font-size: 1rem;
     }
-
     .member-info { flex: 1; }
-
-    .member-name {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .member-stats {
-      display: flex;
-      gap: 12px;
-      font-size: 0.75rem;
-      color: var(--gray);
-    }
-
-    .load-bar {
-      height: 6px;
-      background: var(--border);
-      border-radius: 3px;
-      margin-top: 8px;
-      overflow: hidden;
-    }
-
-    .load-fill {
-      height: 100%;
-      border-radius: 3px;
-    }
-
-    .load-fill.good { background: var(--green); }
-    .load-fill.warning { background: var(--yellow); }
-    .load-fill.danger { background: var(--red); }
-
-    .member-status {
-      padding: 4px 10px;
-      border-radius: 10px;
-      font-size: 0.65rem;
+    .member-name { font-weight: 600; margin-bottom: 4px; }
+    .member-stats { display: flex; gap: 16px; font-size: 0.8rem; color: var(--gray); }
+    .load-bar { height: 8px; background: var(--border); border-radius: 4px; margin-top: 8px; }
+    .load-fill { height: 100%; border-radius: 4px; }
+    .load-fill.ok { background: var(--green); }
+    .load-fill.warn { background: var(--yellow); }
+    .load-fill.bad { background: var(--red); }
+    .status-tag {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.7rem;
       font-weight: 600;
       text-transform: uppercase;
     }
+    .status-tag.ok { background: #E3FCEF; color: var(--green); }
+    .status-tag.bad { background: #FFEBE6; color: var(--red); }
+    .status-tag.warn { background: #FFFAE6; color: var(--yellow); }
 
-    .member-status.on_track { background: #E3FCEF; color: var(--green); }
-    .member-status.overloaded { background: #FFEBE6; color: var(--red); }
-    .member-status.under_utilized { background: #FFFAE6; color: var(--yellow); }
-
-    /* Compliance Tab */
-    .compliance-summary {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .stat-card {
-      background: var(--light-gray);
-      padding: 16px;
+    /* Capacity */
+    .cap-config { max-width: 500px; }
+    .cap-row { margin-bottom: 20px; }
+    .cap-row label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 8px; }
+    .cap-toggle { display: flex; gap: 6px; }
+    .cap-toggle button {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid var(--border);
       border-radius: 6px;
+      background: white;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .cap-toggle button.active {
+      border-color: var(--green);
+      background: #E3FCEF;
+      color: var(--green);
+      font-weight: 600;
+    }
+    .cap-list { margin-top: 20px; }
+    .cap-header {
+      display: grid;
+      grid-template-columns: 1fr 100px 50px;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gray);
+      text-transform: uppercase;
+    }
+    .cap-member {
+      display: grid;
+      grid-template-columns: 1fr 100px 50px;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--light-gray);
+      align-items: center;
+    }
+    .cap-member input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
       text-align: center;
     }
-
-    .stat-card .value {
-      font-size: 2rem;
-      font-weight: 700;
+    .cap-member button {
+      background: none;
+      border: none;
+      color: var(--red);
+      font-size: 1.2rem;
+      cursor: pointer;
     }
-
-    .stat-card .value.danger { color: var(--red); }
-    .stat-card .value.warning { color: var(--yellow); }
-    .stat-card .value.info { color: var(--blue); }
-
-    .stat-card .label {
-      font-size: 0.7rem;
-      color: var(--gray);
-      text-transform: uppercase;
+    .cap-total {
+      margin-top: 16px;
+      padding: 14px;
+      background: var(--light-gray);
+      border-radius: 6px;
+      font-size: 0.95rem;
     }
-
-    .violation-filters {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .violation-filters button {
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: white;
-      font-size: 0.75rem;
+    .cap-total strong { color: var(--green); }
+    .save-btn {
+      margin-top: 16px;
+      padding: 12px 24px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
       cursor: pointer;
     }
 
-    .violation-filters button.active {
-      background: var(--blue);
-      color: white;
-      border-color: var(--blue);
+    /* Compliance */
+    .comp-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .comp-card { background: var(--light-gray); padding: 20px; border-radius: 8px; text-align: center; }
+    .comp-card .num { font-size: 2.5rem; font-weight: 700; }
+    .comp-card .num.bad { color: var(--red); }
+    .comp-card .num.warn { color: var(--yellow); }
+    .comp-card .num.info { color: var(--blue); }
+    .comp-card .lbl { font-size: 0.75rem; color: var(--gray); text-transform: uppercase; }
+    .filters { display: flex; gap: 8px; margin-bottom: 16px; }
+    .filters button {
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: white;
+      font-size: 0.8rem;
+      cursor: pointer;
     }
-
-    .violation-item {
+    .filters button.active { background: var(--blue); color: white; border-color: var(--blue); }
+    .violation {
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 12px;
-      background: var(--light-gray);
-      border-radius: 6px;
-      margin-bottom: 8px;
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border-radius: 8px;
       border-left: 4px solid var(--border);
     }
+    .violation.error { background: #FFEBE6; border-left-color: var(--red); }
+    .violation.warning { background: #FFFAE6; border-left-color: var(--yellow); }
+    .violation.info { background: #DEEBFF; border-left-color: var(--blue); }
+    .violation-icon { font-size: 1.2rem; }
+    .violation-body { flex: 1; }
+    .violation-key { font-weight: 600; color: var(--blue); }
+    .violation-msg { font-size: 0.85rem; color: var(--gray); margin-top: 4px; }
 
-    .violation-item.error { border-left-color: var(--red); background: #FFEBE6; }
-    .violation-item.warning { border-left-color: var(--yellow); background: #FFFAE6; }
-    .violation-item.info { border-left-color: var(--blue); background: #DEEBFF; }
-
-    .violation-content { flex: 1; }
-
-    .violation-key {
-      font-weight: 600;
-      color: var(--blue);
-      font-size: 0.85rem;
-    }
-
-    .violation-message {
-      color: var(--gray);
-      font-size: 0.75rem;
-      margin-top: 3px;
-    }
-
-    /* Dependencies Tab */
-    .dep-stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .cycle-warning {
+    /* Dependencies */
+    .dep-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .cycle-alert {
       background: #FFEBE6;
       border: 1px solid var(--red);
-      border-radius: 6px;
-      padding: 14px;
-      margin-bottom: 16px;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
     }
-
-    .cycle-warning h4 {
-      color: var(--red);
-      margin: 0 0 8px 0;
+    .cycle-alert h4 { color: var(--red); margin-bottom: 10px; }
+    .cycle-path {
+      background: white;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: monospace;
       font-size: 0.9rem;
     }
-
-    .cycle-path {
-      font-family: 'Fira Code', monospace;
-      background: white;
-      padding: 8px 12px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-    }
-
     .dep-list {
-      max-height: 300px;
-      overflow-y: auto;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
+      max-height: 280px;
+      overflow-y: auto;
     }
-
     .dep-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
+      gap: 12px;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--light-gray);
     }
-
+    .dep-item:last-child { border-bottom: none; }
     .dep-depth {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       background: var(--green);
       color: white;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-
-    .dep-key {
-      font-weight: 600;
-      color: var(--blue);
-      font-size: 0.85rem;
-      min-width: 80px;
-    }
-
-    .dep-summary {
-      color: var(--gray);
-      font-size: 0.8rem;
-      flex: 1;
-    }
-
-    /* Report Tab */
-    .report-section {
-      margin-bottom: 24px;
-    }
-
-    .report-section h3 {
-      font-size: 1rem;
-      margin: 0 0 12px 0;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .report-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-
-    .report-metric {
-      padding: 14px;
-      background: var(--light-gray);
-      border-radius: 6px;
-    }
-
-    .report-metric .value {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .report-metric .value.green { color: var(--green); }
-    .report-metric .value.yellow { color: var(--yellow); }
-    .report-metric .value.red { color: var(--red); }
-
-    .report-metric .label {
       font-size: 0.75rem;
-      color: var(--gray);
-    }
-
-    .decision-card {
-      padding: 14px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      border-left: 4px solid var(--border);
-    }
-
-    .decision-card.high {
-      background: #FFEBE6;
-      border-left-color: var(--red);
-    }
-
-    .decision-card.medium {
-      background: #FFFAE6;
-      border-left-color: var(--yellow);
-    }
-
-    .decision-title {
       font-weight: 600;
-      margin-bottom: 4px;
-      font-size: 0.9rem;
     }
+    .dep-key { font-weight: 600; color: var(--blue); min-width: 90px; }
+    .dep-summary { color: var(--gray); font-size: 0.85rem; }
 
-    .decision-description {
-      font-size: 0.8rem;
-      color: var(--gray);
-    }
+    /* Report */
+    .report-section { margin-bottom: 28px; }
+    .report-section h3 { font-size: 1.1rem; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .report-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .report-metric { padding: 16px; background: var(--light-gray); border-radius: 8px; }
+    .report-metric .val { font-size: 1.6rem; font-weight: 700; }
+    .report-metric .val.ok { color: var(--green); }
+    .report-metric .val.warn { color: var(--yellow); }
+    .report-metric .val.bad { color: var(--red); }
+    .report-metric .lbl { font-size: 0.8rem; color: var(--gray); }
+    .decision { padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid; }
+    .decision.high { background: #FFEBE6; border-left-color: var(--red); }
+    .decision.med { background: #FFFAE6; border-left-color: var(--yellow); }
+    .decision-title { font-weight: 600; margin-bottom: 6px; }
+    .decision-desc { font-size: 0.9rem; color: var(--gray); line-height: 1.5; }
 
-    /* Step indicator dots */
-    .step-dots {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 0;
-    }
-
-    .step-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--border);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .step-dot.active {
-      background: var(--green);
-      transform: scale(1.2);
-    }
-
-    .step-dot.completed {
-      background: #ABE9D6;
-    }
-
-    /* Responsive */
     @media (max-width: 900px) {
-      .guide-panel { width: 320px; }
-      .gadget-panel { margin-left: 320px; }
+      .guide { width: 340px; }
+      .gadget-area { margin-left: 340px; }
     }
-
     @media (max-width: 768px) {
-      .demo-layout { flex-direction: column; }
-      .guide-panel {
-        position: relative;
-        width: 100%;
-        top: 0;
-        max-height: 400px;
-      }
-      .gadget-panel {
-        margin-left: 0;
-        padding: 10px;
-      }
+      .layout { flex-direction: column; }
+      .guide { position: relative; width: 100%; top: 0; max-height: 50vh; }
+      .gadget-area { margin-left: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="demo-header">
-    <h1>
-      <span>📊</span> Beyond Burndown
-      <span class="demo-badge">GUIDED DEMO</span>
-    </h1>
-    <a href="index.html" style="color: white; text-decoration: none; font-size: 0.8rem;">← Back to Home</a>
+  <div class="header">
+    <h1>📊 Beyond Burndown <span style="background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:10px;font-size:0.7rem;margin-left:8px;">GUIDED DEMO</span></h1>
+    <a href="index.html">← Back to Home</a>
   </div>
 
-  <div class="demo-layout">
+  <div class="layout">
     <!-- Guide Panel -->
-    <div class="guide-panel">
-      <div class="guide-progress">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progress-fill" style="width: 10%"></div>
-        </div>
+    <div class="guide">
+      <div class="guide-header">
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
         <div class="progress-text">
-          <span id="step-counter">Step 1 of 10</span>
+          <span id="step-text">Step 1 of 11</span>
           <span id="step-name">Introduction</span>
         </div>
       </div>
-
-      <div class="guide-content" id="guide-content">
-        <!-- Content populated by JS -->
-      </div>
-
-      <div class="step-dots" id="step-dots">
-        <!-- Dots populated by JS -->
-      </div>
-
+      <div class="guide-body" id="guide-body"></div>
       <div class="guide-nav">
-        <button class="btn-prev" id="btn-prev" onclick="prevStep()">Previous</button>
-        <button class="btn-next" id="btn-next" onclick="nextStep()">Next Step</button>
+        <button class="btn-prev" id="prev-btn" onclick="prevStep()">Previous</button>
+        <button class="btn-next" id="next-btn" onclick="nextStep()">Next Step</button>
       </div>
     </div>
 
-    <!-- Gadget Panel -->
-    <div class="gadget-panel">
-      <div class="gadget-container">
-        <!-- Summary Bar -->
-        <div class="summary-bar" id="summary-bar">
-          <div class="summary-item">
-            <span class="summary-value">18</span>
-            <span class="summary-label">Issues</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-value warning" id="feasibility-display">73%</span>
-            <span class="summary-label">Feasibility</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-value danger">9</span>
-            <span class="summary-label">Violations</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-value danger">1</span>
-            <span class="summary-label">Cycles</span>
-          </div>
+    <!-- Gadget -->
+    <div class="gadget-area">
+      <div class="gadget">
+        <div class="summary" id="summary-bar">
+          <div class="metric"><div class="metric-val">18</div><div class="metric-label">Issues</div></div>
+          <div class="metric"><div class="metric-val warn" id="feas-val">73%</div><div class="metric-label">Feasibility</div></div>
+          <div class="metric"><div class="metric-val bad">9</div><div class="metric-label">Violations</div></div>
+          <div class="metric"><div class="metric-val bad">1</div><div class="metric-label">Cycles</div></div>
         </div>
 
-        <!-- Forecast Warning -->
-        <div class="forecast-warning" id="forecast-warning">
-          <span>⚠️</span>
-          <span>Work completes Feb 18 (2 days after deadline)</span>
+        <div class="alert warn" id="forecast-alert">
+          ⚠️ <span>Forecast: Work completes Feb 18 — <strong>2 days after deadline</strong></span>
         </div>
 
-        <!-- Tab Navigation -->
-        <div class="tab-navigation" id="tab-navigation">
-          <button class="tab-button active" data-tab="feasibility">Feasibility</button>
-          <button class="tab-button" data-tab="team">Team <span class="badge danger">!</span></button>
-          <button class="tab-button" data-tab="compliance">Compliance <span class="badge">9</span></button>
-          <button class="tab-button" data-tab="dependencies">Dependencies <span class="badge danger">1</span></button>
-          <button class="tab-button" data-tab="report">Report</button>
+        <div class="tabs" id="tab-bar">
+          <button class="tab active" data-tab="feasibility">Feasibility</button>
+          <button class="tab" data-tab="team">Team <span class="badge bad">!</span></button>
+          <button class="tab" data-tab="capacity">Capacity</button>
+          <button class="tab" data-tab="compliance">Compliance <span class="badge">9</span></button>
+          <button class="tab" data-tab="dependencies">Dependencies <span class="badge bad">1</span></button>
+          <button class="tab" data-tab="report">Report</button>
         </div>
 
-        <!-- Tab Content -->
-        <div class="tab-content">
-          <!-- FEASIBILITY TAB -->
-          <div class="tab-panel active" id="tab-feasibility">
-            <div class="feasibility-header" id="feasibility-header">
-              <div class="score-display-inline">
-                <span class="score" id="feasibility-score" style="color: var(--yellow)">73%</span>
-                <span class="label">Feasibility Score</span>
-              </div>
-              <div class="controls-row">
-                <select class="period-select" id="period-select">
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                </select>
-                <button class="whatif-toggle" id="whatif-toggle" onclick="toggleWhatIf()">What-If</button>
+        <div class="content">
+          <!-- Feasibility -->
+          <div class="panel active" id="panel-feasibility">
+            <div class="feas-header" id="feas-header">
+              <div><span class="score" id="score" style="color:var(--yellow)">73%</span><span class="score-label">Feasibility Score</span></div>
+              <div class="controls">
+                <select><option>Daily</option><option>Weekly</option></select>
+                <button id="whatif-btn" onclick="toggleWhatIf()">What-If</button>
               </div>
             </div>
-
-            <div class="overload-warning" id="overload-warning">
-              <strong>⚠️ Overloaded:</strong> Feb 1 to Feb 8 (6 days, max 42h over capacity)
+            <div class="warn-bar" id="overload-bar">⚠️ <strong>Overloaded period:</strong> Feb 1–8 (6 days) — demand exceeds capacity by up to 42 hours</div>
+            <div class="chart-box"><canvas id="chart"></canvas></div>
+            <div class="legend" id="chart-legend">
+              <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Capacity</div>
+              <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Demand</div>
+              <div class="legend-item"><div class="legend-color" style="background:#FF8B00"></div>Time Spent</div>
             </div>
-
-            <div class="chart-container">
-              <canvas id="feasibilityChart"></canvas>
-            </div>
-
-            <div class="chart-legend" id="chart-legend">
-              <div class="legend-item"><div class="legend-color" style="background: #00875A"></div><span>Capacity</span></div>
-              <div class="legend-item"><div class="legend-color" style="background: #0052CC"></div><span>Demand</span></div>
-              <div class="legend-item"><div class="legend-color" style="background: #FF8B00"></div><span>Time Spent</span></div>
-            </div>
-
-            <!-- What-If Panel -->
-            <div class="whatif-panel" id="whatif-panel" style="display: none;">
-              <h4>What-If Scenarios</h4>
-
-              <div class="active-scenarios" id="active-scenarios" style="display: none;">
-                <div style="font-size: 0.7rem; color: var(--gray); margin-bottom: 8px;">ACTIVE SCENARIOS</div>
-                <div id="scenario-list"></div>
-                <div class="combined-effect" id="combined-effect"></div>
+            <div class="whatif" id="whatif-panel" style="display:none">
+              <h4>What-If Scenario Modeling</h4>
+              <div class="scenario-tabs">
+                <button class="active">+ Add Capacity</button>
+                <button>- Reduce Scope</button>
+                <button>+ Extend Deadline</button>
               </div>
-
-              <div class="scenario-type-tabs">
-                <button class="active" data-type="capacity">+ Capacity</button>
-                <button data-type="scope">- Scope</button>
-                <button data-type="deadline">+ Time</button>
+              <div class="scenario-input">
+                <span>Add</span>
+                <input type="number" value="1" min="1" max="5" id="dev-input">
+                <span>developer(s) working</span>
+                <input type="number" value="8" min="1" max="12" id="hrs-input">
+                <span>hours/day</span>
               </div>
+              <div class="scenario-result">
+                <div class="preview"><strong style="color:var(--green)">+1 dev @ 8h/day</strong> → Feasibility increases to <strong style="color:var(--green)">86%</strong></div>
+                <button onclick="applyScenario()">Apply Scenario</button>
+              </div>
+            </div>
+          </div>
 
-              <div class="scenario-controls" id="scenario-controls">
-                <div class="scenario-input-row">
-                  <span>Add</span>
-                  <input type="number" id="dev-count" value="1" min="1" max="5">
-                  <span>developer(s) @</span>
-                  <input type="number" id="hours-per-dev" value="8" min="1" max="12">
-                  <span>h/day</span>
+          <!-- Team -->
+          <div class="panel" id="panel-team">
+            <div class="team-list" id="team-list"></div>
+          </div>
+
+          <!-- Capacity -->
+          <div class="panel" id="panel-capacity">
+            <div class="cap-config" id="cap-config">
+              <div class="cap-row">
+                <label>Capacity Type</label>
+                <div class="cap-toggle">
+                  <button onclick="setCapType('team')">Team Total</button>
+                  <button class="active" onclick="setCapType('user')">Per User</button>
                 </div>
               </div>
-
-              <div class="scenario-preview">
-                <div class="preview-text" id="scenario-preview">
-                  <span style="font-weight: 600; color: var(--green);">+1 dev @ 8h/day</span>
-                  → <span style="color: var(--green);">86% feasibility</span>
+              <div class="cap-row">
+                <label>Time Period</label>
+                <div class="cap-toggle">
+                  <button class="active" onclick="setCapPeriod('week')">Weekly</button>
+                  <button onclick="setCapPeriod('month')">Monthly</button>
                 </div>
-                <button class="add-btn" onclick="addScenario()">Add</button>
               </div>
+              <div class="cap-list">
+                <div class="cap-header"><span>Team Member</span><span>Hours/Week</span><span></span></div>
+                <div id="cap-members"></div>
+              </div>
+              <div class="cap-total">Total Team Capacity: <strong id="cap-total">152</strong> hours/week</div>
+              <button class="save-btn" onclick="saveCapacity()">Save Capacity Configuration</button>
             </div>
           </div>
 
-          <!-- TEAM TAB -->
-          <div class="tab-panel" id="tab-team">
-            <div class="team-grid" id="team-list"></div>
+          <!-- Compliance -->
+          <div class="panel" id="panel-compliance">
+            <div class="comp-summary">
+              <div class="comp-card"><div class="num bad">4</div><div class="lbl">Errors</div></div>
+              <div class="comp-card"><div class="num warn">4</div><div class="lbl">Warnings</div></div>
+              <div class="comp-card"><div class="num info">1</div><div class="lbl">Info</div></div>
+            </div>
+            <div class="filters" id="filters">
+              <button class="active" data-f="all" onclick="filterV('all')">All (9)</button>
+              <button data-f="error" onclick="filterV('error')">Errors (4)</button>
+              <button data-f="warning" onclick="filterV('warning')">Warnings (4)</button>
+            </div>
+            <div id="violations"></div>
           </div>
 
-          <!-- COMPLIANCE TAB -->
-          <div class="tab-panel" id="tab-compliance">
-            <div class="compliance-summary">
-              <div class="stat-card">
-                <div class="value danger">4</div>
-                <div class="label">Errors</div>
-              </div>
-              <div class="stat-card">
-                <div class="value warning">4</div>
-                <div class="label">Warnings</div>
-              </div>
-              <div class="stat-card">
-                <div class="value info">1</div>
-                <div class="label">Info</div>
-              </div>
-            </div>
-
-            <div class="violation-filters" id="violation-filters">
-              <button class="active" data-filter="all" onclick="filterViolations('all')">All (9)</button>
-              <button data-filter="error" onclick="filterViolations('error')">Errors (4)</button>
-              <button data-filter="warning" onclick="filterViolations('warning')">Warnings (4)</button>
-            </div>
-
-            <div id="violations-list"></div>
-          </div>
-
-          <!-- DEPENDENCIES TAB -->
-          <div class="tab-panel" id="tab-dependencies">
+          <!-- Dependencies -->
+          <div class="panel" id="panel-dependencies">
             <div class="dep-stats">
-              <div class="stat-card">
-                <div class="value">12</div>
-                <div class="label">Issues</div>
-              </div>
-              <div class="stat-card">
-                <div class="value">5</div>
-                <div class="label">Max Depth</div>
-              </div>
-              <div class="stat-card">
-                <div class="value danger">1</div>
-                <div class="label">Cycles</div>
-              </div>
-              <div class="stat-card">
-                <div class="value">4</div>
-                <div class="label">Leaf Issues</div>
-              </div>
+              <div class="comp-card"><div class="num">12</div><div class="lbl">Issues</div></div>
+              <div class="comp-card"><div class="num">5</div><div class="lbl">Max Depth</div></div>
+              <div class="comp-card"><div class="num bad">1</div><div class="lbl">Cycles</div></div>
+              <div class="comp-card"><div class="num">4</div><div class="lbl">Leaf Issues</div></div>
             </div>
-
-            <div class="cycle-warning" id="cycle-warning">
+            <div class="cycle-alert" id="cycle-alert">
               <h4>⚠️ Circular Dependency Detected</h4>
               <div class="cycle-path">DEMO-120 → DEMO-121 → DEMO-122 → DEMO-120</div>
-              <p style="margin: 8px 0 0; font-size: 0.8rem; color: var(--gray);">
-                This cycle must be broken before these issues can be completed.
-              </p>
+              <p style="margin-top:10px;font-size:0.85rem;color:var(--gray)">These issues block each other in a loop. Break one link to resolve.</p>
             </div>
-
-            <h4>Dependency Chain</h4>
+            <h4 style="margin-bottom:12px">Dependency Chain (sorted by depth)</h4>
             <div class="dep-list" id="dep-list"></div>
           </div>
 
-          <!-- REPORT TAB -->
-          <div class="tab-panel" id="tab-report">
+          <!-- Report -->
+          <div class="panel" id="panel-report">
             <div class="report-section">
               <h3>Executive Summary</h3>
               <div class="report-grid" id="report-grid">
-                <div class="report-metric">
-                  <div class="value yellow">73%</div>
-                  <div class="label">Feasibility</div>
-                </div>
-                <div class="report-metric">
-                  <div class="value red">101%</div>
-                  <div class="label">Utilization</div>
-                </div>
-                <div class="report-metric">
-                  <div class="value">5%</div>
-                  <div class="label">Completion</div>
-                </div>
-                <div class="report-metric">
-                  <div class="value red">2 days</div>
-                  <div class="label">Behind</div>
-                </div>
+                <div class="report-metric"><div class="val warn">73%</div><div class="lbl">Feasibility</div></div>
+                <div class="report-metric"><div class="val bad">101%</div><div class="lbl">Utilization</div></div>
+                <div class="report-metric"><div class="val">5%</div><div class="lbl">Complete</div></div>
+                <div class="report-metric"><div class="val bad">2 days</div><div class="lbl">Behind</div></div>
               </div>
             </div>
-
             <div class="report-section">
               <h3>Decisions Needed</h3>
-              <div id="decisions-list">
-                <div class="decision-card high">
-                  <div class="decision-title">Capacity Gap</div>
-                  <div class="decision-description">
-                    Demand exceeds capacity by 5 hours. Consider adding resources or reducing scope.
-                  </div>
-                </div>
-                <div class="decision-card high">
-                  <div class="decision-title">Circular Dependencies</div>
-                  <div class="decision-description">
-                    1 circular dependency chain is blocking work. Break the cycle to unblock progress.
-                  </div>
-                </div>
-                <div class="decision-card medium">
-                  <div class="decision-title">Overdue Issues</div>
-                  <div class="decision-description">
-                    2 issues are overdue. Review blockers and consider reassignment.
-                  </div>
-                </div>
+              <div id="decisions">
+                <div class="decision high"><div class="decision-title">Resolve Capacity Gap</div><div class="decision-desc">Demand exceeds capacity by 5 hours. Either add 1 developer, remove 5 hours of scope, or extend the deadline by 1 day.</div></div>
+                <div class="decision high"><div class="decision-title">Break Circular Dependency</div><div class="decision-desc">DEMO-120/121/122 are blocking each other. Remove one blocking link to unblock 3 issues.</div></div>
+                <div class="decision med"><div class="decision-title">Address Overdue Issues</div><div class="decision-desc">DEMO-103 and DEMO-107 are overdue. Reassign or adjust due dates.</div></div>
               </div>
             </div>
           </div>
@@ -1221,371 +732,389 @@
   </div>
 
   <script>
-    // ========== DEMO STEPS ==========
+    // Steps with improved explanations
     const steps = [
       {
-        id: 'intro',
         name: 'Introduction',
         tab: 'feasibility',
         highlight: 'summary-bar',
-        content: `
-          <span class="step-badge">Welcome</span>
-          <h2>Beyond Burndown</h2>
-          <p class="subtitle">
-            This guided demo walks you through each feature of Beyond Burndown - a Jira dashboard gadget that answers:
-            <strong>"Can we deliver the planned work with available capacity?"</strong>
-          </p>
+        html: `
+          <span class="step-num">Welcome</span>
+          <h2>What is Beyond Burndown?</h2>
 
-          <div class="highlight-box">
-            <h4>The Summary Bar</h4>
-            <p>At the top, you see key metrics at a glance:</p>
+          <div class="explanation">
+            <h3>The Problem It Solves</h3>
+            <p>Traditional burndown charts only show if you're on track <em>today</em>. They don't tell you if you have enough capacity to finish everything by the deadline. Beyond Burndown answers: <strong>"Will we make it?"</strong></p>
           </div>
 
-          <div class="guide-section">
-            <h3>Key Metrics</h3>
+          <div class="details">
+            <h3>The Summary Bar Shows</h3>
             <ul>
-              <li><strong>18 Issues</strong> - Total issues being tracked</li>
-              <li><strong>73% Feasibility</strong> - Can you deliver? (Yellow = at risk)</li>
-              <li><strong>9 Violations</strong> - Planning issues to address</li>
-              <li><strong>1 Cycle</strong> - Circular dependencies blocking work</li>
+              <li><strong>18 Issues</strong> — The total work items being analyzed</li>
+              <li><strong>73% Feasibility</strong> — You can complete 73% of planned work with current capacity. Yellow means at risk.</li>
+              <li><strong>9 Violations</strong> — Planning problems like missing dates, overdue issues, or scheduling conflicts</li>
+              <li><strong>1 Cycle</strong> — A circular dependency where issues block each other in a loop</li>
             </ul>
           </div>
 
-          <div class="try-it">
-            <h4>👉 What This Means</h4>
-            <p>This project is at risk. Demand exceeds capacity, and there are blocking issues that need attention.</p>
+          <div class="action-box">
+            <h3>What This Dashboard Tells You</h3>
+            <p>Right now, this project is <strong>at risk</strong>. The team doesn't have enough capacity to complete all planned work by the deadline. The following steps will show you exactly where the problems are and how to fix them.</p>
           </div>
         `
       },
       {
-        id: 'forecast',
-        name: 'Forecast Warning',
+        name: 'Forecast Alert',
         tab: 'feasibility',
-        highlight: 'forecast-warning',
-        content: `
-          <span class="step-badge">Step 2</span>
-          <h2>Forecast Warning</h2>
-          <p class="subtitle">
-            When the analysis detects a problem, a prominent warning appears below the summary bar.
-          </p>
+        highlight: 'forecast-alert',
+        html: `
+          <span class="step-num">Step 2</span>
+          <h2>The Forecast Alert</h2>
 
-          <div class="highlight-box">
-            <h4>What It's Telling You</h4>
-            <p><strong>"Work completes Feb 18 (2 days after deadline)"</strong></p>
-            <p style="margin-top: 8px;">Based on current capacity and demand, the work will finish 2 days late.</p>
+          <div class="explanation">
+            <h3>What This Warning Means</h3>
+            <p>Based on the current work estimates and team capacity, the analysis predicts when all work will be completed. This project will finish <strong>2 days late</strong>.</p>
           </div>
 
-          <div class="guide-section">
-            <h3>Warning Types</h3>
+          <div class="details">
+            <h3>How the Forecast Works</h3>
             <ul>
-              <li><strong>Yellow</strong> - At risk, action recommended</li>
-              <li><strong>Red</strong> - Critical, immediate action needed</li>
-              <li><strong>Green</strong> - On track (no warning shown)</li>
+              <li>Calculates remaining work from Jira time estimates</li>
+              <li>Divides by daily team capacity</li>
+              <li>Projects completion date accounting for weekends</li>
+              <li>Compares against issue due dates to find the gap</li>
             </ul>
           </div>
 
-          <div class="try-it">
-            <h4>👉 What To Do</h4>
-            <p>This warning tells you to either reduce scope, add capacity, or extend the deadline. The What-If feature (coming up) helps you evaluate these options.</p>
+          <div class="action-box">
+            <h3>To Get Back on Track</h3>
+            <p>You need to either: (1) Add more capacity, (2) Remove 5+ hours of scope, or (3) Extend the deadline. The What-If feature lets you model these options.</p>
           </div>
         `
       },
       {
-        id: 'feasibility-score',
         name: 'Feasibility Score',
         tab: 'feasibility',
-        highlight: 'feasibility-header',
-        content: `
-          <span class="step-badge">Step 3</span>
-          <h2>Feasibility Score</h2>
-          <p class="subtitle">
-            The feasibility score is the core metric - a single number that tells you if delivery is realistic.
-          </p>
+        highlight: 'feas-header',
+        html: `
+          <span class="step-num">Step 3</span>
+          <h2>The Feasibility Score</h2>
 
-          <div class="highlight-box">
-            <h4>73% Feasibility</h4>
-            <p>This means you can deliver about 73% of the planned work with current capacity.</p>
+          <div class="explanation">
+            <h3>What 73% Means</h3>
+            <p>The feasibility score represents how much of the planned work can be completed with available capacity. At 73%, you can only deliver about <strong>three-quarters</strong> of what's planned.</p>
           </div>
 
-          <div class="guide-section">
-            <h3>How It's Calculated</h3>
+          <div class="details">
+            <h3>Score Calculation</h3>
             <ul>
-              <li>Compares total capacity vs total demand</li>
-              <li>Penalizes for overloaded periods</li>
-              <li>Accounts for work already completed</li>
+              <li><strong>Total Capacity:</strong> 608 hours available until deadline</li>
+              <li><strong>Total Demand:</strong> 613 hours of remaining work</li>
+              <li><strong>Gap:</strong> 5 hours short (demand > capacity)</li>
+              <li><strong>Penalty:</strong> Score reduced further for days where demand spikes above capacity</li>
             </ul>
           </div>
 
-          <div class="guide-section">
+          <div class="details">
             <h3>Score Ranges</h3>
             <ul>
-              <li><strong>80-100%</strong> (Green) - On track</li>
-              <li><strong>50-79%</strong> (Yellow) - At risk</li>
-              <li><strong>0-49%</strong> (Red) - Critical</li>
+              <li><strong style="color:#00875A">80-100% (Green)</strong> — On track, sufficient capacity</li>
+              <li><strong style="color:#FF8B00">50-79% (Yellow)</strong> — At risk, capacity is tight</li>
+              <li><strong style="color:#DE350B">0-49% (Red)</strong> — Critical, major cuts needed</li>
             </ul>
           </div>
         `
       },
       {
-        id: 'chart',
+        name: 'Overload Detection',
+        tab: 'feasibility',
+        highlight: 'overload-bar',
+        html: `
+          <span class="step-num">Step 4</span>
+          <h2>Overload Detection</h2>
+
+          <div class="explanation">
+            <h3>Identifying Problem Periods</h3>
+            <p>Even if total capacity matches total demand, you can still have problems if work is unevenly distributed. This shows when the team will be <strong>overloaded</strong>.</p>
+          </div>
+
+          <div class="details">
+            <h3>What the Warning Shows</h3>
+            <ul>
+              <li><strong>Feb 1–8:</strong> The specific dates when overload occurs</li>
+              <li><strong>6 days:</strong> How many days are affected</li>
+              <li><strong>42 hours over:</strong> The maximum daily overload (demand exceeding capacity)</li>
+            </ul>
+          </div>
+
+          <div class="action-box">
+            <h3>How to Fix Overloads</h3>
+            <p>Move work out of overloaded periods by adjusting start dates, or bring in temporary help during those specific dates. The chart below shows the full timeline.</p>
+          </div>
+        `
+      },
+      {
         name: 'Capacity vs Demand Chart',
         tab: 'feasibility',
-        highlight: null,
-        content: `
-          <span class="step-badge">Step 4</span>
-          <h2>Capacity vs Demand Chart</h2>
-          <p class="subtitle">
-            The chart visualizes how demand compares to capacity over time, making it easy to spot problems.
-          </p>
+        highlight: 'chart-legend',
+        html: `
+          <span class="step-num">Step 5</span>
+          <h2>The Timeline Chart</h2>
 
-          <div class="highlight-box">
-            <h4>Reading the Chart</h4>
-            <p>Look for where the blue line (demand) exceeds the green line (capacity) - those are overloaded periods.</p>
+          <div class="explanation">
+            <h3>Visualizing the Problem</h3>
+            <p>This chart shows cumulative capacity and demand over time. Where the blue line (demand) is above the green line (capacity), you're behind schedule.</p>
           </div>
 
-          <div class="guide-section">
-            <h3>Chart Lines</h3>
+          <div class="details">
+            <h3>Reading the Lines</h3>
             <ul>
-              <li><strong style="color: #00875A;">Green</strong> - Cumulative capacity over time</li>
-              <li><strong style="color: #0052CC;">Blue</strong> - Cumulative demand over time</li>
-              <li><strong style="color: #FF8B00;">Orange</strong> - Time already spent (work done)</li>
+              <li><strong style="color:#00875A">Green (Capacity)</strong> — Total hours your team can work, accumulated daily</li>
+              <li><strong style="color:#0052CC">Blue (Demand)</strong> — Total hours of work needed, accumulated daily</li>
+              <li><strong style="color:#FF8B00">Orange (Time Spent)</strong> — Work already completed (logged time)</li>
             </ul>
           </div>
 
-          <div class="try-it">
-            <h4>👉 What to Look For</h4>
-            <p>If the blue line is above the green line, you're over capacity. The gap shows how much you need to cut or how much more capacity you need.</p>
+          <div class="action-box">
+            <h3>Key Insight</h3>
+            <p>The gap between green and blue lines at the end represents your shortfall. If demand ends higher than capacity, you won't finish on time.</p>
           </div>
         `
       },
       {
-        id: 'overload',
-        name: 'Overload Warning',
-        tab: 'feasibility',
-        highlight: 'overload-warning',
-        content: `
-          <span class="step-badge">Step 5</span>
-          <h2>Overload Warning</h2>
-          <p class="subtitle">
-            When specific periods are overloaded, you'll see a detailed warning showing exactly when and how bad.
-          </p>
-
-          <div class="highlight-box">
-            <h4>The Problem</h4>
-            <p><strong>"Feb 1 to Feb 8 (6 days, max 42h over capacity)"</strong></p>
-            <p style="margin-top: 8px;">During this period, demand exceeds capacity by up to 42 hours.</p>
-          </div>
-
-          <div class="guide-section">
-            <h3>Why This Matters</h3>
-            <ul>
-              <li>Identifies exactly when the team will be overloaded</li>
-              <li>Shows the magnitude of the problem</li>
-              <li>Helps prioritize where to focus improvements</li>
-            </ul>
-          </div>
-
-          <div class="try-it">
-            <h4>👉 Action Items</h4>
-            <p>Consider front-loading work before Feb 1, or shifting some work to after Feb 8 when capacity is available.</p>
-          </div>
-        `
-      },
-      {
-        id: 'whatif',
         name: 'What-If Analysis',
         tab: 'feasibility',
-        highlight: 'whatif-toggle',
+        highlight: 'whatif-btn',
         showWhatIf: true,
-        content: `
-          <span class="step-badge">Step 6</span>
-          <h2>What-If Analysis</h2>
-          <p class="subtitle">
-            The What-If panel lets you model scenarios to see how changes would impact feasibility.
-          </p>
+        html: `
+          <span class="step-num">Step 6</span>
+          <h2>What-If Scenario Modeling</h2>
 
-          <div class="highlight-box">
-            <h4>Three Scenario Types</h4>
-            <p>Add capacity, reduce scope, or extend deadlines - and instantly see the impact.</p>
+          <div class="explanation">
+            <h3>Test Solutions Before Committing</h3>
+            <p>Instead of guessing, model different scenarios to see exactly how each option affects your feasibility score.</p>
           </div>
 
-          <div class="guide-section">
-            <h3>Scenario Options</h3>
+          <div class="details">
+            <h3>Three Types of Scenarios</h3>
             <ul>
-              <li><strong>+ Capacity</strong> - What if we add developers?</li>
-              <li><strong>- Scope</strong> - What if we cut features?</li>
-              <li><strong>+ Time</strong> - What if we extend the deadline?</li>
+              <li><strong>Add Capacity</strong> — What if we add contractors or overtime? (+1 dev @ 8h/day = +160 hours)</li>
+              <li><strong>Reduce Scope</strong> — What if we cut features? (Remove 60 hours = +10% feasibility)</li>
+              <li><strong>Extend Deadline</strong> — What if we push the date? (+1 week = +160 hours capacity)</li>
             </ul>
           </div>
 
-          <div class="try-it">
-            <h4>👉 Try It Now</h4>
-            <p>The What-If panel is now open. Notice how adding 1 developer @ 8h/day would increase feasibility to 86%.</p>
+          <div class="action-box">
+            <h3>Try It Now</h3>
+            <p>The panel shows adding 1 developer would raise feasibility from 73% to 86%. You can combine scenarios to find the right mix.</p>
           </div>
         `
       },
       {
-        id: 'team',
         name: 'Team Workload',
         tab: 'team',
         highlight: null,
-        content: `
-          <span class="step-badge">Step 7</span>
-          <h2>Team Workload</h2>
-          <p class="subtitle">
-            The Team tab shows individual workload distribution, helping identify who's overloaded and who has capacity.
-          </p>
+        html: `
+          <span class="step-num">Step 7</span>
+          <h2>Team Workload Distribution</h2>
 
-          <div class="highlight-box">
-            <h4>Per-Person View</h4>
-            <p>See each team member's assigned work vs their available capacity.</p>
+          <div class="explanation">
+            <h3>Who's Overloaded?</h3>
+            <p>The Team tab breaks down workload by person, showing who has too much work assigned and who has spare capacity.</p>
           </div>
 
-          <div class="guide-section">
-            <h3>Status Indicators</h3>
+          <div class="details">
+            <h3>Understanding the Display</h3>
             <ul>
-              <li><strong style="color: #00875A;">On Track</strong> - Workload matches capacity</li>
-              <li><strong style="color: #DE350B;">Overloaded</strong> - Too much assigned work</li>
-              <li><strong style="color: #FF8B00;">Under-utilized</strong> - Has spare capacity</li>
+              <li><strong>Bar length</strong> — Percentage of capacity used (over 100% = overloaded)</li>
+              <li><strong style="color:#00875A">Green bar</strong> — Healthy workload (under 90%)</li>
+              <li><strong style="color:#FF8B00">Yellow bar</strong> — Near capacity (90-100%)</li>
+              <li><strong style="color:#DE350B">Red bar</strong> — Overloaded (over 100%)</li>
             </ul>
           </div>
 
-          <div class="try-it">
-            <h4>👉 What You See</h4>
-            <p>Bob and David are overloaded (red bars), while Carol has spare capacity. Consider rebalancing work across the team.</p>
+          <div class="action-box">
+            <h3>Rebalancing Work</h3>
+            <p>Bob (113%) and David (131%) are overloaded while Carol (75%) has spare capacity. Moving 40 hours from David to Carol would help.</p>
           </div>
         `
       },
       {
-        id: 'compliance',
+        name: 'Capacity Configuration',
+        tab: 'capacity',
+        highlight: 'cap-config',
+        html: `
+          <span class="step-num">Step 8</span>
+          <h2>Capacity Configuration</h2>
+
+          <div class="explanation">
+            <h3>Defining Team Availability</h3>
+            <p>This is where you tell Beyond Burndown how much capacity your team has. No more creating fake "capacity" issues in Jira.</p>
+          </div>
+
+          <div class="details">
+            <h3>Configuration Options</h3>
+            <ul>
+              <li><strong>Team Total</strong> — Enter one number for the whole team's weekly hours</li>
+              <li><strong>Per User</strong> — Enter hours for each team member individually</li>
+              <li><strong>Weekly/Monthly</strong> — Choose your planning period</li>
+            </ul>
+          </div>
+
+          <div class="details">
+            <h3>Current Configuration</h3>
+            <ul>
+              <li>Alice Chen: 40 hrs/week</li>
+              <li>Bob Martinez: 40 hrs/week</li>
+              <li>Carol Kim: 40 hrs/week</li>
+              <li>David Patel: 32 hrs/week (part-time)</li>
+              <li><strong>Total: 152 hrs/week</strong></li>
+            </ul>
+          </div>
+
+          <div class="action-box">
+            <h3>Why This Matters</h3>
+            <p>Accurate capacity is essential for accurate forecasting. Include PTO, meetings, and other non-project time when setting these values.</p>
+          </div>
+        `
+      },
+      {
         name: 'Compliance Violations',
         tab: 'compliance',
         highlight: null,
-        content: `
-          <span class="step-badge">Step 8</span>
+        html: `
+          <span class="step-num">Step 9</span>
           <h2>Compliance Violations</h2>
-          <p class="subtitle">
-            The Compliance tab identifies planning issues that need attention - missing data, schedule conflicts, and more.
-          </p>
 
-          <div class="highlight-box">
-            <h4>9 Violations Detected</h4>
-            <p>4 errors (critical), 4 warnings (important), 1 info (minor)</p>
+          <div class="explanation">
+            <h3>Finding Planning Problems</h3>
+            <p>The compliance engine automatically detects issues with your Jira data that could cause problems — missing information, scheduling conflicts, and overdue work.</p>
           </div>
 
-          <div class="guide-section">
-            <h3>Violation Types</h3>
+          <div class="details">
+            <h3>Violation Types Found</h3>
             <ul>
-              <li><strong>Overdue</strong> - Issues past their due date</li>
-              <li><strong>Dependency conflicts</strong> - Blocker finishes too late</li>
-              <li><strong>Missing dates</strong> - No start or due date</li>
-              <li><strong>Missing estimates</strong> - No time estimate</li>
+              <li><strong style="color:#DE350B">Overdue (2)</strong> — DEMO-103 and DEMO-107 are past their due date</li>
+              <li><strong style="color:#DE350B">Dependency conflict (1)</strong> — DEMO-104 starts before its blocker finishes</li>
+              <li><strong style="color:#DE350B">Child after parent (1)</strong> — DEMO-111 is due after its parent Epic</li>
+              <li><strong style="color:#FF8B00">Missing dates (2)</strong> — DEMO-108, DEMO-112 have no due date</li>
+              <li><strong style="color:#FF8B00">Missing estimates (2)</strong> — DEMO-109, DEMO-116 have no time estimate</li>
             </ul>
           </div>
 
-          <div class="try-it">
-            <h4>👉 Filter by Severity</h4>
-            <p>Use the filter buttons to focus on errors first, then work through warnings.</p>
+          <div class="action-box">
+            <h3>Fixing Violations</h3>
+            <p>Start with errors (red) — they have the biggest impact on forecast accuracy. Warnings (yellow) should be addressed but are less critical.</p>
           </div>
         `
       },
       {
-        id: 'dependencies',
         name: 'Dependency Analysis',
         tab: 'dependencies',
-        highlight: 'cycle-warning',
-        content: `
-          <span class="step-badge">Step 9</span>
+        highlight: 'cycle-alert',
+        html: `
+          <span class="step-num">Step 10</span>
           <h2>Dependency Analysis</h2>
-          <p class="subtitle">
-            The Dependencies tab shows blocking relationships between issues and detects circular dependencies.
-          </p>
 
-          <div class="highlight-box">
-            <h4>Circular Dependency Found!</h4>
-            <p><code>DEMO-120 → DEMO-121 → DEMO-122 → DEMO-120</code></p>
-            <p style="margin-top: 8px;">This cycle must be broken - these issues can never be completed as-is.</p>
+          <div class="explanation">
+            <h3>Finding Blocking Chains</h3>
+            <p>Beyond Burndown extracts blocking relationships from Jira and analyzes them to find problems like circular dependencies that make work impossible to complete.</p>
           </div>
 
-          <div class="guide-section">
-            <h3>Key Metrics</h3>
+          <div class="details">
+            <h3>Circular Dependency Explained</h3>
             <ul>
-              <li><strong>Max Depth: 5</strong> - Longest dependency chain</li>
-              <li><strong>Cycles: 1</strong> - Circular dependencies (blocking!)</li>
-              <li><strong>Leaf Issues: 4</strong> - End of dependency chains</li>
+              <li>DEMO-120 is blocked by DEMO-122</li>
+              <li>DEMO-122 is blocked by DEMO-121</li>
+              <li>DEMO-121 is blocked by DEMO-120</li>
+              <li><strong>Result:</strong> None of these can ever start!</li>
             </ul>
           </div>
 
-          <div class="try-it">
-            <h4>👉 Why This Matters</h4>
-            <p>Deep dependency chains increase risk. Circular dependencies completely block progress until resolved.</p>
+          <div class="details">
+            <h3>Dependency Metrics</h3>
+            <ul>
+              <li><strong>Max Depth: 5</strong> — Longest chain of sequential dependencies</li>
+              <li><strong>Leaf Issues: 4</strong> — Issues at the end of chains (final deliverables)</li>
+            </ul>
+          </div>
+
+          <div class="action-box">
+            <h3>Resolving the Cycle</h3>
+            <p>Remove one blocking link to break the cycle. Often these are added by mistake or represent "nice to have" rather than true dependencies.</p>
           </div>
         `
       },
       {
-        id: 'report',
         name: 'Executive Report',
         tab: 'report',
         highlight: 'report-grid',
-        content: `
-          <span class="step-badge">Step 10</span>
+        html: `
+          <span class="step-num">Step 11</span>
           <h2>Executive Report</h2>
-          <p class="subtitle">
-            The Report tab provides a summary view with key metrics and actionable decisions needed.
-          </p>
 
-          <div class="highlight-box">
-            <h4>At a Glance</h4>
-            <p>73% feasibility, 101% utilization, 5% complete, 2 days behind schedule.</p>
+          <div class="explanation">
+            <h3>Summary for Decision Makers</h3>
+            <p>The Report tab consolidates all findings into actionable items with clear priorities.</p>
           </div>
 
-          <div class="guide-section">
-            <h3>Decisions Needed</h3>
+          <div class="details">
+            <h3>Key Metrics</h3>
             <ul>
-              <li><strong>Capacity Gap</strong> - Demand exceeds capacity by 5 hours</li>
-              <li><strong>Circular Dependencies</strong> - Must break the cycle</li>
-              <li><strong>Overdue Issues</strong> - 2 issues need attention</li>
+              <li><strong>73% Feasibility</strong> — At risk, not enough capacity</li>
+              <li><strong>101% Utilization</strong> — Team is slightly overcommitted</li>
+              <li><strong>5% Complete</strong> — Early in the project</li>
+              <li><strong>2 Days Behind</strong> — Current trajectory misses deadline</li>
             </ul>
           </div>
 
-          <div class="try-it">
-            <h4>👉 Demo Complete!</h4>
-            <p>You've seen all the key features. Ready to try it on your own Jira data?</p>
+          <div class="details">
+            <h3>Recommended Actions</h3>
+            <ul>
+              <li><strong>Priority 1:</strong> Break the circular dependency to unblock 3 issues</li>
+              <li><strong>Priority 2:</strong> Add capacity or cut scope to close the 5-hour gap</li>
+              <li><strong>Priority 3:</strong> Address 2 overdue issues</li>
+            </ul>
           </div>
 
-          <div style="margin-top: 24px; text-align: center;">
-            <a href="https://marketplace.atlassian.com/" style="display: inline-block; padding: 12px 24px; background: var(--green); color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">Install on Your Jira</a>
+          <div class="action-box">
+            <h3>Demo Complete!</h3>
+            <p>You've seen all the key features. Beyond Burndown turns complex Jira data into clear, actionable insights.</p>
+            <p style="margin-top:12px"><a href="https://marketplace.atlassian.com/" style="display:inline-block;padding:12px 24px;background:var(--green);color:white;text-decoration:none;border-radius:6px;font-weight:600;">Install on Your Jira</a></p>
           </div>
         `
       }
     ];
 
-    // ========== STATE ==========
-    let currentStep = 0;
-    let feasibilityChart = null;
-    let scenarios = [];
+    // State
+    let step = 0;
+    let chart = null;
 
-    // ========== DEMO DATA ==========
-    const teamMembers = [
-      { name: 'Alice Chen', demand: 145, capacity: 160, load: 91, status: 'on_track', issues: 5 },
-      { name: 'Bob Martinez', demand: 180, capacity: 160, load: 113, status: 'overloaded', issues: 6 },
-      { name: 'Carol Kim', demand: 120, capacity: 160, load: 75, status: 'under_utilized', issues: 4 },
-      { name: 'David Patel', demand: 168, capacity: 128, load: 131, status: 'overloaded', issues: 3 }
+    // Data
+    const team = [
+      { name: 'Alice Chen', issues: 5, demand: 145, capacity: 160, load: 91, status: 'ok' },
+      { name: 'Bob Martinez', issues: 6, demand: 180, capacity: 160, load: 113, status: 'bad' },
+      { name: 'Carol Kim', issues: 4, demand: 120, capacity: 160, load: 75, status: 'warn' },
+      { name: 'David Patel', issues: 3, demand: 168, capacity: 128, load: 131, status: 'bad' }
     ];
-
+    const capacity = [
+      { name: 'Alice Chen', hours: 40 },
+      { name: 'Bob Martinez', hours: 40 },
+      { name: 'Carol Kim', hours: 40 },
+      { name: 'David Patel', hours: 32 }
+    ];
     const violations = [
-      { severity: 'error', key: 'DEMO-103', summary: 'API optimization', message: 'Overdue by 3 days' },
-      { severity: 'error', key: 'DEMO-104', summary: 'Database migration', message: 'Blocked by DEMO-106 (finishes 2 days after start)' },
-      { severity: 'error', key: 'DEMO-111', summary: 'Mobile app feature', message: 'Due 5 days after parent DEMO-100' },
-      { severity: 'error', key: 'DEMO-107', summary: 'Search functionality', message: 'Overdue by 1 day' },
-      { severity: 'warning', key: 'DEMO-108', summary: 'Payment gateway', message: 'Missing start and due date' },
-      { severity: 'warning', key: 'DEMO-112', summary: 'Email notifications', message: 'Missing due date' },
-      { severity: 'warning', key: 'DEMO-109', summary: 'Analytics widgets', message: 'Missing time estimate' },
-      { severity: 'warning', key: 'DEMO-116', summary: 'Dark mode', message: 'Missing time estimate' },
-      { severity: 'info', key: 'DEMO-115', summary: 'Profile customization', message: 'Missing start date' }
+      { sev: 'error', key: 'DEMO-103', msg: 'Overdue by 3 days' },
+      { sev: 'error', key: 'DEMO-104', msg: 'Blocked by DEMO-106 which finishes 2 days after this starts' },
+      { sev: 'error', key: 'DEMO-111', msg: 'Due 5 days after parent Epic DEMO-100' },
+      { sev: 'error', key: 'DEMO-107', msg: 'Overdue by 1 day' },
+      { sev: 'warning', key: 'DEMO-108', msg: 'Missing start date and due date' },
+      { sev: 'warning', key: 'DEMO-112', msg: 'Missing due date' },
+      { sev: 'warning', key: 'DEMO-109', msg: 'Missing time estimate' },
+      { sev: 'warning', key: 'DEMO-116', msg: 'Missing time estimate' },
+      { sev: 'info', key: 'DEMO-115', msg: 'Missing start date (minor)' }
     ];
-
-    const dependencies = [
+    const deps = [
       { key: 'DEMO-100', summary: 'Epic: Q1 Release', depth: 0 },
       { key: 'DEMO-101', summary: 'User authentication', depth: 1 },
       { key: 'DEMO-102', summary: 'Dashboard redesign', depth: 1 },
@@ -1596,171 +1125,81 @@
       { key: 'DEMO-111', summary: 'Mobile feature', depth: 5 }
     ];
 
-    // ========== INITIALIZATION ==========
+    // Init
     document.addEventListener('DOMContentLoaded', () => {
-      renderStep();
-      renderDots();
+      render();
       initChart();
       renderTeam();
+      renderCapacity();
       renderViolations();
-      renderDependencies();
+      renderDeps();
       initTabs();
     });
 
-    // ========== STEP NAVIGATION ==========
-    function renderStep() {
-      const step = steps[currentStep];
+    function render() {
+      const s = steps[step];
+      document.getElementById('guide-body').innerHTML = s.html;
+      document.getElementById('progress').style.width = ((step + 1) / steps.length * 100) + '%';
+      document.getElementById('step-text').textContent = `Step ${step + 1} of ${steps.length}`;
+      document.getElementById('step-name').textContent = s.name;
+      document.getElementById('prev-btn').disabled = step === 0;
+      document.getElementById('next-btn').textContent = step === steps.length - 1 ? 'Finish' : 'Next Step';
 
-      // Update guide content
-      document.getElementById('guide-content').innerHTML = step.content;
+      // Switch tab
+      switchTab(s.tab);
 
-      // Update progress
-      const progress = ((currentStep + 1) / steps.length) * 100;
-      document.getElementById('progress-fill').style.width = progress + '%';
-      document.getElementById('step-counter').textContent = `Step ${currentStep + 1} of ${steps.length}`;
-      document.getElementById('step-name').textContent = step.name;
-
-      // Update buttons
-      document.getElementById('btn-prev').disabled = currentStep === 0;
-      document.getElementById('btn-next').textContent = currentStep === steps.length - 1 ? 'Finish' : 'Next Step';
-
-      // Switch to correct tab
-      switchTab(step.tab);
-
-      // Apply highlight
-      clearHighlights();
-      if (step.highlight) {
-        const el = document.getElementById(step.highlight);
-        if (el) el.classList.add('highlight-element');
+      // Highlight
+      document.querySelectorAll('.highlight').forEach(e => e.classList.remove('highlight'));
+      if (s.highlight) {
+        const el = document.getElementById(s.highlight);
+        if (el) el.classList.add('highlight');
       }
 
-      // Show What-If panel if needed
-      if (step.showWhatIf) {
+      // What-If
+      if (s.showWhatIf) {
         document.getElementById('whatif-panel').style.display = 'block';
-        document.getElementById('whatif-toggle').classList.add('active');
-      } else if (step.id !== 'whatif') {
+        document.getElementById('whatif-btn').classList.add('active');
+      } else {
         document.getElementById('whatif-panel').style.display = 'none';
-        document.getElementById('whatif-toggle').classList.remove('active');
-      }
-
-      // Update dots
-      renderDots();
-    }
-
-    function renderDots() {
-      const container = document.getElementById('step-dots');
-      container.innerHTML = steps.map((s, i) =>
-        `<div class="step-dot ${i === currentStep ? 'active' : i < currentStep ? 'completed' : ''}"
-              onclick="goToStep(${i})"></div>`
-      ).join('');
-    }
-
-    function nextStep() {
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        renderStep();
+        document.getElementById('whatif-btn').classList.remove('active');
       }
     }
 
-    function prevStep() {
-      if (currentStep > 0) {
-        currentStep--;
-        renderStep();
-      }
-    }
+    function nextStep() { if (step < steps.length - 1) { step++; render(); } }
+    function prevStep() { if (step > 0) { step--; render(); } }
 
-    function goToStep(idx) {
-      currentStep = idx;
-      renderStep();
-    }
-
-    function clearHighlights() {
-      document.querySelectorAll('.highlight-element').forEach(el => {
-        el.classList.remove('highlight-element');
-      });
-    }
-
-    // ========== TABS ==========
     function initTabs() {
-      document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.addEventListener('click', () => {
-          switchTab(btn.dataset.tab);
-        });
+      document.querySelectorAll('.tab').forEach(t => {
+        t.addEventListener('click', () => switchTab(t.dataset.tab));
       });
     }
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-button').forEach(b => {
-        b.classList.toggle('active', b.dataset.tab === tabId);
-      });
-      document.querySelectorAll('.tab-panel').forEach(p => {
-        p.classList.toggle('active', p.id === 'tab-' + tabId);
-      });
+    function switchTab(id) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
     }
 
-    // ========== CHART ==========
     function initChart() {
-      const ctx = document.getElementById('feasibilityChart').getContext('2d');
-
-      // Generate timeline data
-      const days = [];
-      const capacity = [];
-      const demand = [];
-      const timeSpent = [];
-
-      let cumCap = 0, cumDem = 0, cumSpent = 0;
+      const ctx = document.getElementById('chart').getContext('2d');
+      const labels = [], cap = [], dem = [], spent = [];
+      let cC = 0, cD = 0;
       for (let i = 0; i < 20; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() - 5 + i);
-        days.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-
-        const dailyCap = 32;
-        const dailyDem = 28 + Math.sin(i * 0.5) * 12 + (i < 8 ? 10 : 0);
-        const dailySpent = i < 3 ? 10 + i * 5 : 32.5;
-
-        cumCap += dailyCap;
-        cumDem += dailyDem;
-        cumSpent = Math.min(dailySpent, cumDem);
-
-        capacity.push(cumCap);
-        demand.push(cumDem);
-        timeSpent.push(cumSpent);
+        const d = new Date(); d.setDate(d.getDate() - 5 + i);
+        labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        cC += 32;
+        cD += 28 + Math.sin(i * 0.5) * 12 + (i < 8 ? 10 : 0);
+        cap.push(cC);
+        dem.push(cD);
+        spent.push(i < 3 ? 10 + i * 8 : 32.5);
       }
-
-      feasibilityChart = new Chart(ctx, {
+      chart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: days,
+          labels,
           datasets: [
-            {
-              label: 'Capacity',
-              data: capacity,
-              borderColor: '#00875A',
-              backgroundColor: 'rgba(0,135,90,0.1)',
-              fill: true,
-              tension: 0.3,
-              borderWidth: 2,
-              pointRadius: 0
-            },
-            {
-              label: 'Demand',
-              data: demand,
-              borderColor: '#0052CC',
-              fill: false,
-              tension: 0.3,
-              borderWidth: 2,
-              pointRadius: 0
-            },
-            {
-              label: 'Time Spent',
-              data: timeSpent,
-              borderColor: '#FF8B00',
-              borderDash: [5, 5],
-              fill: false,
-              tension: 0.3,
-              borderWidth: 2,
-              pointRadius: 0
-            }
+            { label: 'Capacity', data: cap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.3, borderWidth: 2, pointRadius: 0 },
+            { label: 'Demand', data: dem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 },
+            { label: 'Time Spent', data: spent, borderColor: '#FF8B00', borderDash: [5, 5], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 }
           ]
         },
         options: {
@@ -1768,144 +1207,87 @@
           maintainAspectRatio: false,
           interaction: { intersect: false, mode: 'index' },
           plugins: { legend: { display: false } },
-          scales: {
-            y: { beginAtZero: true, title: { display: true, text: 'Hours' } }
-          }
+          scales: { y: { beginAtZero: true, title: { display: true, text: 'Hours' } } }
         }
       });
     }
 
-    // ========== TEAM ==========
     function renderTeam() {
-      const container = document.getElementById('team-list');
-      container.innerHTML = teamMembers.map(m => {
-        const initials = m.name.split(' ').map(n => n[0]).join('');
-        const loadClass = m.load > 100 ? 'danger' : m.load > 80 ? 'warning' : 'good';
-        const statusLabels = {
-          on_track: 'On Track', overloaded: 'Overloaded', under_utilized: 'Under-utilized'
-        };
-        return `
-          <div class="team-member">
-            <div class="member-avatar">${initials}</div>
-            <div class="member-info">
-              <div class="member-name">${m.name}</div>
-              <div class="member-stats">
-                <span>${m.issues} issues</span>
-                <span>${m.demand}h demand</span>
-                <span>${m.capacity}h capacity</span>
-              </div>
-              <div class="load-bar">
-                <div class="load-fill ${loadClass}" style="width: ${Math.min(m.load, 150)}%"></div>
-              </div>
-            </div>
-            <div class="member-status ${m.status}">${statusLabels[m.status]}</div>
+      const c = document.getElementById('team-list');
+      c.innerHTML = team.map(m => {
+        const init = m.name.split(' ').map(n => n[0]).join('');
+        const cls = m.load > 100 ? 'bad' : m.load > 85 ? 'warn' : 'ok';
+        const lbl = { ok: 'On Track', warn: 'Near Capacity', bad: 'Overloaded' }[cls];
+        return `<div class="team-member">
+          <div class="avatar">${init}</div>
+          <div class="member-info">
+            <div class="member-name">${m.name}</div>
+            <div class="member-stats"><span>${m.issues} issues</span><span>${m.demand}h demand</span><span>${m.capacity}h capacity</span></div>
+            <div class="load-bar"><div class="load-fill ${cls}" style="width:${Math.min(m.load, 150)}%"></div></div>
           </div>
-        `;
+          <div class="status-tag ${cls}">${lbl}</div>
+        </div>`;
       }).join('');
     }
 
-    // ========== VIOLATIONS ==========
+    function renderCapacity() {
+      const c = document.getElementById('cap-members');
+      c.innerHTML = capacity.map((m, i) => `<div class="cap-member">
+        <span>${m.name}</span>
+        <input type="number" value="${m.hours}" onchange="updateCap(${i}, this.value)">
+        <button onclick="removeCap(${i})">×</button>
+      </div>`).join('');
+      updateCapTotal();
+    }
+
+    function updateCap(i, v) { capacity[i].hours = parseInt(v) || 0; updateCapTotal(); }
+    function removeCap(i) { capacity.splice(i, 1); renderCapacity(); }
+    function updateCapTotal() { document.getElementById('cap-total').textContent = capacity.reduce((s, m) => s + m.hours, 0); }
+    function setCapType(t) { document.querySelectorAll('.cap-row:first-child button').forEach((b, i) => b.classList.toggle('active', (t === 'team' ? i === 0 : i === 1))); }
+    function setCapPeriod(p) { document.querySelectorAll('.cap-row:nth-child(2) button').forEach((b, i) => b.classList.toggle('active', (p === 'week' ? i === 0 : i === 1))); }
+    function saveCapacity() { alert('Capacity saved! (Demo mode)'); }
+
     function renderViolations(filter = 'all') {
-      const filtered = filter === 'all' ? violations : violations.filter(v => v.severity === filter);
+      const f = filter === 'all' ? violations : violations.filter(v => v.sev === filter);
       const icons = { error: '❌', warning: '⚠️', info: 'ℹ️' };
-
-      document.getElementById('violations-list').innerHTML = filtered.map(v => `
-        <div class="violation-item ${v.severity}">
-          <div>${icons[v.severity]}</div>
-          <div class="violation-content">
-            <span class="violation-key">${v.key}</span> - ${v.summary}
-            <div class="violation-message">${v.message}</div>
-          </div>
-        </div>
-      `).join('');
+      document.getElementById('violations').innerHTML = f.map(v => `<div class="violation ${v.sev}">
+        <div class="violation-icon">${icons[v.sev]}</div>
+        <div class="violation-body"><span class="violation-key">${v.key}</span><div class="violation-msg">${v.msg}</div></div>
+      </div>`).join('');
     }
 
-    function filterViolations(filter) {
-      document.querySelectorAll('.violation-filters button').forEach(b => {
-        b.classList.toggle('active', b.dataset.filter === filter);
-      });
-      renderViolations(filter);
+    function filterV(f) {
+      document.querySelectorAll('.filters button').forEach(b => b.classList.toggle('active', b.dataset.f === f));
+      renderViolations(f);
     }
 
-    // ========== DEPENDENCIES ==========
-    function renderDependencies() {
-      document.getElementById('dep-list').innerHTML = dependencies.map(d => `
-        <div class="dep-item">
-          <div class="dep-depth">${d.depth}</div>
-          <span class="dep-key">${d.key}</span>
-          <span class="dep-summary">${d.summary}</span>
-        </div>
-      `).join('');
+    function renderDeps() {
+      document.getElementById('dep-list').innerHTML = deps.map(d => `<div class="dep-item">
+        <div class="dep-depth">${d.depth}</div>
+        <span class="dep-key">${d.key}</span>
+        <span class="dep-summary">${d.summary}</span>
+      </div>`).join('');
     }
 
-    // ========== WHAT-IF ==========
     function toggleWhatIf() {
-      const panel = document.getElementById('whatif-panel');
-      const btn = document.getElementById('whatif-toggle');
-      const isVisible = panel.style.display !== 'none';
-      panel.style.display = isVisible ? 'none' : 'block';
-      btn.classList.toggle('active', !isVisible);
+      const p = document.getElementById('whatif-panel');
+      const b = document.getElementById('whatif-btn');
+      const v = p.style.display !== 'block';
+      p.style.display = v ? 'block' : 'none';
+      b.classList.toggle('active', v);
     }
 
-    function addScenario() {
-      const devs = parseInt(document.getElementById('dev-count').value) || 1;
-      const hours = parseInt(document.getElementById('hours-per-dev').value) || 8;
-      const change = devs * hours * 20;
-
-      scenarios.push({
-        id: Date.now(),
-        description: `+${devs} dev @ ${hours}h/day`,
-        capacityChange: change
-      });
-
-      renderScenarios();
-      updateFeasibility();
-    }
-
-    function renderScenarios() {
-      const container = document.getElementById('active-scenarios');
-      const list = document.getElementById('scenario-list');
-
-      if (scenarios.length === 0) {
-        container.style.display = 'none';
-        return;
-      }
-
-      container.style.display = 'block';
-      list.innerHTML = scenarios.map(s => `
-        <div class="scenario-item">
-          <span style="color: var(--green);">${s.description}</span>
-          <button onclick="removeScenario(${s.id})" style="margin-left: auto; background: none; border: none; cursor: pointer;">×</button>
-        </div>
-      `).join('');
-
-      const totalChange = scenarios.reduce((sum, s) => sum + s.capacityChange, 0);
-      const newFeas = Math.min(100, Math.round((608 + totalChange) / 613 * 100));
-
-      document.getElementById('combined-effect').innerHTML = `
-        <div class="row">
-          <span>Combined Effect:</span>
-          <span style="color: var(--green); font-weight: 600;">73% → ${newFeas}%</span>
-        </div>
-      `;
-    }
-
-    function removeScenario(id) {
-      scenarios = scenarios.filter(s => s.id !== id);
-      renderScenarios();
-      updateFeasibility();
-    }
-
-    function updateFeasibility() {
-      const totalChange = scenarios.reduce((sum, s) => sum + s.capacityChange, 0);
-      const newFeas = scenarios.length > 0
-        ? Math.min(100, Math.round((608 + totalChange) / 613 * 100))
-        : 73;
-
-      const color = newFeas >= 80 ? 'var(--green)' : newFeas >= 50 ? 'var(--yellow)' : 'var(--red)';
-      document.getElementById('feasibility-score').style.color = color;
-      document.getElementById('feasibility-score').textContent = newFeas + '%';
-      document.getElementById('feasibility-display').textContent = newFeas + '%';
+    function applyScenario() {
+      const devs = parseInt(document.getElementById('dev-input').value) || 1;
+      const hrs = parseInt(document.getElementById('hrs-input').value) || 8;
+      const add = devs * hrs * 20;
+      const newFeas = Math.min(100, Math.round((608 + add) / 613 * 100));
+      const color = newFeas >= 80 ? 'var(--green)' : 'var(--yellow)';
+      document.getElementById('score').textContent = newFeas + '%';
+      document.getElementById('score').style.color = color;
+      document.getElementById('feas-val').textContent = newFeas + '%';
+      document.getElementById('feas-val').className = 'metric-val ' + (newFeas >= 80 ? 'ok' : 'warn');
+      alert(`Scenario applied! Feasibility is now ${newFeas}%`);
     }
   </script>
 </body>
