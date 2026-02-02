@@ -1325,8 +1325,8 @@
       switch (view) {
         case 'daily':
           datasets = [
-            { label: 'Daily Capacity', data: chartData.dailyCap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.1, borderWidth: 3, pointRadius: 3 },
-            { label: 'Daily Demand', data: chartData.dailyDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 3 }
+            { label: 'Daily Capacity', data: chartData.dailyCap, borderColor: '#00875A', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 4 },
+            { label: 'Daily Demand', data: chartData.dailyDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 4 }
           ];
           scales = { y: { beginAtZero: true, max: 55, title: { display: true, text: 'Hours per Day', font: { weight: 'bold' } } } };
           legendHtml = `
@@ -1337,7 +1337,7 @@
 
         case 'cumulative':
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 0 },
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
             { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
           scales = { y: { beginAtZero: true, title: { display: true, text: 'Cumulative Hours', font: { weight: 'bold' } } } };
@@ -1349,7 +1349,7 @@
 
         case 'spent':
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 0 },
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
             { label: 'Time Spent', data: chartData.cumSpent, borderColor: '#FF8B00', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
           scales = { y: { beginAtZero: true, title: { display: true, text: 'Cumulative Hours', font: { weight: 'bold' } } } };
@@ -1361,17 +1361,17 @@
 
         case 'completion':
           datasets = [
-            { label: 'Completion %', data: chartData.completionPct, borderColor: '#9C27B0', backgroundColor: 'rgba(156,39,176,0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 0 }
+            { label: 'Completion %', data: chartData.completionPct, borderColor: '#9C27B0', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
           scales = { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Completion %', font: { weight: 'bold' } }, ticks: { callback: v => v + '%' } } };
           legendHtml = `
-            <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion % (Time Spent ÷ Estimate)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion %</div>
           `;
           break;
 
         default:
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.3, borderWidth: 2, pointRadius: 0 },
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 },
             { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 }
           ];
           scales = { y: { beginAtZero: true, title: { display: true, text: 'Hours' } } };
@@ -1397,7 +1397,7 @@
     }
 
     function updateChartView(view) {
-      if (view === currentChartView) return;
+      // Always recreate chart for the requested view
       createChart(view);
     }
 
