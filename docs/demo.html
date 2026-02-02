@@ -572,7 +572,7 @@
       <div class="guide-header">
         <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
         <div class="progress-text">
-          <span id="step-text">Step 1 of 11</span>
+          <span id="step-text">Step 1 of 14</span>
           <span id="step-name">Introduction</span>
         </div>
       </div>
@@ -619,12 +619,8 @@
             <div class="warn-bar" id="overload-bar">⚠️ <strong>Overloaded period:</strong> Feb 1–8 (6 days) — demand exceeds capacity by up to 42 hours</div>
             <div class="chart-box"><canvas id="chart"></canvas></div>
             <div class="legend" id="chart-legend">
-              <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Daily Cap</div>
-              <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Daily Dem</div>
-              <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#00875A 0,#00875A 4px,transparent 4px,transparent 7px)"></div>Cum Cap</div>
-              <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#0052CC 0,#0052CC 4px,transparent 4px,transparent 7px)"></div>Cum Dem</div>
-              <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#FF8B00 0,#FF8B00 4px,transparent 4px,transparent 7px)"></div>Time Spent</div>
-              <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Complete %</div>
+              <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Capacity</div>
+              <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Demand</div>
             </div>
             <div class="whatif" id="whatif-panel" style="display:none">
               <h4>What-If Scenario Modeling</h4>
@@ -858,39 +854,115 @@
         `
       },
       {
-        name: 'Capacity vs Demand Chart',
+        name: 'Daily Demand vs Capacity',
         tab: 'feasibility',
         highlight: 'chart-legend',
+        chartView: 'daily',
         html: `
           <span class="step-num">Step 5</span>
-          <h2>The Timeline Chart</h2>
+          <h2>Daily Demand vs Capacity</h2>
 
           <div class="explanation">
-            <h3>Three Scales, Six Metrics</h3>
-            <p>This chart uses three Y-axes to show all data clearly: <strong>Cumulative hours</strong> (left), <strong>Daily hours</strong> (right), and <strong>Completion %</strong> (far right).</p>
+            <h3>Are You Overloaded Today?</h3>
+            <p>This view compares how much work is due each day against how many hours the team can work that day.</p>
           </div>
 
           <div class="details">
-            <h3>Solid Lines (Daily Values)</h3>
+            <h3>Reading the Lines</h3>
             <ul>
-              <li><strong style="color:#00875A">Daily Capacity</strong> — Hours available each day</li>
-              <li><strong style="color:#0052CC">Daily Demand</strong> — Hours of work due each day</li>
-            </ul>
-          </div>
-
-          <div class="details">
-            <h3>Dashed Lines (Cumulative)</h3>
-            <ul>
-              <li><strong style="color:#00875A">Cum. Capacity</strong> — Running total of available hours</li>
-              <li><strong style="color:#0052CC">Cum. Demand</strong> — Running total of work needed</li>
-              <li><strong style="color:#FF8B00">Time Spent</strong> — Actual hours logged</li>
-              <li><strong style="color:#9C27B0">Completion %</strong> — Progress (time spent ÷ estimate)</li>
+              <li><strong style="color:#00875A">Daily Capacity</strong> — Hours your team can work per day (32h)</li>
+              <li><strong style="color:#0052CC">Daily Demand</strong> — Hours of work due that day</li>
             </ul>
           </div>
 
           <div class="action-box">
+            <h3>Key Insight</h3>
+            <p>When blue exceeds green, you have more work due than hours available. The early spike shows Feb 1-8 is overloaded — too many issues due at once.</p>
+          </div>
+        `
+      },
+      {
+        name: 'Cumulative Demand vs Capacity',
+        tab: 'feasibility',
+        highlight: 'chart-legend',
+        chartView: 'cumulative',
+        html: `
+          <span class="step-num">Step 6</span>
+          <h2>Cumulative Demand vs Capacity</h2>
+
+          <div class="explanation">
+            <h3>Will You Finish on Time?</h3>
+            <p>This view shows running totals. If cumulative demand exceeds cumulative capacity, you won't complete all work by the deadline.</p>
+          </div>
+
+          <div class="details">
+            <h3>Reading the Lines</h3>
+            <ul>
+              <li><strong style="color:#00875A">Cumulative Capacity</strong> — Total hours available so far</li>
+              <li><strong style="color:#0052CC">Cumulative Demand</strong> — Total hours of work needed so far</li>
+            </ul>
+          </div>
+
+          <div class="action-box">
+            <h3>Key Insight</h3>
+            <p>The gap at the end shows your shortfall. Here, demand (blue) ends ~5 hours above capacity (green) — you need to cut scope or add capacity.</p>
+          </div>
+        `
+      },
+      {
+        name: 'Time Spent vs Capacity',
+        tab: 'feasibility',
+        highlight: 'chart-legend',
+        chartView: 'spent',
+        html: `
+          <span class="step-num">Step 7</span>
+          <h2>Time Spent vs Capacity</h2>
+
+          <div class="explanation">
+            <h3>How Efficiently Are You Using Capacity?</h3>
+            <p>This view compares actual logged time against available capacity to show how much of your capacity you're actually using.</p>
+          </div>
+
+          <div class="details">
+            <h3>Reading the Lines</h3>
+            <ul>
+              <li><strong style="color:#00875A">Cumulative Capacity</strong> — Total hours available so far</li>
+              <li><strong style="color:#FF8B00">Time Spent</strong> — Actual hours logged (from worklogs)</li>
+            </ul>
+          </div>
+
+          <div class="action-box">
+            <h3>Key Insight</h3>
+            <p>Large gap = underutilization (team not logging full hours). Small gap = good utilization. If time spent exceeds capacity, something's wrong with estimates.</p>
+          </div>
+        `
+      },
+      {
+        name: 'Completion Percentage',
+        tab: 'feasibility',
+        highlight: 'chart-legend',
+        chartView: 'completion',
+        html: `
+          <span class="step-num">Step 8</span>
+          <h2>Completion Percentage</h2>
+
+          <div class="explanation">
+            <h3>How Much Is Actually Done?</h3>
+            <p>This shows progress as a percentage: time spent divided by original estimates. It tells you how close you are to finishing all planned work.</p>
+          </div>
+
+          <div class="details">
             <h3>Reading the Chart</h3>
-            <p>When dashed blue exceeds dashed green, you're behind. Compare solid lines to see daily overloads. Orange shows actual progress.</p>
+            <ul>
+              <li><strong style="color:#9C27B0">Completion %</strong> — (Time Spent ÷ Original Estimate) × 100</li>
+              <li>At 50% capacity used, you should be ~50% complete</li>
+              <li>If completion lags behind capacity usage, estimates were too low</li>
+            </ul>
+          </div>
+
+          <div class="action-box">
+            <h3>Key Insight</h3>
+            <p>Currently at ~85% complete with 95% of capacity used. The project is slightly behind but close to finishing.</p>
           </div>
         `
       },
@@ -899,8 +971,9 @@
         tab: 'feasibility',
         highlight: 'whatif-btn',
         showWhatIf: true,
+        chartView: 'cumulative',
         html: `
-          <span class="step-num">Step 6</span>
+          <span class="step-num">Step 9</span>
           <h2>What-If Scenario Modeling</h2>
 
           <div class="explanation">
@@ -928,7 +1001,7 @@
         tab: 'team',
         highlight: null,
         html: `
-          <span class="step-num">Step 7</span>
+          <span class="step-num">Step 10</span>
           <h2>Team Workload Distribution</h2>
 
           <div class="explanation">
@@ -957,7 +1030,7 @@
         tab: 'capacity',
         highlight: 'cap-config',
         html: `
-          <span class="step-num">Step 8</span>
+          <span class="step-num">Step 11</span>
           <h2>Capacity Configuration</h2>
 
           <div class="explanation">
@@ -996,7 +1069,7 @@
         tab: 'compliance',
         highlight: null,
         html: `
-          <span class="step-num">Step 9</span>
+          <span class="step-num">Step 12</span>
           <h2>Compliance Violations</h2>
 
           <div class="explanation">
@@ -1026,7 +1099,7 @@
         tab: 'dependencies',
         highlight: 'cycle-alert',
         html: `
-          <span class="step-num">Step 10</span>
+          <span class="step-num">Step 13</span>
           <h2>Dependency Analysis</h2>
 
           <div class="explanation">
@@ -1063,7 +1136,7 @@
         tab: 'report',
         highlight: 'report-grid',
         html: `
-          <span class="step-num">Step 11</span>
+          <span class="step-num">Step 14</span>
           <h2>Executive Report</h2>
 
           <div class="explanation">
@@ -1176,6 +1249,11 @@
         document.getElementById('whatif-panel').style.display = 'none';
         document.getElementById('whatif-btn').classList.remove('active');
       }
+
+      // Chart view
+      if (s.chartView) {
+        updateChartView(s.chartView);
+      }
     }
 
     function nextStep() { if (step < steps.length - 1) { step++; render(); } }
@@ -1191,6 +1269,9 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
       document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
     }
+
+    // Chart data storage
+    let chartData = {};
 
     function initChart() {
       const ctx = document.getElementById('chart').getContext('2d');
@@ -1213,7 +1294,6 @@
 
         cC += dCap;
         cD += dDem;
-        // Time spent grows more realistically
         cS += i < 5 ? 25 : 30;
         cumCap.push(cC);
         cumDem.push(Math.round(cD * 10) / 10);
@@ -1221,56 +1301,95 @@
         completionPct.push(Math.round((cS / totalOriginalEstimate) * 100));
       }
 
+      chartData = { labels, dailyCap, dailyDem, cumCap, cumDem, cumSpent, completionPct };
+
       chart = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels,
-          datasets: [
-            // Daily values - solid lines, on yDaily axis (right inner)
-            { label: 'Daily Capacity', data: dailyCap, borderColor: '#00875A', fill: false, tension: 0.1, borderWidth: 2, pointRadius: 0, yAxisID: 'yDaily' },
-            { label: 'Daily Demand', data: dailyDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 2, pointRadius: 0, yAxisID: 'yDaily' },
-            // Cumulative values - dashed lines, on yCum axis (left)
-            { label: 'Cumulative Capacity', data: cumCap, borderColor: '#00875A', borderDash: [6, 3], fill: false, tension: 0.3, borderWidth: 2.5, pointRadius: 0, yAxisID: 'yCum' },
-            { label: 'Cumulative Demand', data: cumDem, borderColor: '#0052CC', borderDash: [6, 3], fill: false, tension: 0.3, borderWidth: 2.5, pointRadius: 0, yAxisID: 'yCum' },
-            { label: 'Time Spent', data: cumSpent, borderColor: '#FF8B00', borderDash: [6, 3], fill: false, tension: 0.3, borderWidth: 2.5, pointRadius: 0, yAxisID: 'yCum' },
-            // Completion % - on yPct axis (right outer)
-            { label: 'Completion %', data: completionPct, borderColor: '#9C27B0', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0, yAxisID: 'yPct' }
-          ]
-        },
+        data: { labels, datasets: [] },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           interaction: { intersect: false, mode: 'index' },
           plugins: { legend: { display: false } },
           scales: {
-            yCum: {
-              type: 'linear',
-              position: 'left',
-              beginAtZero: true,
-              title: { display: true, text: 'Cumulative Hours', color: '#666' },
-              grid: { color: '#e0e0e0' }
-            },
-            yDaily: {
-              type: 'linear',
-              position: 'right',
-              beginAtZero: true,
-              max: 60,
-              title: { display: true, text: 'Daily Hours', color: '#666' },
-              grid: { drawOnChartArea: false }
-            },
-            yPct: {
-              type: 'linear',
-              position: 'right',
-              beginAtZero: true,
-              min: 0,
-              max: 100,
-              title: { display: true, text: 'Completion %', color: '#9C27B0' },
-              grid: { drawOnChartArea: false },
-              ticks: { callback: v => v + '%' }
-            }
+            y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Hours' } }
           }
         }
       });
+
+      updateChartView('daily'); // Default view
+    }
+
+    function updateChartView(view) {
+      if (!chart) return;
+
+      const legend = document.getElementById('chart-legend');
+      let datasets = [];
+      let scales = {};
+
+      switch (view) {
+        case 'daily':
+          datasets = [
+            { label: 'Daily Capacity', data: chartData.dailyCap, borderColor: '#00875A', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 2 },
+            { label: 'Daily Demand', data: chartData.dailyDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 2 }
+          ];
+          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, max: 60, title: { display: true, text: 'Hours / Day' } } };
+          legend.innerHTML = `
+            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Daily Capacity</div>
+            <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Daily Demand</div>
+          `;
+          break;
+
+        case 'cumulative':
+          datasets = [
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
+            { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
+          ];
+          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Cumulative Hours' } } };
+          legend.innerHTML = `
+            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Cumulative Capacity</div>
+            <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Cumulative Demand</div>
+          `;
+          break;
+
+        case 'spent':
+          datasets = [
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
+            { label: 'Time Spent', data: chartData.cumSpent, borderColor: '#FF8B00', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
+          ];
+          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Cumulative Hours' } } };
+          legend.innerHTML = `
+            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Cumulative Capacity</div>
+            <div class="legend-item"><div class="legend-color" style="background:#FF8B00"></div>Time Spent</div>
+          `;
+          break;
+
+        case 'completion':
+          datasets = [
+            { label: 'Completion %', data: chartData.completionPct, borderColor: '#9C27B0', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
+          ];
+          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, max: 100, title: { display: true, text: 'Completion %' }, ticks: { callback: v => v + '%' } } };
+          legend.innerHTML = `
+            <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion %</div>
+          `;
+          break;
+
+        default:
+          // Show all (for non-chart steps)
+          datasets = [
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 },
+            { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 }
+          ];
+          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Hours' } } };
+          legend.innerHTML = `
+            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Capacity</div>
+            <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Demand</div>
+          `;
+      }
+
+      chart.data.datasets = datasets;
+      chart.options.scales = scales;
+      chart.update();
     }
 
     function renderTeam() {
