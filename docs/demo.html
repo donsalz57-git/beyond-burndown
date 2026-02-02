@@ -1213,8 +1213,8 @@
 
     // Init
     document.addEventListener('DOMContentLoaded', () => {
-      render();
-      initChart();
+      initChart();  // Initialize chart FIRST
+      render();     // Then render (which updates chart view)
       renderTeam();
       renderCapacity();
       renderViolations();
@@ -1272,9 +1272,9 @@
 
     // Chart data storage
     let chartData = {};
+    let currentChartView = null;
 
-    function initChart() {
-      const ctx = document.getElementById('chart').getContext('2d');
+    function initChartData() {
       const labels = [];
       const dailyCap = [], dailyDem = [];
       const cumCap = [], cumDem = [], cumSpent = [];
@@ -1302,51 +1302,46 @@
       }
 
       chartData = { labels, dailyCap, dailyDem, cumCap, cumDem, cumSpent, completionPct };
-
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: { labels, datasets: [] },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { intersect: false, mode: 'index' },
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Hours' } }
-          }
-        }
-      });
-
-      updateChartView('daily'); // Default view
     }
 
-    function updateChartView(view) {
-      if (!chart) return;
+    function initChart() {
+      initChartData();
+      createChart('cumulative'); // Default view
+    }
 
+    function createChart(view) {
+      // Destroy existing chart
+      if (chart) {
+        chart.destroy();
+        chart = null;
+      }
+
+      currentChartView = view;
+      const ctx = document.getElementById('chart').getContext('2d');
       const legend = document.getElementById('chart-legend');
-      let datasets = [];
-      let scales = {};
+
+      let datasets, scales, legendHtml;
 
       switch (view) {
         case 'daily':
           datasets = [
-            { label: 'Daily Capacity', data: chartData.dailyCap, borderColor: '#00875A', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 2 },
-            { label: 'Daily Demand', data: chartData.dailyDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 2 }
+            { label: 'Daily Capacity', data: chartData.dailyCap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.1, borderWidth: 3, pointRadius: 3 },
+            { label: 'Daily Demand', data: chartData.dailyDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 3 }
           ];
-          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, max: 60, title: { display: true, text: 'Hours / Day' } } };
-          legend.innerHTML = `
-            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Daily Capacity</div>
+          scales = { y: { beginAtZero: true, max: 55, title: { display: true, text: 'Hours per Day', font: { weight: 'bold' } } } };
+          legendHtml = `
+            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Daily Capacity (32h)</div>
             <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Daily Demand</div>
           `;
           break;
 
         case 'cumulative':
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 0 },
             { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
-          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Cumulative Hours' } } };
-          legend.innerHTML = `
+          scales = { y: { beginAtZero: true, title: { display: true, text: 'Cumulative Hours', font: { weight: 'bold' } } } };
+          legendHtml = `
             <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Cumulative Capacity</div>
             <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Cumulative Demand</div>
           `;
@@ -1354,42 +1349,56 @@
 
         case 'spent':
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 0 },
             { label: 'Time Spent', data: chartData.cumSpent, borderColor: '#FF8B00', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
-          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Cumulative Hours' } } };
-          legend.innerHTML = `
+          scales = { y: { beginAtZero: true, title: { display: true, text: 'Cumulative Hours', font: { weight: 'bold' } } } };
+          legendHtml = `
             <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Cumulative Capacity</div>
-            <div class="legend-item"><div class="legend-color" style="background:#FF8B00"></div>Time Spent</div>
+            <div class="legend-item"><div class="legend-color" style="background:#FF8B00"></div>Time Spent (Logged)</div>
           `;
           break;
 
         case 'completion':
           datasets = [
-            { label: 'Completion %', data: chartData.completionPct, borderColor: '#9C27B0', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
+            { label: 'Completion %', data: chartData.completionPct, borderColor: '#9C27B0', backgroundColor: 'rgba(156,39,176,0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
-          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, max: 100, title: { display: true, text: 'Completion %' }, ticks: { callback: v => v + '%' } } };
-          legend.innerHTML = `
-            <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion %</div>
+          scales = { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Completion %', font: { weight: 'bold' } }, ticks: { callback: v => v + '%' } } };
+          legendHtml = `
+            <div class="legend-item"><div class="legend-color" style="background:#9C27B0"></div>Completion % (Time Spent ÷ Estimate)</div>
           `;
           break;
 
         default:
-          // Show all (for non-chart steps)
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 },
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', backgroundColor: 'rgba(0,135,90,0.1)', fill: true, tension: 0.3, borderWidth: 2, pointRadius: 0 },
             { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 }
           ];
-          scales = { y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Hours' } } };
-          legend.innerHTML = `
+          scales = { y: { beginAtZero: true, title: { display: true, text: 'Hours' } } };
+          legendHtml = `
             <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Capacity</div>
             <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Demand</div>
           `;
       }
 
-      chart.data.datasets = datasets;
-      chart.options.scales = scales;
-      chart.update();
+      legend.innerHTML = legendHtml;
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: { labels: chartData.labels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { intersect: false, mode: 'index' },
+          plugins: { legend: { display: false } },
+          scales
+        }
+      });
+    }
+
+    function updateChartView(view) {
+      if (view === currentChartView) return;
+      createChart(view);
     }
 
     function renderTeam() {
