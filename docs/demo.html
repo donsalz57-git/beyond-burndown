@@ -667,10 +667,10 @@
                 </div>
               </div>
               <div class="cap-list">
-                <div class="cap-header"><span>Team Member</span><span>Hours/Week</span><span></span></div>
+                <div class="cap-header"><span>Team Member</span><span id="cap-period-label">Hours/Week</span><span></span></div>
                 <div id="cap-members"></div>
               </div>
-              <div class="cap-total">Total Team Capacity: <strong id="cap-total">152</strong> hours/week</div>
+              <div class="cap-total">Total Team Capacity: <strong id="cap-total">152</strong> <span id="cap-total-period">hours/week</span></div>
               <button class="save-btn" onclick="saveCapacity()">Save Capacity Configuration</button>
             </div>
           </div>
@@ -1525,7 +1525,13 @@
     function removeCap(i) { capacity.splice(i, 1); renderCapacity(); }
     function updateCapTotal() { document.getElementById('cap-total').textContent = capacity.reduce((s, m) => s + m.hours, 0); }
     function setCapType(t) { document.querySelectorAll('.cap-row:first-child button').forEach((b, i) => b.classList.toggle('active', (t === 'team' ? i === 0 : i === 1))); }
-    function setCapPeriod(p) { document.querySelectorAll('.cap-row:nth-child(2) button').forEach((b, i) => b.classList.toggle('active', (p === 'week' ? i === 0 : i === 1))); }
+    function setCapPeriod(p) {
+      document.querySelectorAll('.cap-row:nth-child(2) button').forEach((b, i) => b.classList.toggle('active', (p === 'week' ? i === 0 : i === 1)));
+      const label = p === 'week' ? 'Hours/Week' : 'Hours/Month';
+      const totalLabel = p === 'week' ? 'hours/week' : 'hours/month';
+      document.getElementById('cap-period-label').textContent = label;
+      document.getElementById('cap-total-period').textContent = totalLabel;
+    }
     function saveCapacity() { alert('Capacity saved! (Demo mode)'); }
 
     function renderViolations(filter = 'all') {
