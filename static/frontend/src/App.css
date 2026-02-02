@@ -651,16 +651,19 @@
   padding: 8px 0;
 }
 
-.capacity-type-toggle {
+.capacity-type-toggle,
+.capacity-period-toggle,
+.capacity-mode-toggle {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.capacity-period-toggle {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+.capacity-type-toggle > label,
+.capacity-period-toggle > label,
+.capacity-mode-toggle > label {
+  min-width: 110px;
+  font-weight: 500;
 }
 
 .capacity-team-section {
@@ -973,12 +976,7 @@
   background: #006644;
 }
 
-/* Capacity Mode Toggle */
-.capacity-mode-toggle {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
+/* Capacity Mode Toggle - styles merged above with other toggles */
 
 /* Schedule Table */
 .capacity-schedule-section {

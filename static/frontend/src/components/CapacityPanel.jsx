@@ -241,7 +241,7 @@ function CapacityPanel({ config, onSave }) {
 
       {/* Capacity Type Toggle */}
       <div className="capacity-type-toggle">
-        <label style={{ fontWeight: 500, marginRight: '12px' }}>Capacity Type:</label>
+        <label>Capacity Type:</label>
         <button
           className={`period-button ${capacityType === 'team' ? 'active' : ''}`}
           onClick={() => handleCapacityTypeChange('team')}
@@ -258,7 +258,7 @@ function CapacityPanel({ config, onSave }) {
 
       {/* Period Toggle */}
       <div className="capacity-period-toggle">
-        <label style={{ fontWeight: 500, marginRight: '12px' }}>Time Period:</label>
+        <label>Time Period:</label>
         <button
           className={`period-button ${period === 'week' ? 'active' : ''}`}
           onClick={() => handlePeriodChange('week')}
@@ -275,7 +275,7 @@ function CapacityPanel({ config, onSave }) {
 
       {/* Fixed vs Variable Toggle */}
       <div className="capacity-mode-toggle">
-        <label style={{ fontWeight: 500, marginRight: '12px' }}>Schedule:</label>
+        <label>Schedule:</label>
         <button
           className={`period-button ${capacityMode === 'fixed' ? 'active' : ''}`}
           onClick={() => handleCapacityModeChange('fixed')}
