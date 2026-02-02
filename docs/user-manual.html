@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beyond Burndown - User Manual</title>
+  <title>Beyond Burndown - Complete User Manual</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 40px 24px;
     }
@@ -30,15 +30,8 @@
       text-align: center;
     }
 
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
-    }
-
-    header p {
-      opacity: 0.9;
-      font-size: 1.125rem;
-    }
+    header h1 { font-size: 2.5rem; margin-bottom: 8px; }
+    header p { opacity: 0.9; font-size: 1.125rem; }
 
     nav.toc {
       background: #E3FCEF;
@@ -54,23 +47,12 @@
       margin-bottom: 12px;
     }
 
-    nav.toc ul {
-      list-style: none;
-      columns: 2;
-    }
-
-    nav.toc li {
-      margin-bottom: 8px;
-    }
-
-    nav.toc a {
-      color: #00875A;
-      text-decoration: none;
-    }
-
-    nav.toc a:hover {
-      text-decoration: underline;
-    }
+    nav.toc ul { list-style: none; }
+    nav.toc > ul > li { margin-bottom: 8px; }
+    nav.toc ul ul { margin-left: 20px; margin-top: 4px; }
+    nav.toc ul ul li { margin-bottom: 4px; font-size: 0.9rem; }
+    nav.toc a { color: #00875A; text-decoration: none; }
+    nav.toc a:hover { text-decoration: underline; }
 
     h2 {
       font-size: 1.75rem;
@@ -79,29 +61,11 @@
       border-bottom: 2px solid #DFE1E6;
     }
 
-    h3 {
-      font-size: 1.25rem;
-      margin: 32px 0 12px;
-      color: #00875A;
-    }
-
-    h4 {
-      font-size: 1rem;
-      margin: 24px 0 8px;
-    }
-
-    p {
-      margin-bottom: 16px;
-    }
-
-    ul, ol {
-      margin-bottom: 16px;
-      padding-left: 24px;
-    }
-
-    li {
-      margin-bottom: 8px;
-    }
+    h3 { font-size: 1.25rem; margin: 32px 0 12px; color: #00875A; }
+    h4 { font-size: 1.1rem; margin: 24px 0 8px; color: #172B4D; }
+    p { margin-bottom: 16px; }
+    ul, ol { margin-bottom: 16px; padding-left: 24px; }
+    li { margin-bottom: 8px; }
 
     code {
       background: #F4F5F7;
@@ -130,20 +94,10 @@
       border-radius: 0 8px 8px 0;
     }
 
-    .note-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .warning {
-      background: #FFFAE6;
-      border-left: 4px solid #FF8B00;
-    }
-
-    .tip {
-      background: #E3FCEF;
-      border-left: 4px solid #00875A;
-    }
+    .note-title { font-weight: 600; margin-bottom: 4px; }
+    .warning { background: #FFFAE6; border-left-color: #FF8B00; }
+    .tip { background: #E3FCEF; border-left-color: #00875A; }
+    .error { background: #FFEBE6; border-left-color: #DE350B; }
 
     table {
       width: 100%;
@@ -157,10 +111,7 @@
       border: 1px solid #DFE1E6;
     }
 
-    th {
-      background: #F4F5F7;
-      font-weight: 600;
-    }
+    th { background: #F4F5F7; font-weight: 600; }
 
     .formula {
       background: #172B4D;
@@ -175,6 +126,18 @@
     .score-warning { color: #FF8B00; font-weight: 600; }
     .score-danger { color: #DE350B; font-weight: 600; }
 
+    .feature-box {
+      background: #F4F5F7;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .feature-box h4 {
+      margin-top: 0;
+      color: #00875A;
+    }
+
     footer {
       margin-top: 60px;
       padding-top: 24px;
@@ -183,15 +146,8 @@
       color: #5E6C84;
     }
 
-    footer a {
-      color: #00875A;
-      text-decoration: none;
-      margin: 0 12px;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
+    footer a { color: #00875A; text-decoration: none; margin: 0 12px; }
+    footer a:hover { text-decoration: underline; }
 
     .top-nav {
       background: #fff;
@@ -215,23 +171,11 @@
       gap: 8px;
     }
 
-    .top-nav .nav-links {
-      display: flex;
-      gap: 24px;
-    }
-
-    .top-nav .nav-links a {
-      color: #5E6C84;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .top-nav .nav-links a:hover {
-      color: #00875A;
-    }
+    .top-nav .nav-links { display: flex; gap: 24px; }
+    .top-nav .nav-links a { color: #5E6C84; text-decoration: none; font-weight: 500; }
+    .top-nav .nav-links a:hover { color: #00875A; }
 
     @media (max-width: 600px) {
-      nav.toc ul { columns: 1; }
       header h1 { font-size: 2rem; }
       .top-nav { flex-direction: column; gap: 12px; }
     }
@@ -240,7 +184,7 @@
 <body>
   <nav class="top-nav">
     <a href="index.html" class="logo">
-      <span>&#128202;</span>
+      <span>📊</span>
       Beyond Burndown
     </a>
     <div class="nav-links">
@@ -252,182 +196,106 @@
 
   <header>
     <h1>Beyond Burndown</h1>
-    <p>User Manual & Technical Reference</p>
+    <p>Complete User Manual & Feature Guide</p>
   </header>
 
   <div class="container">
     <nav class="toc">
       <h2>Table of Contents</h2>
       <ul>
-        <li><a href="#installation">1. Installation</a></li>
-        <li><a href="#getting-started">2. Getting Started</a></li>
-        <li><a href="#configuration">3. Configuration</a></li>
-        <li><a href="#feasibility-view">4. Feasibility View</a></li>
-        <li><a href="#period-selector">5. Period Selector</a></li>
-        <li><a href="#understanding-scores">6. Understanding Scores</a></li>
-        <li><a href="#chart-elements">7. Chart Elements</a></li>
-        <li><a href="#technical-reference">8. Technical Reference</a></li>
-        <li><a href="#jql-examples">9. JQL Examples</a></li>
-        <li><a href="#troubleshooting">10. Troubleshooting</a></li>
+        <li><a href="#getting-started">1. Getting Started</a></li>
+        <li><a href="#feasibility-tab">2. Feasibility Tab</a>
+          <ul>
+            <li><a href="#feasibility-score">Feasibility Score</a></li>
+            <li><a href="#chart-elements">Chart Elements</a></li>
+            <li><a href="#period-selector">Period Selector</a></li>
+          </ul>
+        </li>
+        <li><a href="#compliance-tab">3. Compliance Tab (Data Quality)</a>
+          <ul>
+            <li><a href="#violation-types">Violation Types</a></li>
+            <li><a href="#severity-levels">Severity Levels</a></li>
+          </ul>
+        </li>
+        <li><a href="#dependencies-tab">4. Dependencies Tab</a>
+          <ul>
+            <li><a href="#dependency-graph">Dependency Graph</a></li>
+            <li><a href="#circular-dependencies">Circular Dependencies</a></li>
+          </ul>
+        </li>
+        <li><a href="#report-tab">5. Report Tab</a></li>
+        <li><a href="#team-tab">6. Team Tab</a></li>
+        <li><a href="#capacity-tab">7. Capacity Tab</a></li>
+        <li><a href="#what-if-panel">8. What-If Scenarios</a>
+          <ul>
+            <li><a href="#capacity-scenarios">Capacity Scenarios</a></li>
+            <li><a href="#scope-scenarios">Scope Scenarios</a></li>
+            <li><a href="#deadline-scenarios">Deadline Scenarios</a></li>
+          </ul>
+        </li>
+        <li><a href="#configuration">9. Configuration</a></li>
+        <li><a href="#jql-examples">10. JQL Examples</a></li>
+        <li><a href="#troubleshooting">11. Troubleshooting</a></li>
       </ul>
     </nav>
 
-    <!-- Section 1: Installation -->
-    <h2 id="installation">1. Installation</h2>
-    <p>Beyond Burndown is a Jira Cloud app that installs as a dashboard gadget.</p>
+    <!-- Section 1: Getting Started -->
+    <h2 id="getting-started">1. Getting Started</h2>
+    <p>Beyond Burndown is a Jira Cloud dashboard gadget that provides comprehensive project analysis including feasibility scoring, data quality checks, dependency modeling, and What-If scenario planning.</p>
 
-    <h3>Installing from Atlassian Marketplace</h3>
+    <h3>Installation</h3>
     <ol>
       <li>Go to the <a href="https://marketplace.atlassian.com/">Atlassian Marketplace</a></li>
       <li>Search for "Beyond Burndown" or "Feasibility Analyzer"</li>
-      <li>Click <strong>Get it now</strong></li>
-      <li>Select your Jira Cloud site</li>
+      <li>Click <strong>Get it now</strong> and select your Jira site</li>
       <li>Confirm the installation</li>
     </ol>
 
-    <h3>Adding the Gadget to a Dashboard</h3>
+    <h3>Adding to a Dashboard</h3>
     <ol>
-      <li>Navigate to a Jira dashboard</li>
-      <li>Click <strong>Add gadget</strong></li>
+      <li>Navigate to any Jira dashboard</li>
+      <li>Click <strong>Add gadget</strong> (or the + button)</li>
       <li>Search for "Feasibility" or "Beyond Burndown"</li>
       <li>Click <strong>Add gadget</strong></li>
-      <li>The gadget will appear on your dashboard</li>
+      <li>Configure the gadget with your JQL queries</li>
     </ol>
 
-    <!-- Section 2: Getting Started -->
-    <h2 id="getting-started">2. Getting Started</h2>
-    <p>After adding the gadget, you'll need to configure it with JQL queries for your demand and capacity issues.</p>
-
-    <h3>Basic Concepts</h3>
-    <ul>
-      <li><strong>Demand Issues:</strong> Work items that consume capacity (stories, tasks, bugs)</li>
-      <li><strong>Capacity Issues:</strong> Items that represent available capacity (often separate "capacity" issues or team availability tickets)</li>
-      <li><strong>Worklogs:</strong> Time logged against issues, used for completion tracking</li>
-    </ul>
-
-    <h3>Quick Start</h3>
+    <h3>Initial Configuration</h3>
+    <p>After adding the gadget, you need to configure it:</p>
     <ol>
-      <li>Click the gadget's edit button (gear icon)</li>
-      <li>Enter a JQL query for your demand issues</li>
-      <li>Optionally enter a JQL query for capacity issues</li>
+      <li>Click the <strong>gear icon</strong> on the gadget</li>
+      <li>Enter a <strong>Demand JQL</strong> query for your work items</li>
+      <li>Optionally set up <strong>Capacity</strong> (via JQL or manual entry)</li>
       <li>Click <strong>Save</strong></li>
-      <li>The feasibility analysis will load automatically</li>
     </ol>
-
-    <!-- Section 3: Configuration -->
-    <h2 id="configuration">3. Configuration</h2>
-    <p>Access configuration by clicking the gear icon on the gadget menu.</p>
-
-    <h3>Configuration Options</h3>
-    <table>
-      <tr>
-        <th>Setting</th>
-        <th>Description</th>
-      </tr>
-      <tr>
-        <td><strong>Demand JQL</strong></td>
-        <td>JQL query to select work items to analyze. Issues should have estimates and dates.</td>
-      </tr>
-      <tr>
-        <td><strong>Capacity JQL</strong></td>
-        <td>JQL query to select capacity-representing issues. Optional but recommended.</td>
-      </tr>
-    </table>
 
     <div class="note tip">
-      <div class="note-title">Tip</div>
-      You can use saved filters in your JQL with the syntax <code>filter = 12345</code> where 12345 is the filter ID. Make sure the filter is shared with appropriate permissions.
+      <div class="note-title">Quick Start Tip</div>
+      Try starting with a simple JQL like <code>project = YOUR_PROJECT AND sprint in openSprints()</code> to see your current sprint's feasibility.
     </div>
 
-    <!-- Section 4: Feasibility View -->
-    <h2 id="feasibility-view">4. Feasibility View</h2>
-    <p>The main view shows a timeline chart with capacity, demand, and completion data.</p>
+    <!-- Section 2: Feasibility Tab -->
+    <h2 id="feasibility-tab">2. Feasibility Tab</h2>
+    <p>The Feasibility tab is the main view showing how realistic your planned work is given available capacity.</p>
 
-    <h3>Header Information</h3>
+    <h3 id="feasibility-score">Feasibility Score</h3>
+    <p>The feasibility score is a 0-100% measure of how achievable your plan is.</p>
+
+    <h4>How It's Calculated</h4>
+    <div class="formula">Score = (Coverage Ratio - Overload Penalty) × 100</div>
+
+    <p><strong>Coverage Ratio</strong> measures total capacity vs total demand:</p>
+    <div class="formula">Coverage Ratio = min(1, Total Capacity Hours / Total Demand Hours)</div>
     <ul>
-      <li><strong>Feasibility Score:</strong> The overall score (0-100%) with color coding</li>
-      <li><strong>Summary Stats:</strong> Total demand hours, capacity hours, and time spent</li>
-      <li><strong>Period Selector:</strong> Dropdown to change the time aggregation</li>
+      <li>If you have more capacity than demand, ratio = 1.0 (capped)</li>
+      <li>If demand exceeds capacity, ratio decreases proportionally</li>
     </ul>
 
-    <h3>Overload Warnings</h3>
-    <p>When demand exceeds capacity, overloaded periods are highlighted in red banners showing:</p>
+    <p><strong>Overload Penalty</strong> penalizes uneven distribution:</p>
+    <div class="formula">Overload Penalty = min(0.3, (Overloaded Days / Total Days) × 0.5)</div>
     <ul>
-      <li>Date range of the overload</li>
-      <li>Number of days affected</li>
-      <li>Maximum hours over capacity</li>
-    </ul>
-
-    <!-- Section 5: Period Selector -->
-    <h2 id="period-selector">5. Period Selector</h2>
-    <p>Choose how to aggregate timeline data for different levels of detail.</p>
-
-    <h3>Available Periods</h3>
-    <table>
-      <tr>
-        <th>Period</th>
-        <th>Description</th>
-        <th>Best For</th>
-      </tr>
-      <tr>
-        <td><strong>Daily</strong></td>
-        <td>No aggregation, shows each business day</td>
-        <td>Short sprints, detailed analysis</td>
-      </tr>
-      <tr>
-        <td><strong>Weekly</strong></td>
-        <td>Groups by week (Monday start)</td>
-        <td>2-week sprints</td>
-      </tr>
-      <tr>
-        <td><strong>Bi-weekly</strong></td>
-        <td>Groups by 2-week periods</td>
-        <td>Monthly planning</td>
-      </tr>
-      <tr>
-        <td><strong>Monthly</strong></td>
-        <td>Groups by calendar month</td>
-        <td>Quarter planning</td>
-      </tr>
-      <tr>
-        <td><strong>Quarterly</strong></td>
-        <td>Groups by calendar quarter</td>
-        <td>Annual roadmaps</td>
-      </tr>
-    </table>
-
-    <div class="note">
-      <div class="note-title">Note</div>
-      Changing the period re-calculates all cumulative values. The feasibility score remains the same as it's based on the underlying daily data.
-    </div>
-
-    <!-- Section 6: Understanding Scores -->
-    <h2 id="understanding-scores">6. Understanding Scores</h2>
-
-    <h3>Feasibility Score</h3>
-    <p>The feasibility score indicates how realistic your planned work is given available capacity.</p>
-
-    <h4>Calculation</h4>
-    <div class="formula">
-      Score = (Coverage Ratio - Overload Penalty) x 100
-    </div>
-
-    <p><strong>Coverage Ratio</strong> measures how well capacity covers demand:</p>
-    <div class="formula">
-      Coverage Ratio = min(1, Total Capacity / Total Demand)
-    </div>
-    <ul>
-      <li>If capacity >= demand, ratio = 1.0</li>
-      <li>If capacity < demand, ratio < 1.0</li>
-    </ul>
-
-    <p><strong>Overload Penalty</strong> accounts for uneven distribution:</p>
-    <div class="formula">
-      Overload Penalty = min(0.3, (Overloaded Days / Total Days) x 0.5)
-    </div>
-    <ul>
-      <li>Maximum penalty is 30%</li>
-      <li>Even with enough total capacity, too many overloaded days reduces the score</li>
+      <li>Even with enough total capacity, having many overloaded days reduces the score</li>
+      <li>Maximum penalty is 30% (0.3)</li>
     </ul>
 
     <h4>Score Ranges</h4>
@@ -435,273 +303,539 @@
       <tr>
         <th>Score</th>
         <th>Color</th>
-        <th>Interpretation</th>
+        <th>Meaning</th>
+        <th>Recommendation</th>
       </tr>
       <tr>
         <td><span class="score-good">80-100%</span></td>
         <td>Green</td>
-        <td>Healthy - plan is realistic with buffer</td>
+        <td>Healthy</td>
+        <td>Plan is realistic with buffer for uncertainty</td>
       </tr>
       <tr>
         <td><span class="score-warning">50-79%</span></td>
         <td>Orange</td>
-        <td>At Risk - tight capacity or some overload periods</td>
+        <td>At Risk</td>
+        <td>Consider reducing scope or adding capacity</td>
       </tr>
       <tr>
         <td><span class="score-danger">0-49%</span></td>
         <td>Red</td>
-        <td>Overloaded - significant capacity shortage</td>
+        <td>Overloaded</td>
+        <td>Plan is likely to fail without changes</td>
       </tr>
     </table>
 
-    <h3>Completion Percentage</h3>
-    <p>Tracks progress against original estimates:</p>
-    <div class="formula">
-      Completion % = (Cumulative Time Spent / Cumulative Original Estimate) x 100
-    </div>
+    <h3 id="chart-elements">Chart Elements</h3>
+    <p>The feasibility chart shows several data series plotted over time:</p>
 
-    <ul>
-      <li>Uses <strong>original estimate</strong>, not remaining estimate</li>
-      <li>Based on <strong>worklogs</strong> (time logged) against issues</li>
-      <li>Can exceed 100% if more time is spent than originally estimated</li>
-    </ul>
-
-    <div class="note warning">
-      <div class="note-title">Important</div>
-      Completion percentage requires issues to have original estimates and worklogs. If these fields are empty, completion will show 0%.
-    </div>
-
-    <!-- Section 7: Chart Elements -->
-    <h2 id="chart-elements">7. Chart Elements</h2>
-
-    <h3>Chart Lines</h3>
     <table>
       <tr>
         <th>Line</th>
         <th>Color</th>
         <th>Style</th>
-        <th>Y-Axis</th>
         <th>Description</th>
       </tr>
       <tr>
         <td>Period Capacity</td>
         <td>Green</td>
-        <td>Solid</td>
-        <td>Left (Hours)</td>
-        <td>Capacity for each period</td>
+        <td>Solid bars</td>
+        <td>Available capacity for each period</td>
       </tr>
       <tr>
         <td>Period Demand</td>
         <td>Blue</td>
-        <td>Solid</td>
-        <td>Left (Hours)</td>
-        <td>Demand for each period</td>
+        <td>Solid bars</td>
+        <td>Required work for each period</td>
       </tr>
       <tr>
         <td>Cumulative Capacity</td>
         <td>Green</td>
-        <td>Dashed</td>
-        <td>Left (Hours)</td>
-        <td>Running total of capacity</td>
+        <td>Dashed line</td>
+        <td>Running total of capacity over time</td>
       </tr>
       <tr>
         <td>Cumulative Demand</td>
         <td>Blue</td>
-        <td>Dashed</td>
-        <td>Left (Hours)</td>
-        <td>Running total of demand</td>
+        <td>Dashed line</td>
+        <td>Running total of demand over time</td>
       </tr>
       <tr>
         <td>Cumulative Time Spent</td>
         <td>Orange</td>
-        <td>Dashed</td>
-        <td>Left (Hours)</td>
-        <td>Running total of logged time</td>
+        <td>Dashed line</td>
+        <td>Running total of logged work</td>
       </tr>
       <tr>
         <td>Completion %</td>
         <td>Purple</td>
-        <td>Solid</td>
-        <td>Right (0-100%)</td>
-        <td>Time spent / original estimate</td>
+        <td>Solid line</td>
+        <td>Time spent / original estimate (right Y-axis)</td>
       </tr>
     </table>
 
-    <h3>Tooltip Information</h3>
-    <p>Hover over any point on the chart to see:</p>
+    <h4>Overload Warnings</h4>
+    <p>When demand exceeds capacity for a period, a red warning banner appears showing:</p>
     <ul>
-      <li>Period date/label</li>
-      <li>Business days in period (for aggregated views)</li>
-      <li>Period capacity and demand</li>
-      <li>Cumulative capacity, demand, original estimate, and time spent</li>
-      <li>Completion percentage</li>
-      <li>Overload amount (if applicable)</li>
+      <li>The date range of the overload</li>
+      <li>Number of days affected</li>
+      <li>Maximum hours over capacity</li>
     </ul>
 
-    <!-- Section 8: Technical Reference -->
-    <h2 id="technical-reference">8. Technical Reference</h2>
-    <p>For detailed technical documentation of all UI elements, user actions, and backend logic, see the <a href="UI_DOCUMENTATION.md">UI Documentation</a>.</p>
+    <h3 id="period-selector">Period Selector</h3>
+    <p>Choose how to aggregate data for different planning horizons:</p>
 
-    <h3>How Estimates Are Spread</h3>
-    <p>The analyzer spreads estimates across business days (Mon-Fri) based on issue dates:</p>
-
-    <h4>Demand Issues</h4>
-    <ul>
-      <li><strong>Remaining Estimate</strong> is spread from <strong>effective start</strong> to <strong>due date</strong></li>
-      <li>Effective start = max(issue start date, today) - past starts are moved to today</li>
-      <li>If no due date, extends 14 days from start</li>
-      <li>Done issues (status category = "done") are excluded</li>
-    </ul>
-
-    <h4>Capacity Issues</h4>
-    <ul>
-      <li><strong>Original Estimate</strong> is spread from <strong>start date</strong> to <strong>due date</strong></li>
-      <li>Both dates are required for capacity issues</li>
-      <li>Capacity represents team availability or allocated time</li>
-    </ul>
-
-    <h4>Original Estimate (for Completion Tracking)</h4>
-    <ul>
-      <li>All demand issues (including done) have their <strong>original estimate</strong> spread across their date range</li>
-      <li>This provides the baseline for completion percentage calculation</li>
-    </ul>
-
-    <h3>Worklog Processing</h3>
-    <ul>
-      <li>Worklogs are fetched from demand issues</li>
-      <li>Each worklog's hours are assigned to the date it was logged</li>
-      <li>Worklogs outside the analysis date range are included in range calculation</li>
-    </ul>
-
-    <h3>Date Range Calculation</h3>
-    <p>The analysis date range is determined by:</p>
-    <ol>
-      <li>Collecting all dates from demand issues (start, due)</li>
-      <li>Collecting all dates from capacity issues (start, due)</li>
-      <li>Collecting all dates from worklogs</li>
-      <li>Finding the minimum and maximum dates</li>
-      <li>Adding a 5-day buffer to both ends</li>
-    </ol>
-
-    <h3>Visual Indicators Reference</h3>
     <table>
       <tr>
-        <th>Indicator</th>
+        <th>Period</th>
+        <th>Aggregation</th>
+        <th>Best For</th>
+      </tr>
+      <tr>
+        <td><strong>Daily</strong></td>
+        <td>No aggregation</td>
+        <td>Short sprints, detailed day-by-day view</td>
+      </tr>
+      <tr>
+        <td><strong>Weekly</strong></td>
+        <td>Monday-Sunday</td>
+        <td>Standard sprints, weekly planning</td>
+      </tr>
+      <tr>
+        <td><strong>Bi-weekly</strong></td>
+        <td>Two-week periods</td>
+        <td>Two-week sprints</td>
+      </tr>
+      <tr>
+        <td><strong>Monthly</strong></td>
+        <td>Calendar months</td>
+        <td>Monthly planning, quarterly view</td>
+      </tr>
+      <tr>
+        <td><strong>Quarterly</strong></td>
+        <td>Q1, Q2, Q3, Q4</td>
+        <td>Annual roadmap planning</td>
+      </tr>
+    </table>
+
+    <!-- Section 3: Compliance Tab -->
+    <h2 id="compliance-tab">3. Compliance Tab (Data Quality)</h2>
+    <p>The Compliance tab identifies data quality issues in your Jira issues that could affect planning accuracy.</p>
+
+    <h3 id="violation-types">Violation Types</h3>
+
+    <div class="feature-box">
+      <h4>Missing Start Date</h4>
+      <p>Issues without a start date cannot be properly scheduled. The analyzer assumes work starts immediately, which may not be accurate.</p>
+      <p><strong>Fix:</strong> Add a start date to the issue or use the "Start date" custom field.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>Missing Due Date</h4>
+      <p>Issues without a due date are assumed to have a 14-day window, which may misrepresent actual deadlines.</p>
+      <p><strong>Fix:</strong> Set a realistic due date for the issue.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>Missing Estimate</h4>
+      <p>Issues without time estimates cannot contribute to capacity calculations. They're invisible to feasibility analysis.</p>
+      <p><strong>Fix:</strong> Add an original estimate (time tracking) to the issue.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>Overdue</h4>
+      <p>Issues past their due date that aren't marked as Done. These represent planning failures or outdated data.</p>
+      <p><strong>Fix:</strong> Either complete the issue, update the due date, or mark it as blocked.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>Done with Remaining Work</h4>
+      <p>Issues marked as Done but still have remaining estimate. This suggests incomplete logging or incorrect status.</p>
+      <p><strong>Fix:</strong> Clear the remaining estimate or verify the issue is actually complete.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>Child After Parent</h4>
+      <p>Sub-tasks or child stories with due dates after their parent Epic's due date. This creates impossible schedules.</p>
+      <p><strong>Fix:</strong> Adjust either the child's due date or the parent's due date.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>Dependency Conflict</h4>
+      <p>A blocking issue finishes after the blocked issue is supposed to start. This creates impossible execution order.</p>
+      <p><strong>Fix:</strong> Adjust dates so blockers finish before dependent work begins.</p>
+    </div>
+
+    <h3 id="severity-levels">Severity Levels</h3>
+    <table>
+      <tr>
+        <th>Severity</th>
+        <th>Color</th>
         <th>Meaning</th>
       </tr>
       <tr>
-        <td>Green feasibility score</td>
-        <td>80-100% - Healthy, plan is realistic with buffer</td>
+        <td><strong>Error</strong></td>
+        <td>Red</td>
+        <td>Critical issue that will cause planning failures</td>
       </tr>
       <tr>
-        <td>Orange feasibility score</td>
-        <td>50-79% - At risk, tight capacity or some overload periods</td>
+        <td><strong>Warning</strong></td>
+        <td>Orange</td>
+        <td>Potential problem that may affect accuracy</td>
       </tr>
       <tr>
-        <td>Red feasibility score</td>
-        <td>0-49% - Overloaded, significant capacity shortage</td>
-      </tr>
-      <tr>
-        <td>Red overload banner</td>
-        <td>Period has demand exceeding capacity</td>
-      </tr>
-      <tr>
-        <td>Dashed chart lines</td>
-        <td>Cumulative values (running totals)</td>
-      </tr>
-      <tr>
-        <td>Solid chart lines</td>
-        <td>Period values (daily/weekly/etc.)</td>
-      </tr>
-      <tr>
-        <td>Purple chart line</td>
-        <td>Completion percentage (uses right Y-axis)</td>
+        <td><strong>Info</strong></td>
+        <td>Blue</td>
+        <td>Minor issue or suggestion for improvement</td>
       </tr>
     </table>
 
-    <!-- Section 9: JQL Examples -->
-    <h2 id="jql-examples">9. JQL Examples</h2>
+    <!-- Section 4: Dependencies Tab -->
+    <h2 id="dependencies-tab">4. Dependencies Tab</h2>
+    <p>The Dependencies tab analyzes blocking relationships between issues to help you understand execution order and identify problems.</p>
 
-    <h3>Demand JQL Examples</h3>
+    <h3 id="dependency-graph">Dependency Graph</h3>
+    <p>The dependency analysis builds a directed graph from Jira issue links:</p>
 
-    <h4>Current Sprint Work</h4>
-    <pre>project = PROJ AND sprint in openSprints()</pre>
+    <h4>Link Types Analyzed</h4>
+    <ul>
+      <li><strong>Blocks / Is blocked by</strong> - Primary blocking relationships</li>
+      <li><strong>Has to be done before / Has to be done after</strong></li>
+      <li><strong>Is required by / Requires</strong></li>
+    </ul>
 
-    <h4>Specific Sprint</h4>
-    <pre>project = PROJ AND sprint = "Sprint 42"</pre>
+    <h4>Metrics Calculated</h4>
+    <table>
+      <tr>
+        <th>Metric</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><strong>Dependency Depth</strong></td>
+        <td>How many levels of blockers an issue has. Depth 0 = no blockers.</td>
+      </tr>
+      <tr>
+        <td><strong>Root Issues</strong></td>
+        <td>Issues with no blockers - can start immediately.</td>
+      </tr>
+      <tr>
+        <td><strong>Leaf Issues</strong></td>
+        <td>Issues that don't block anything - can finish last.</td>
+      </tr>
+      <tr>
+        <td><strong>Topological Order</strong></td>
+        <td>Optimal execution sequence respecting all dependencies.</td>
+      </tr>
+    </table>
 
-    <h4>Date Range</h4>
-    <pre>project = PROJ AND duedate >= 2025-01-01 AND duedate <= 2025-03-31</pre>
+    <h3 id="circular-dependencies">Circular Dependencies</h3>
+    <p>A circular dependency occurs when issues form a cycle (A blocks B, B blocks C, C blocks A). These are impossible to execute and must be resolved.</p>
 
-    <h4>Exclude Capacity Issues</h4>
-    <pre>project = PROJ AND summary !~ "Capacity"</pre>
-
-    <h4>Using Saved Filter</h4>
-    <pre>filter = 10100</pre>
-
-    <h3>Capacity JQL Examples</h3>
-
-    <h4>Dedicated Capacity Issues</h4>
-    <pre>project = PROJ AND summary ~ "Capacity"</pre>
-
-    <h4>Availability Issues by Label</h4>
-    <pre>project = PROJ AND labels = "team-capacity"</pre>
-
-    <h4>Specific Team Member Capacity</h4>
-    <pre>project = PROJ AND summary ~ "Capacity" AND assignee = currentUser()</pre>
-
-    <div class="note tip">
-      <div class="note-title">Tip: Capacity Modeling</div>
-      <p>A common pattern is to create "Capacity" issues for each sprint with:</p>
-      <ul>
-        <li>Start date = sprint start</li>
-        <li>Due date = sprint end</li>
-        <li>Original estimate = team's available hours</li>
-      </ul>
-      <p>This provides predictable capacity for feasibility analysis.</p>
+    <div class="note error">
+      <div class="note-title">Circular Dependency Detected</div>
+      If circular dependencies are found, they're displayed prominently with the cycle path. You must break the cycle by removing one of the blocking links.
     </div>
 
-    <!-- Section 10: Troubleshooting -->
-    <h2 id="troubleshooting">10. Troubleshooting</h2>
+    <!-- Section 5: Report Tab -->
+    <h2 id="report-tab">5. Report Tab</h2>
+    <p>The Report tab generates professional status reports for stakeholder communication.</p>
 
-    <h3>No Data Available</h3>
+    <h3>Report Contents</h3>
     <ul>
-      <li>Check that your JQL returns issues</li>
-      <li>Verify issues have start dates, due dates, and estimates</li>
-      <li>Ensure at least some issues have Original Estimate or Remaining Estimate set</li>
+      <li><strong>Executive Summary</strong> - High-level status with feasibility score</li>
+      <li><strong>Key Metrics</strong> - Total demand, capacity, time spent, completion %</li>
+      <li><strong>Risk Highlights</strong> - Top compliance violations and concerns</li>
+      <li><strong>Overload Periods</strong> - Dates when demand exceeds capacity</li>
+      <li><strong>Dependency Status</strong> - Circular dependencies and blocked chains</li>
     </ul>
 
-    <h3>Feasibility Score is 0</h3>
+    <h3>Export Options</h3>
+    <table>
+      <tr>
+        <th>Format</th>
+        <th>Best For</th>
+      </tr>
+      <tr>
+        <td><strong>Copy as Text</strong></td>
+        <td>Email, Slack, plain text documents</td>
+      </tr>
+      <tr>
+        <td><strong>Copy as Markdown</strong></td>
+        <td>Confluence, GitHub, documentation systems</td>
+      </tr>
+    </table>
+
+    <!-- Section 6: Team Tab -->
+    <h2 id="team-tab">6. Team Tab</h2>
+    <p>The Team tab shows workload distribution across team members.</p>
+
+    <h3>Workload Analysis</h3>
+    <p>For each assignee, the Team view shows:</p>
     <ul>
-      <li>This typically means no capacity was found</li>
+      <li><strong>Assigned Hours</strong> - Total estimated work assigned to them</li>
+      <li><strong>Time Spent</strong> - Hours already logged</li>
+      <li><strong>Remaining</strong> - Hours still to complete</li>
+      <li><strong>Utilization</strong> - Percentage of their capacity used</li>
+    </ul>
+
+    <h3>Identifying Imbalances</h3>
+    <ul>
+      <li><span class="score-danger">Red</span> - Over capacity (>100% utilization)</li>
+      <li><span class="score-warning">Orange</span> - Near capacity (80-100%)</li>
+      <li><span class="score-good">Green</span> - Healthy (<80%)</li>
+    </ul>
+
+    <h3>Unassigned Work</h3>
+    <p>Work without an assignee is shown separately. This helps identify gaps in task assignment.</p>
+
+    <!-- Section 7: Capacity Tab -->
+    <h2 id="capacity-tab">7. Capacity Tab</h2>
+    <p>The Capacity tab lets you configure team capacity without creating Jira issues.</p>
+
+    <h3>Manual Capacity Entry</h3>
+    <p>Instead of using capacity issues, you can directly specify each team member's availability:</p>
+
+    <ol>
+      <li>Go to the <strong>Capacity</strong> tab</li>
+      <li>Select period type: <strong>Weekly</strong> or <strong>Monthly</strong></li>
+      <li>Click <strong>Add Team Member</strong></li>
+      <li>Enter their name and hours per period</li>
+      <li>Optionally set start/end dates for temporary capacity</li>
+      <li>Click <strong>Save</strong></li>
+    </ol>
+
+    <h3>Capacity Calculation</h3>
+    <table>
+      <tr>
+        <th>Period</th>
+        <th>Daily Conversion</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td>Weekly</td>
+        <td>Hours ÷ 5 business days</td>
+        <td>40 hrs/week = 8 hrs/day</td>
+      </tr>
+      <tr>
+        <td>Monthly</td>
+        <td>Hours ÷ 22 avg business days</td>
+        <td>176 hrs/month ≈ 8 hrs/day</td>
+      </tr>
+    </table>
+
+    <div class="note tip">
+      <div class="note-title">Tip: Account for Meetings</div>
+      Don't assume 8 hours/day of productive time. Most teams have 5-6 hours of actual coding/work time after meetings, breaks, and context switching.
+    </div>
+
+    <!-- Section 8: What-If Panel -->
+    <h2 id="what-if-panel">8. What-If Scenarios</h2>
+    <p>The What-If panel lets you model hypothetical changes and see their impact on feasibility before committing to them.</p>
+
+    <h3>Opening What-If</h3>
+    <p>Click the <strong>Show What-If</strong> button in the header to open the scenarios panel.</p>
+
+    <h3 id="capacity-scenarios">Capacity Scenarios</h3>
+    <p>Model changes to team capacity:</p>
+
+    <h4>Add Capacity (+)</h4>
+    <p>Simulate adding resources:</p>
+    <ul>
+      <li><strong>+10%</strong> - Modest increase (overtime, temporary help)</li>
+      <li><strong>+25%</strong> - Significant increase (new team member)</li>
+      <li><strong>+50%</strong> - Major increase (multiple hires)</li>
+      <li><strong>Custom</strong> - Enter any percentage</li>
+    </ul>
+
+    <h4>Remove Capacity (-)</h4>
+    <p>Simulate losing resources:</p>
+    <ul>
+      <li><strong>-10%</strong> - Minor reduction (sick days, training)</li>
+      <li><strong>-25%</strong> - Vacation or temporary leave</li>
+      <li><strong>-50%</strong> - Major reduction (departure, reassignment)</li>
+    </ul>
+
+    <h3 id="scope-scenarios">Scope Scenarios</h3>
+    <p>Model changes to planned work:</p>
+
+    <h4>Remove Scope (-)</h4>
+    <p>Simulate descoping:</p>
+    <ul>
+      <li><strong>-10%</strong> - Minor feature cuts</li>
+      <li><strong>-25%</strong> - Significant descope</li>
+      <li><strong>-50%</strong> - Major scope reduction</li>
+    </ul>
+
+    <h4>Add Scope (+)</h4>
+    <p>Simulate scope creep or new requirements:</p>
+    <ul>
+      <li><strong>+10%</strong> - Minor additions</li>
+      <li><strong>+25%</strong> - New feature request</li>
+      <li><strong>+50%</strong> - Major scope increase</li>
+    </ul>
+
+    <h3 id="deadline-scenarios">Deadline Scenarios</h3>
+    <p>Model timeline changes:</p>
+    <ul>
+      <li><strong>+1 week</strong> - Extend deadline by 7 days</li>
+      <li><strong>+2 weeks</strong> - Extend by 14 days</li>
+      <li><strong>Custom</strong> - Specify any number of days</li>
+    </ul>
+
+    <h3>Combining Scenarios</h3>
+    <p>You can activate multiple scenarios simultaneously to model complex changes:</p>
+
+    <div class="feature-box">
+      <h4>Example: Finding the Sweet Spot</h4>
+      <p>If your feasibility is 45% (red), try:</p>
+      <ol>
+        <li>Add +25% capacity → Score becomes 58%</li>
+        <li>Also remove -20% scope → Score becomes 78%</li>
+        <li>The combination gets you to a healthy state</li>
+      </ol>
+    </div>
+
+    <h3>Active Scenarios Indicator</h3>
+    <p>When scenarios are active, the header shows "Viewing X scenarios" with the combined effect. The feasibility score updates in real-time to reflect the scenario impact.</p>
+
+    <!-- Section 9: Configuration -->
+    <h2 id="configuration">9. Configuration</h2>
+    <p>Access configuration by clicking the gear icon on the gadget.</p>
+
+    <h3>Configuration Options</h3>
+    <table>
+      <tr>
+        <th>Setting</th>
+        <th>Description</th>
+        <th>Required</th>
+      </tr>
+      <tr>
+        <td><strong>Demand JQL</strong></td>
+        <td>JQL query to select work items to analyze</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><strong>Capacity JQL</strong></td>
+        <td>JQL query for capacity-representing issues</td>
+        <td>No*</td>
+      </tr>
+      <tr>
+        <td><strong>Manual Capacity</strong></td>
+        <td>Use the Capacity tab instead of JQL</td>
+        <td>No*</td>
+      </tr>
+    </table>
+    <p>*Either Capacity JQL or Manual Capacity should be configured.</p>
+
+    <h3>Required Issue Fields</h3>
+    <p>For best results, issues should have:</p>
+    <ul>
+      <li><strong>Start Date</strong> - When work begins (custom field or sprint start)</li>
+      <li><strong>Due Date</strong> - When work must complete</li>
+      <li><strong>Original Estimate</strong> - Total planned hours</li>
+      <li><strong>Remaining Estimate</strong> - Hours left to complete</li>
+      <li><strong>Worklogs</strong> - Time logged against the issue</li>
+    </ul>
+
+    <!-- Section 10: JQL Examples -->
+    <h2 id="jql-examples">10. JQL Examples</h2>
+
+    <h3>Demand JQL</h3>
+
+    <h4>Current Sprint</h4>
+    <pre>project = MYPROJECT AND sprint in openSprints()</pre>
+
+    <h4>Specific Sprint</h4>
+    <pre>project = MYPROJECT AND sprint = "Sprint 42"</pre>
+
+    <h4>Date Range</h4>
+    <pre>project = MYPROJECT AND duedate >= 2026-01-01 AND duedate <= 2026-03-31</pre>
+
+    <h4>Excluding Done Issues</h4>
+    <pre>project = MYPROJECT AND sprint in openSprints() AND status != Done</pre>
+
+    <h4>Using Saved Filter</h4>
+    <pre>filter = 12345</pre>
+
+    <h3>Capacity JQL</h3>
+
+    <h4>Capacity Issues by Summary</h4>
+    <pre>project = MYPROJECT AND summary ~ "Capacity"</pre>
+
+    <h4>Capacity Issues by Label</h4>
+    <pre>project = MYPROJECT AND labels = "team-capacity"</pre>
+
+    <h4>Specific Team</h4>
+    <pre>project = MYPROJECT AND labels = "team-alpha-capacity"</pre>
+
+    <div class="note tip">
+      <div class="note-title">Capacity Issue Pattern</div>
+      A common pattern is to create one "Capacity" issue per sprint with:
+      <ul>
+        <li>Summary: "Sprint 42 - Team Capacity"</li>
+        <li>Start Date: Sprint start</li>
+        <li>Due Date: Sprint end</li>
+        <li>Original Estimate: Total team hours available</li>
+      </ul>
+    </div>
+
+    <!-- Section 11: Troubleshooting -->
+    <h2 id="troubleshooting">11. Troubleshooting</h2>
+
+    <h3>No Data Showing</h3>
+    <div class="note warning">
+      <div class="note-title">Possible Causes</div>
+      <ul>
+        <li>JQL query returns no issues - test it in Jira's issue search</li>
+        <li>Issues have no estimates - add Original Estimate values</li>
+        <li>Issues have no dates - add Start Date and Due Date</li>
+        <li>Filter permissions - ensure the filter is shared appropriately</li>
+      </ul>
+    </div>
+
+    <h3>Feasibility Score is 0%</h3>
+    <p>This means no capacity was detected:</p>
+    <ul>
       <li>Check your Capacity JQL query</li>
-      <li>Verify capacity issues have Original Estimate and both dates set</li>
+      <li>Verify capacity issues have Original Estimate set</li>
+      <li>Verify capacity issues have both Start Date and Due Date</li>
+      <li>Try using Manual Capacity in the Capacity tab</li>
     </ul>
 
-    <h3>Completion Percentage is 0</h3>
+    <h3>Completion Percentage Stuck at 0%</h3>
     <ul>
-      <li>Original estimates may not be set on issues</li>
-      <li>No worklogs may be recorded</li>
-      <li>Worklogs may be outside the analysis date range</li>
+      <li>Issues need Original Estimates set (not just Remaining)</li>
+      <li>Time must be logged via Worklogs</li>
+      <li>Ensure worklogs are within the analysis date range</li>
     </ul>
 
-    <h3>Filter Permission Errors</h3>
-    <p>If using <code>filter = XXXXX</code> syntax:</p>
+    <h3>Chart Shows Wrong Date Range</h3>
+    <p>The date range is calculated from:</p>
     <ul>
-      <li>The filter must be shared with the app or be public</li>
-      <li>Go to the filter in Jira and check sharing permissions</li>
-      <li>Share with "Any logged-in user" or specific groups</li>
+      <li>Earliest start date across all issues</li>
+      <li>Latest due date across all issues</li>
+      <li>Plus a 5-day buffer on each end</li>
+    </ul>
+    <p>Check that your issues have reasonable dates.</p>
+
+    <h3>"Filter Not Found" Error</h3>
+    <p>When using <code>filter = XXXXX</code> syntax:</p>
+    <ul>
+      <li>The filter must exist and be accessible to you</li>
+      <li>Go to the filter and check sharing permissions</li>
+      <li>Share with "Any logged-in user" or your group</li>
     </ul>
 
-    <h3>Dates Not Showing Correctly</h3>
+    <h3>Performance Issues</h3>
+    <p>If the gadget loads slowly:</p>
     <ul>
-      <li>Verify issues have Start Date and Due Date fields populated</li>
-      <li>Check that dates are within a reasonable range</li>
-      <li>The analyzer only processes business days (Mon-Fri)</li>
+      <li>Narrow your JQL to fewer issues</li>
+      <li>Use date range filters to limit the scope</li>
+      <li>Consider using saved filters for complex JQL</li>
     </ul>
 
     <footer>
-      <p>Beyond Burndown User Manual | Version 1.0</p>
+      <p>Beyond Burndown User Manual | Version 2.0 | Updated February 2026</p>
       <p style="margin-top: 16px;">
         <a href="index.html">Home</a>
         <a href="https://github.com/donsalz57-git/beyond-burndown">GitHub</a>
