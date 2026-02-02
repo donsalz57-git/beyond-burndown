@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
   <style>
     :root {
       --green: #00875A;
@@ -453,7 +454,7 @@
       cursor: pointer;
     }
 
-    /* Compliance */
+    /* Data Quality */
     .comp-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
     .comp-card { background: var(--light-gray); padding: 20px; border-radius: 8px; text-align: center; }
     .comp-card .num { font-size: 2.5rem; font-weight: 700; }
@@ -572,7 +573,7 @@
       <div class="guide-header">
         <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
         <div class="progress-text">
-          <span id="step-text">Step 1 of 14</span>
+          <span id="step-text">Step 1 of 13</span>
           <span id="step-name">Introduction</span>
         </div>
       </div>
@@ -593,15 +594,12 @@
           <div class="metric"><div class="metric-val bad">1</div><div class="metric-label">Cycles</div></div>
         </div>
 
-        <div class="alert warn" id="forecast-alert">
-          ⚠️ <span>Forecast: Work completes Feb 18 — <strong>2 days after deadline</strong></span>
-        </div>
 
         <div class="tabs" id="tab-bar">
           <button class="tab active" data-tab="feasibility">Feasibility</button>
           <button class="tab" data-tab="team">Team <span class="badge bad">!</span></button>
           <button class="tab" data-tab="capacity">Capacity</button>
-          <button class="tab" data-tab="compliance">Compliance <span class="badge">9</span></button>
+          <button class="tab" data-tab="compliance">Data Quality <span class="badge">9</span></button>
           <button class="tab" data-tab="dependencies">Dependencies <span class="badge bad">1</span></button>
           <button class="tab" data-tab="report">Report</button>
         </div>
@@ -764,40 +762,11 @@
         `
       },
       {
-        name: 'Forecast Alert',
-        tab: 'feasibility',
-        highlight: 'forecast-alert',
-        html: `
-          <span class="step-num">Step 2</span>
-          <h2>The Forecast Alert</h2>
-
-          <div class="explanation">
-            <h3>What This Warning Means</h3>
-            <p>Based on the current work estimates and team capacity, the analysis predicts when all work will be completed. This project will finish <strong>2 days late</strong>.</p>
-          </div>
-
-          <div class="details">
-            <h3>How the Forecast Works</h3>
-            <ul>
-              <li>Calculates remaining work from Jira time estimates</li>
-              <li>Divides by daily team capacity</li>
-              <li>Projects completion date accounting for weekends</li>
-              <li>Compares against issue due dates to find the gap</li>
-            </ul>
-          </div>
-
-          <div class="action-box">
-            <h3>To Get Back on Track</h3>
-            <p>You need to either: (1) Add more capacity, (2) Remove 5+ hours of scope, or (3) Extend the deadline. The What-If feature lets you model these options.</p>
-          </div>
-        `
-      },
-      {
         name: 'Feasibility Score',
         tab: 'feasibility',
         highlight: 'feas-header',
         html: `
-          <span class="step-num">Step 3</span>
+          <span class="step-num">Step 2</span>
           <h2>The Feasibility Score</h2>
 
           <div class="explanation">
@@ -830,7 +799,7 @@
         tab: 'feasibility',
         highlight: 'overload-bar',
         html: `
-          <span class="step-num">Step 4</span>
+          <span class="step-num">Step 3</span>
           <h2>Overload Detection</h2>
 
           <div class="explanation">
@@ -854,30 +823,30 @@
         `
       },
       {
-        name: 'Daily Demand vs Capacity',
+        name: 'Weekly Demand vs Capacity',
         tab: 'feasibility',
         highlight: 'chart-legend',
         chartView: 'daily',
         html: `
-          <span class="step-num">Step 5</span>
-          <h2>Daily Demand vs Capacity</h2>
+          <span class="step-num">Step 4</span>
+          <h2>Weekly Demand vs Capacity</h2>
 
           <div class="explanation">
-            <h3>Are You Overloaded Today?</h3>
-            <p>This view compares how much work is due each day against how many hours the team can work that day.</p>
+            <h3>Are You Overloaded This Week?</h3>
+            <p>This view compares how much work is due each week against how many hours the team can work that week.</p>
           </div>
 
           <div class="details">
             <h3>Reading the Lines</h3>
             <ul>
-              <li><strong style="color:#00875A">Daily Capacity</strong> — Hours your team can work per day (32h)</li>
-              <li><strong style="color:#0052CC">Daily Demand</strong> — Hours of work due that day</li>
+              <li><strong style="color:#00875A">Weekly Capacity</strong> — Hours your team can work per week (160h)</li>
+              <li><strong style="color:#0052CC">Weekly Demand</strong> — Hours of work due that week</li>
             </ul>
           </div>
 
           <div class="action-box">
             <h3>Key Insight</h3>
-            <p>When blue exceeds green, you have more work due than hours available. The early spike shows Feb 1-8 is overloaded — too many issues due at once.</p>
+            <p>When blue exceeds green, you have more work due than hours available. The early spike shows the first weeks are overloaded — too many issues due at once.</p>
           </div>
         `
       },
@@ -887,7 +856,7 @@
         highlight: 'chart-legend',
         chartView: 'cumulative',
         html: `
-          <span class="step-num">Step 6</span>
+          <span class="step-num">Step 5</span>
           <h2>Cumulative Demand vs Capacity</h2>
 
           <div class="explanation">
@@ -915,7 +884,7 @@
         highlight: 'chart-legend',
         chartView: 'spent',
         html: `
-          <span class="step-num">Step 7</span>
+          <span class="step-num">Step 6</span>
           <h2>Time Spent vs Capacity</h2>
 
           <div class="explanation">
@@ -943,7 +912,7 @@
         highlight: 'chart-legend',
         chartView: 'completion',
         html: `
-          <span class="step-num">Step 8</span>
+          <span class="step-num">Step 7</span>
           <h2>Completion Percentage</h2>
 
           <div class="explanation">
@@ -973,7 +942,7 @@
         showWhatIf: true,
         chartView: 'cumulative',
         html: `
-          <span class="step-num">Step 9</span>
+          <span class="step-num">Step 8</span>
           <h2>What-If Scenario Modeling</h2>
 
           <div class="explanation">
@@ -1001,7 +970,7 @@
         tab: 'team',
         highlight: null,
         html: `
-          <span class="step-num">Step 10</span>
+          <span class="step-num">Step 9</span>
           <h2>Team Workload Distribution</h2>
 
           <div class="explanation">
@@ -1030,7 +999,7 @@
         tab: 'capacity',
         highlight: 'cap-config',
         html: `
-          <span class="step-num">Step 11</span>
+          <span class="step-num">Step 10</span>
           <h2>Capacity Configuration</h2>
 
           <div class="explanation">
@@ -1065,16 +1034,16 @@
         `
       },
       {
-        name: 'Compliance Violations',
+        name: 'Data Quality',
         tab: 'compliance',
         highlight: null,
         html: `
-          <span class="step-num">Step 12</span>
-          <h2>Compliance Violations</h2>
+          <span class="step-num">Step 11</span>
+          <h2>Data Quality Issues</h2>
 
           <div class="explanation">
             <h3>Finding Planning Problems</h3>
-            <p>The compliance engine automatically detects issues with your Jira data that could cause problems — missing information, scheduling conflicts, and overdue work.</p>
+            <p>The data quality checker automatically detects issues with your Jira data that could cause problems — missing information, scheduling conflicts, and overdue work.</p>
           </div>
 
           <div class="details">
@@ -1099,7 +1068,7 @@
         tab: 'dependencies',
         highlight: 'cycle-alert',
         html: `
-          <span class="step-num">Step 13</span>
+          <span class="step-num">Step 12</span>
           <h2>Dependency Analysis</h2>
 
           <div class="explanation">
@@ -1136,7 +1105,7 @@
         tab: 'report',
         highlight: 'report-grid',
         html: `
-          <span class="step-num">Step 14</span>
+          <span class="step-num">Step 13</span>
           <h2>Executive Report</h2>
 
           <div class="explanation">
@@ -1278,32 +1247,46 @@
 
     function initChartData() {
       const labels = [];
-      const dailyCap = [], dailyDem = [];
+      const periodCap = [], periodDem = [];
       const cumCap = [], cumDem = [], cumSpent = [];
       const completionPct = [];
 
       let cC = 0, cD = 0, cS = 0;
-      const totalOriginalEstimate = 650;
+      const totalOriginalEstimate = 4000; // 6 months of work
 
-      for (let i = 0; i < 20; i++) {
-        const d = new Date(); d.setDate(d.getDate() - 5 + i);
+      // 6 months of weekly data (26 weeks)
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - 3); // Start 3 months ago
+
+      for (let i = 0; i < 26; i++) {
+        const d = new Date(startDate);
+        d.setDate(d.getDate() + i * 7);
         labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
 
-        const dCap = 32;
-        const dDem = 28 + Math.sin(i * 0.5) * 12 + (i < 8 ? 10 : 0);
-        dailyCap.push(dCap);
-        dailyDem.push(Math.round(dDem * 10) / 10);
+        // Weekly capacity and demand (hours per week)
+        const wCap = 160; // 4 people * 40h/week
+        const wDem = 140 + Math.sin(i * 0.3) * 40 + (i < 10 ? 30 : 0); // Variable demand
+        periodCap.push(wCap);
+        periodDem.push(Math.round(wDem));
 
-        cC += dCap;
-        cD += dDem;
-        cS += i < 5 ? 25 : 30;
+        // Cumulative values
+        cC += wCap;
+        cD += wDem;
+
+        // Time spent (gradually catches up)
+        const weeklySpent = i < 13 ? 120 + i * 5 : 160;
+        cS += weeklySpent;
+
         cumCap.push(cC);
-        cumDem.push(Math.round(cD * 10) / 10);
-        cumSpent.push(Math.round(cS * 10) / 10);
-        completionPct.push(Math.round((cS / totalOriginalEstimate) * 100));
+        cumDem.push(Math.round(cD));
+        cumSpent.push(Math.round(cS));
+
+        // Completion % per period (time spent this period / demand this period)
+        const periodCompletion = Math.round((weeklySpent / wDem) * 100);
+        completionPct.push(Math.min(periodCompletion, 150)); // Cap at 150%
       }
 
-      chartData = { labels, dailyCap, dailyDem, cumCap, cumDem, cumSpent, completionPct };
+      chartData = { labels, periodCap, periodDem, cumCap, cumDem, cumSpent, completionPct };
     }
 
     function initChart() {
@@ -1334,37 +1317,39 @@
       switch (view) {
         case 'daily':
           datasets = [
-            { label: 'Daily Capacity', data: chartData.dailyCap, borderColor: '#00875A', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 4 },
-            { label: 'Daily Demand', data: chartData.dailyDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 4 }
+            { label: 'Weekly Capacity', data: chartData.periodCap, borderColor: '#00875A', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 4 },
+            { label: 'Weekly Demand', data: chartData.periodDem, borderColor: '#0052CC', fill: false, tension: 0.1, borderWidth: 3, pointRadius: 4 }
           ];
-          scales = { y: { beginAtZero: true, max: 55, title: { display: true, text: 'Hours per Day', font: { weight: 'bold' } } } };
+          scales = { y: { beginAtZero: true, title: { display: true, text: 'Hours per Week', font: { weight: 'bold' } } } };
           legendHtml = `
-            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Daily Capacity (32h)</div>
-            <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Daily Demand</div>
+            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Weekly Capacity (160h)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Weekly Demand</div>
           `;
           break;
 
         case 'cumulative':
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
-            { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', borderDash: [6, 4], fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
+            { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', borderDash: [6, 4], fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
           scales = { y: { beginAtZero: true, title: { display: true, text: 'Cumulative Hours', font: { weight: 'bold' } } } };
           legendHtml = `
-            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Cumulative Capacity</div>
-            <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Cumulative Demand</div>
+            <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#00875A 0,#00875A 6px,transparent 6px,transparent 10px)"></div>Cumulative Capacity</div>
+            <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#0052CC 0,#0052CC 6px,transparent 6px,transparent 10px)"></div>Cumulative Demand</div>
+            <div class="legend-item"><div class="legend-color" style="background:#DE350B"></div>Target Date</div>
           `;
           break;
 
         case 'spent':
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
-            { label: 'Time Spent', data: chartData.cumSpent, borderColor: '#FF8B00', fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', borderDash: [6, 4], fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 },
+            { label: 'Time Spent', data: chartData.cumSpent, borderColor: '#FF8B00', borderDash: [6, 4], fill: false, tension: 0.3, borderWidth: 3, pointRadius: 0 }
           ];
           scales = { y: { beginAtZero: true, title: { display: true, text: 'Cumulative Hours', font: { weight: 'bold' } } } };
           legendHtml = `
-            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Cumulative Capacity</div>
-            <div class="legend-item"><div class="legend-color" style="background:#FF8B00"></div>Time Spent (Logged)</div>
+            <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#00875A 0,#00875A 6px,transparent 6px,transparent 10px)"></div>Cumulative Capacity</div>
+            <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#FF8B00 0,#FF8B00 6px,transparent 6px,transparent 10px)"></div>Time Spent</div>
+            <div class="legend-item"><div class="legend-color" style="background:#DE350B"></div>Target Date</div>
           `;
           break;
 
@@ -1380,18 +1365,42 @@
 
         default:
           datasets = [
-            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 },
-            { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 }
+            { label: 'Cumulative Capacity', data: chartData.cumCap, borderColor: '#00875A', borderDash: [6, 4], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 },
+            { label: 'Cumulative Demand', data: chartData.cumDem, borderColor: '#0052CC', borderDash: [6, 4], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 0 }
           ];
           scales = { y: { beginAtZero: true, title: { display: true, text: 'Hours' } } };
           legendHtml = `
-            <div class="legend-item"><div class="legend-color" style="background:#00875A"></div>Capacity</div>
-            <div class="legend-item"><div class="legend-color" style="background:#0052CC"></div>Demand</div>
+            <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#00875A 0,#00875A 6px,transparent 6px,transparent 10px)"></div>Capacity</div>
+            <div class="legend-item"><div class="legend-color" style="background:repeating-linear-gradient(90deg,#0052CC 0,#0052CC 6px,transparent 6px,transparent 10px)"></div>Demand</div>
           `;
       }
 
       legend.innerHTML = legendHtml;
       console.log('Creating chart with', datasets.length, 'datasets, view:', view);
+
+      // Target date annotation (week 20 of 26)
+      const targetAnnotation = (view === 'cumulative' || view === 'spent') ? {
+        annotation: {
+          annotations: {
+            targetLine: {
+              type: 'line',
+              xMin: 20,
+              xMax: 20,
+              borderColor: '#DE350B',
+              borderWidth: 2,
+              borderDash: [4, 4],
+              label: {
+                display: true,
+                content: 'Target',
+                position: 'start',
+                backgroundColor: '#DE350B',
+                color: '#fff',
+                font: { size: 11 }
+              }
+            }
+          }
+        }
+      } : {};
 
       chart = new Chart(ctx, {
         type: 'line',
@@ -1400,7 +1409,7 @@
           responsive: true,
           maintainAspectRatio: false,
           interaction: { intersect: false, mode: 'index' },
-          plugins: { legend: { display: false } },
+          plugins: { legend: { display: false }, ...targetAnnotation },
           scales
         }
       });
