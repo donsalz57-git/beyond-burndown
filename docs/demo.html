@@ -573,7 +573,7 @@
       <div class="guide-header">
         <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
         <div class="progress-text">
-          <span id="step-text">Step 1 of 13</span>
+          <span id="step-text">Step 1 of 14</span>
           <span id="step-name">Introduction</span>
         </div>
       </div>
@@ -1065,11 +1065,48 @@
         `
       },
       {
+        name: 'Per-User Timeline',
+        tab: 'team',
+        highlight: 'team-member-select',
+        html: `
+          <span class="step-num">Step 10</span>
+          <h2>Per-User Capacity vs Demand</h2>
+
+          <div class="explanation">
+            <h3>Tracking Individual Performance</h3>
+            <p>Use the dropdown to select a specific team member and see their capacity, demand, and time spent over time.</p>
+          </div>
+
+          <div class="details">
+            <h3>Reading the Chart</h3>
+            <ul>
+              <li><strong style="color:#00875A">Green dashed line</strong> — Weekly capacity (hours available)</li>
+              <li><strong style="color:#0052CC">Blue line</strong> — Weekly demand (hours of work assigned)</li>
+              <li><strong style="color:#FF8B00">Orange line</strong> — Time spent (hours actually worked)</li>
+            </ul>
+          </div>
+
+          <div class="details">
+            <h3>What to Look For</h3>
+            <ul>
+              <li><strong>Demand above capacity</strong> — Person is overcommitted</li>
+              <li><strong>Time spent below demand</strong> — Work isn't getting done as planned</li>
+              <li><strong>Time spent tracking demand</strong> — Healthy progress</li>
+            </ul>
+          </div>
+
+          <div class="action-box">
+            <h3>Try It</h3>
+            <p>Select different team members from the dropdown to compare their workload patterns. Look for who's keeping pace and who's falling behind.</p>
+          </div>
+        `
+      },
+      {
         name: 'Capacity Configuration',
         tab: 'capacity',
         highlight: 'cap-config',
         html: `
-          <span class="step-num">Step 10</span>
+          <span class="step-num">Step 11</span>
           <h2>Capacity Configuration</h2>
 
           <div class="explanation">
@@ -1108,7 +1145,7 @@
         tab: 'compliance',
         highlight: null,
         html: `
-          <span class="step-num">Step 11</span>
+          <span class="step-num">Step 12</span>
           <h2>Data Quality Issues</h2>
 
           <div class="explanation">
@@ -1138,7 +1175,7 @@
         tab: 'dependencies',
         highlight: 'cycle-alert',
         html: `
-          <span class="step-num">Step 12</span>
+          <span class="step-num">Step 13</span>
           <h2>Dependency Analysis</h2>
 
           <div class="explanation">
@@ -1175,7 +1212,7 @@
         tab: 'report',
         highlight: 'report-grid',
         html: `
-          <span class="step-num">Step 13</span>
+          <span class="step-num">Step 14</span>
           <h2>Executive Report</h2>
 
           <div class="explanation">
