@@ -521,6 +521,13 @@ tr:hover {
   color: #172B4D;
 }
 
+.answer-question {
+  font-size: 0.875rem;
+  color: #5E6C84;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
 .answer-view {
   font-size: 0.875rem;
   font-weight: 600;
