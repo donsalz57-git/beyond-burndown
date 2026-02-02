@@ -138,6 +138,32 @@
       color: #00875A;
     }
 
+    .concept-box {
+      background: #DEEBFF;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid #0052CC;
+    }
+
+    .concept-box h4 {
+      margin-top: 0;
+      color: #0052CC;
+    }
+
+    .example-box {
+      background: #E3FCEF;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid #00875A;
+    }
+
+    .example-box h4 {
+      margin-top: 0;
+      color: #006644;
+    }
+
     footer {
       margin-top: 60px;
       padding-top: 24px;
@@ -189,7 +215,7 @@
     </a>
     <div class="nav-links">
       <a href="index.html">Home</a>
-      <a href="index.html#features">Features</a>
+      <a href="demo.html">Try Demo</a>
       <a href="https://github.com/donsalz57-git/beyond-burndown">GitHub</a>
     </div>
   </nav>
@@ -203,267 +229,622 @@
     <nav class="toc">
       <h2>Table of Contents</h2>
       <ul>
-        <li><a href="#getting-started">1. Getting Started</a></li>
-        <li><a href="#feasibility-tab">2. Feasibility Tab</a>
+        <li><a href="#introduction">1. Introduction & Core Concepts</a>
           <ul>
-            <li><a href="#feasibility-score">Feasibility Score</a></li>
-            <li><a href="#chart-elements">Chart Elements</a></li>
-            <li><a href="#period-selector">Period Selector</a></li>
+            <li><a href="#why-beyond-burndown">Why Beyond Burndown?</a></li>
+            <li><a href="#four-questions">The Four Questions</a></li>
+            <li><a href="#key-concepts">Key Concepts</a></li>
           </ul>
         </li>
-        <li><a href="#compliance-tab">3. Compliance Tab (Data Quality)</a>
+        <li><a href="#getting-started">2. Getting Started</a>
           <ul>
-            <li><a href="#violation-types">Violation Types</a></li>
+            <li><a href="#installation">Installation</a></li>
+            <li><a href="#adding-to-dashboard">Adding to a Dashboard</a></li>
+            <li><a href="#initial-configuration">Initial Configuration</a></li>
+          </ul>
+        </li>
+        <li><a href="#feasibility-tab">3. Feasibility Tab</a>
+          <ul>
+            <li><a href="#understanding-feasibility">Understanding Feasibility</a></li>
+            <li><a href="#feasibility-score">The Feasibility Score</a></li>
+            <li><a href="#chart-elements">Chart Elements Explained</a></li>
+            <li><a href="#reading-the-chart">How to Read the Chart</a></li>
+            <li><a href="#overload-warnings">Overload Warnings</a></li>
+            <li><a href="#period-selector">Period Aggregation</a></li>
+          </ul>
+        </li>
+        <li><a href="#team-tab">4. Team Tab</a>
+          <ul>
+            <li><a href="#team-concepts">Understanding Team Workload</a></li>
+            <li><a href="#per-user-chart">Per-User Timeline Chart</a></li>
+            <li><a href="#workload-table">Workload Distribution Table</a></li>
+            <li><a href="#identifying-imbalances">Identifying Imbalances</a></li>
+          </ul>
+        </li>
+        <li><a href="#capacity-tab">5. Capacity Tab</a>
+          <ul>
+            <li><a href="#capacity-concepts">Understanding Capacity</a></li>
+            <li><a href="#manual-capacity">Manual Capacity Entry</a></li>
+            <li><a href="#capacity-calculation">How Capacity is Calculated</a></li>
+            <li><a href="#capacity-best-practices">Best Practices</a></li>
+          </ul>
+        </li>
+        <li><a href="#compliance-tab">6. Compliance Tab (Data Quality)</a>
+          <ul>
+            <li><a href="#why-data-quality">Why Data Quality Matters</a></li>
+            <li><a href="#violation-types">Violation Types Explained</a></li>
             <li><a href="#severity-levels">Severity Levels</a></li>
+            <li><a href="#fixing-violations">How to Fix Violations</a></li>
           </ul>
         </li>
-        <li><a href="#dependencies-tab">4. Dependencies Tab</a>
+        <li><a href="#dependencies-tab">7. Dependencies Tab</a>
           <ul>
-            <li><a href="#dependency-graph">Dependency Graph</a></li>
+            <li><a href="#dependency-concepts">Understanding Dependencies</a></li>
+            <li><a href="#dependency-analysis">Dependency Analysis</a></li>
             <li><a href="#circular-dependencies">Circular Dependencies</a></li>
+            <li><a href="#critical-path">Critical Path Implications</a></li>
           </ul>
         </li>
-        <li><a href="#report-tab">5. Report Tab</a></li>
-        <li><a href="#team-tab">6. Team Tab</a></li>
-        <li><a href="#capacity-tab">7. Capacity Tab</a></li>
-        <li><a href="#what-if-panel">8. What-If Scenarios</a>
+        <li><a href="#report-tab">8. Report Tab</a>
           <ul>
+            <li><a href="#report-contents">Report Contents</a></li>
+            <li><a href="#using-reports">Using Reports Effectively</a></li>
+          </ul>
+        </li>
+        <li><a href="#what-if-panel">9. What-If Scenarios</a>
+          <ul>
+            <li><a href="#what-if-concepts">The Power of What-If Analysis</a></li>
             <li><a href="#capacity-scenarios">Capacity Scenarios</a></li>
             <li><a href="#scope-scenarios">Scope Scenarios</a></li>
-            <li><a href="#deadline-scenarios">Deadline Scenarios</a></li>
+            <li><a href="#combining-scenarios">Combining Scenarios</a></li>
           </ul>
         </li>
-        <li><a href="#configuration">9. Configuration</a></li>
-        <li><a href="#jql-examples">10. JQL Examples</a></li>
-        <li><a href="#troubleshooting">11. Troubleshooting</a></li>
+        <li><a href="#configuration">10. Configuration</a>
+          <ul>
+            <li><a href="#jql-queries">JQL Queries Explained</a></li>
+            <li><a href="#jql-examples">JQL Examples</a></li>
+            <li><a href="#required-fields">Required Issue Fields</a></li>
+          </ul>
+        </li>
+        <li><a href="#best-practices">11. Best Practices</a></li>
+        <li><a href="#troubleshooting">12. Troubleshooting</a></li>
+        <li><a href="#glossary">13. Glossary</a></li>
+        <li><a href="#faq">14. FAQ</a></li>
       </ul>
     </nav>
 
-    <!-- Section 1: Getting Started -->
-    <h2 id="getting-started">1. Getting Started</h2>
-    <p>Beyond Burndown is a Jira Cloud dashboard gadget that provides comprehensive project analysis including feasibility scoring, data quality checks, dependency modeling, and What-If scenario planning.</p>
+    <!-- Section 1: Introduction -->
+    <h2 id="introduction">1. Introduction & Core Concepts</h2>
 
-    <h3>Installation</h3>
-    <ol>
-      <li>Go to the <a href="https://marketplace.atlassian.com/">Atlassian Marketplace</a></li>
-      <li>Search for "Beyond Burndown" or "Feasibility Analyzer"</li>
-      <li>Click <strong>Get it now</strong> and select your Jira site</li>
-      <li>Confirm the installation</li>
-    </ol>
+    <h3 id="why-beyond-burndown">Why Beyond Burndown?</h3>
+    <p>Traditional burndown charts show you what's happened—how much work is left compared to how much time remains. But they can't tell you whether your plan was realistic in the first place, or whether you'll actually finish on time.</p>
 
-    <h3>Adding to a Dashboard</h3>
-    <ol>
-      <li>Navigate to any Jira dashboard</li>
-      <li>Click <strong>Add gadget</strong> (or the + button)</li>
-      <li>Search for "Feasibility" or "Beyond Burndown"</li>
-      <li>Click <strong>Add gadget</strong></li>
-      <li>Configure the gadget with your JQL queries</li>
-    </ol>
+    <p>Beyond Burndown takes a fundamentally different approach. Instead of just tracking progress, it analyzes your plan's <strong>feasibility</strong>—comparing the work you've committed to against the capacity you have available. This lets you identify problems before they become crises.</p>
 
-    <h3>Initial Configuration</h3>
-    <p>After adding the gadget, you need to configure it:</p>
-    <ol>
-      <li>Click the <strong>gear icon</strong> on the gadget</li>
-      <li>Enter a <strong>Demand JQL</strong> query for your work items</li>
-      <li>Optionally set up <strong>Capacity</strong> (via JQL or manual entry)</li>
-      <li>Click <strong>Save</strong></li>
-    </ol>
-
-    <div class="note tip">
-      <div class="note-title">Quick Start Tip</div>
-      Try starting with a simple JQL like <code>project = YOUR_PROJECT AND sprint in openSprints()</code> to see your current sprint's feasibility.
+    <div class="concept-box">
+      <h4>The Core Problem</h4>
+      <p>Most project failures aren't caused by teams working too slowly. They're caused by plans that were never realistic to begin with. If you commit to 500 hours of work but only have 400 hours of capacity, no amount of hard work will save you.</p>
+      <p>Beyond Burndown makes this mismatch visible <em>before</em> you start, so you can adjust scope, add resources, or extend deadlines while there's still time.</p>
     </div>
 
-    <!-- Section 2: Feasibility Tab -->
-    <h2 id="feasibility-tab">2. Feasibility Tab</h2>
-    <p>The Feasibility tab is the main view showing how realistic your planned work is given available capacity.</p>
+    <h3 id="four-questions">The Four Questions</h3>
+    <p>Beyond Burndown is designed to answer four essential questions that every project manager needs to know:</p>
 
-    <h3 id="feasibility-score">Feasibility Score</h3>
-    <p>The feasibility score is a 0-100% measure of how achievable your plan is.</p>
+    <div class="feature-box">
+      <h4>1. Is the plan feasible?</h4>
+      <p>Can we actually deliver this scope by the deadline with the resources we have? The Feasibility Score gives you a clear 0-100% answer. If it's below 80%, you're at risk.</p>
+    </div>
 
-    <h4>How It's Calculated</h4>
-    <div class="formula">Score = (Coverage Ratio - Overload Penalty) × 100</div>
+    <div class="feature-box">
+      <h4>2. Are resources working as planned?</h4>
+      <p>Is the available capacity being applied to the work? Who's overloaded? Who has spare capacity? The Team tab shows you exactly how work is distributed across your team.</p>
+    </div>
 
-    <p><strong>Coverage Ratio</strong> measures total capacity vs total demand:</p>
-    <div class="formula">Coverage Ratio = min(1, Total Capacity Hours / Total Demand Hours)</div>
-    <ul>
-      <li>If you have more capacity than demand, ratio = 1.0 (capped)</li>
-      <li>If demand exceeds capacity, ratio decreases proportionally</li>
-    </ul>
+    <div class="feature-box">
+      <h4>3. Is the plan up to date?</h4>
+      <p>Are there overdue issues, missing dates, or missing estimates that need fixing? The Compliance tab automatically detects data quality problems that could throw off your analysis.</p>
+    </div>
 
-    <p><strong>Overload Penalty</strong> penalizes uneven distribution:</p>
-    <div class="formula">Overload Penalty = min(0.3, (Overloaded Days / Total Days) × 0.5)</div>
-    <ul>
-      <li>Even with enough total capacity, having many overloaded days reduces the score</li>
-      <li>Maximum penalty is 30% (0.3)</li>
-    </ul>
+    <div class="feature-box">
+      <h4>4. Is the plan on track?</h4>
+      <p>Is work getting done on schedule? The time spent vs. demand comparison shows whether you're keeping pace with the plan.</p>
+    </div>
+
+    <h3 id="key-concepts">Key Concepts</h3>
+
+    <h4>Demand</h4>
+    <p><strong>Demand</strong> represents the work that needs to be done. It's calculated from the time estimates on your Jira issues. If an issue has an original estimate of 16 hours, that's 16 hours of demand.</p>
+    <p>Demand is spread across the issue's date range. If an issue spans 4 business days with 16 hours of estimate, it contributes 4 hours of demand per day.</p>
+
+    <h4>Capacity</h4>
+    <p><strong>Capacity</strong> represents the work that <em>can</em> be done—the hours your team has available. You can define capacity through manual entry (recommended) or through capacity-representing issues in Jira.</p>
+
+    <h4>Feasibility</h4>
+    <p><strong>Feasibility</strong> is the ratio of capacity to demand. If you have 400 hours of capacity and 500 hours of demand, your feasibility is 80%—you can only complete 80% of the planned work.</p>
+
+    <h4>Time Spent</h4>
+    <p><strong>Time Spent</strong> is the actual work logged against issues through Jira's time tracking. This shows whether work is actually getting done as planned.</p>
+
+    <h4>Overload</h4>
+    <p>An <strong>overload</strong> occurs when demand exceeds capacity for a given period. Even if your total capacity matches total demand, having some weeks overloaded while others are underutilized causes problems.</p>
+
+    <!-- Section 2: Getting Started -->
+    <h2 id="getting-started">2. Getting Started</h2>
+
+    <h3 id="installation">Installation</h3>
+    <ol>
+      <li>Go to the <a href="https://marketplace.atlassian.com/">Atlassian Marketplace</a></li>
+      <li>Search for "Beyond Burndown"</li>
+      <li>Click <strong>Get it now</strong> and select your Jira Cloud site</li>
+      <li>Confirm the installation and grant the required permissions</li>
+    </ol>
+
+    <div class="note">
+      <div class="note-title">Permissions Required</div>
+      <p>Beyond Burndown needs read access to your Jira issues to analyze them. It also needs storage permission to save your configuration. It does not modify any issues—it's read-only.</p>
+    </div>
+
+    <h3 id="adding-to-dashboard">Adding to a Dashboard</h3>
+    <ol>
+      <li>Navigate to any Jira dashboard (or create a new one)</li>
+      <li>Click <strong>Add gadget</strong> (or the + button in the top right)</li>
+      <li>In the gadget browser, search for "Beyond Burndown" or "Feasibility"</li>
+      <li>Click <strong>Add gadget</strong> to add it to your dashboard</li>
+      <li>The gadget will appear in edit mode, ready for configuration</li>
+    </ol>
+
+    <h3 id="initial-configuration">Initial Configuration</h3>
+    <p>After adding the gadget, you need to configure it with at least a Demand JQL query:</p>
+
+    <ol>
+      <li>In the configuration panel, enter a <strong>Demand JQL</strong> query that returns the issues you want to analyze</li>
+      <li>Optionally set a <strong>Target Date</strong> for your deadline (shown as a vertical line on charts)</li>
+      <li>Click <strong>Save</strong> to start the analysis</li>
+    </ol>
+
+    <div class="example-box">
+      <h4>Quick Start Example</h4>
+      <p>For a simple start, try this Demand JQL:</p>
+      <pre>project = YOUR_PROJECT AND sprint in openSprints()</pre>
+      <p>This analyzes all issues in your current active sprints. Replace YOUR_PROJECT with your actual project key.</p>
+    </div>
+
+    <p>After saving, go to the <strong>Capacity</strong> tab to configure your team's capacity. Without capacity configured, the feasibility score will be inaccurate.</p>
+
+    <!-- Section 3: Feasibility Tab -->
+    <h2 id="feasibility-tab">3. Feasibility Tab</h2>
+
+    <h3 id="understanding-feasibility">Understanding Feasibility</h3>
+    <p>The Feasibility tab is the heart of Beyond Burndown. It shows you whether your plan is achievable by comparing capacity (what you can do) against demand (what needs to be done) over time.</p>
+
+    <div class="concept-box">
+      <h4>Why Cumulative Matters</h4>
+      <p>The key insight is looking at <em>cumulative</em> values, not just daily or weekly snapshots. Even if your average weekly capacity matches average weekly demand, the timing matters enormously.</p>
+      <p>If all your demand is front-loaded but capacity is spread evenly, you'll fall behind early and may never catch up. The cumulative view makes this visible.</p>
+    </div>
+
+    <h3 id="feasibility-score">The Feasibility Score</h3>
+    <p>The feasibility score is a 0-100% measure that answers: "What percentage of the planned work can we realistically complete?"</p>
 
     <h4>Score Ranges</h4>
     <table>
       <tr>
         <th>Score</th>
-        <th>Color</th>
-        <th>Meaning</th>
-        <th>Recommendation</th>
+        <th>Status</th>
+        <th>What It Means</th>
+        <th>What To Do</th>
       </tr>
       <tr>
         <td><span class="score-good">80-100%</span></td>
-        <td>Green</td>
         <td>Healthy</td>
-        <td>Plan is realistic with buffer for uncertainty</td>
+        <td>You have enough capacity with some buffer for uncertainty</td>
+        <td>Plan is realistic. Monitor for changes.</td>
       </tr>
       <tr>
         <td><span class="score-warning">50-79%</span></td>
-        <td>Orange</td>
         <td>At Risk</td>
+        <td>Capacity is tight or demand is unevenly distributed</td>
         <td>Consider reducing scope or adding capacity</td>
       </tr>
       <tr>
         <td><span class="score-danger">0-49%</span></td>
-        <td>Red</td>
         <td>Overloaded</td>
-        <td>Plan is likely to fail without changes</td>
+        <td>Significant capacity shortage—plan will likely fail</td>
+        <td>Immediate action needed: cut scope, add resources, or extend deadline</td>
       </tr>
     </table>
 
-    <h3 id="chart-elements">Chart Elements</h3>
-    <p>The feasibility chart shows several data series plotted over time:</p>
+    <div class="note tip">
+      <div class="note-title">Why 80% is the Target</div>
+      <p>We recommend targeting 80% or higher, not 100%. Real projects always have unexpected work, meetings, sick days, and context switching. An 80% score leaves room for reality.</p>
+    </div>
 
-    <table>
-      <tr>
-        <th>Line</th>
-        <th>Color</th>
-        <th>Style</th>
-        <th>Description</th>
-      </tr>
-      <tr>
-        <td>Period Capacity</td>
-        <td>Green</td>
-        <td>Solid bars</td>
-        <td>Available capacity for each period</td>
-      </tr>
-      <tr>
-        <td>Period Demand</td>
-        <td>Blue</td>
-        <td>Solid bars</td>
-        <td>Required work for each period</td>
-      </tr>
-      <tr>
-        <td>Cumulative Capacity</td>
-        <td>Green</td>
-        <td>Dashed line</td>
-        <td>Running total of capacity over time</td>
-      </tr>
-      <tr>
-        <td>Cumulative Demand</td>
-        <td>Blue</td>
-        <td>Dashed line</td>
-        <td>Running total of demand over time</td>
-      </tr>
-      <tr>
-        <td>Cumulative Time Spent</td>
-        <td>Orange</td>
-        <td>Dashed line</td>
-        <td>Running total of logged work</td>
-      </tr>
-      <tr>
-        <td>Completion %</td>
-        <td>Purple</td>
-        <td>Solid line</td>
-        <td>Time spent / original estimate (right Y-axis)</td>
-      </tr>
-    </table>
+    <h3 id="chart-elements">Chart Elements Explained</h3>
 
-    <h4>Overload Warnings</h4>
-    <p>When demand exceeds capacity for a period, a red warning banner appears showing:</p>
+    <h4>Period Bars (Capacity vs. Demand)</h4>
+    <p>The bar chart shows capacity and demand for each time period:</p>
     <ul>
-      <li>The date range of the overload</li>
-      <li>Number of days affected</li>
-      <li>Maximum hours over capacity</li>
+      <li><strong style="color:#00875A">Green bars</strong> — Capacity available that period</li>
+      <li><strong style="color:#0052CC">Blue bars</strong> — Demand (work due) that period</li>
+    </ul>
+    <p>When the blue bar exceeds the green bar, that period is overloaded—you have more work due than capacity available.</p>
+
+    <h4>Cumulative Lines</h4>
+    <p>The dashed lines show running totals over time:</p>
+    <ul>
+      <li><strong style="color:#00875A">Green dashed line</strong> — Cumulative Capacity (total hours available so far)</li>
+      <li><strong style="color:#0052CC">Blue dashed line</strong> — Cumulative Demand (total hours of work needed so far)</li>
+      <li><strong style="color:#FF8B00">Orange dashed line</strong> — Cumulative Time Spent (total hours actually worked)</li>
     </ul>
 
-    <h3 id="period-selector">Period Selector</h3>
-    <p>Choose how to aggregate data for different planning horizons:</p>
+    <h4>Completion Percentage</h4>
+    <p>The <strong style="color:#9C27B0">purple line</strong> shows completion percentage—time spent divided by original estimates. This tells you how much of the planned work has actually been completed.</p>
+
+    <h4>Target Date Line</h4>
+    <p>If you've set a target date, it appears as a <strong style="color:#DE350B">red vertical line</strong>. This marks your deadline so you can see whether cumulative lines will meet before that date.</p>
+
+    <h3 id="reading-the-chart">How to Read the Chart</h3>
+
+    <div class="example-box">
+      <h4>Healthy Project</h4>
+      <p>In a healthy project:</p>
+      <ul>
+        <li>The green cumulative line (capacity) stays <em>above</em> the blue line (demand)</li>
+        <li>The gap between them represents your buffer</li>
+        <li>The orange line (time spent) tracks close to the blue line, showing work is getting done on schedule</li>
+      </ul>
+    </div>
+
+    <div class="example-box">
+      <h4>Project at Risk</h4>
+      <p>Warning signs to watch for:</p>
+      <ul>
+        <li>The blue line (demand) crosses above the green line (capacity)—you're falling behind</li>
+        <li>The orange line (time spent) falls significantly below demand—work isn't getting done</li>
+        <li>The lines converge near or after your target date—you won't finish on time</li>
+      </ul>
+    </div>
+
+    <h3 id="overload-warnings">Overload Warnings</h3>
+    <p>When demand exceeds capacity for any period, Beyond Burndown displays an overload warning banner showing:</p>
+    <ul>
+      <li><strong>Date range</strong> — When the overload occurs</li>
+      <li><strong>Duration</strong> — How many days are affected</li>
+      <li><strong>Severity</strong> — How far over capacity you are</li>
+    </ul>
+
+    <div class="concept-box">
+      <h4>Why Overloads Matter</h4>
+      <p>Overloaded periods create a cascade effect. If you fall behind in week 1, you're starting week 2 already in the hole. This debt compounds unless you have slack later to catch up.</p>
+      <p>The overload penalty in the feasibility score accounts for this—even if totals balance, having concentrated overloads hurts your score.</p>
+    </div>
+
+    <h3 id="period-selector">Period Aggregation</h3>
+    <p>The period selector lets you choose how data is grouped:</p>
 
     <table>
       <tr>
         <th>Period</th>
-        <th>Aggregation</th>
+        <th>Groups By</th>
         <th>Best For</th>
       </tr>
       <tr>
         <td><strong>Daily</strong></td>
-        <td>No aggregation</td>
-        <td>Short sprints, detailed day-by-day view</td>
+        <td>Individual days</td>
+        <td>Short sprints, detailed day-by-day analysis, identifying specific problem days</td>
       </tr>
       <tr>
         <td><strong>Weekly</strong></td>
-        <td>Monday-Sunday</td>
-        <td>Standard sprints, weekly planning</td>
+        <td>Monday–Sunday</td>
+        <td>Standard sprint planning, most common view</td>
       </tr>
       <tr>
         <td><strong>Bi-weekly</strong></td>
         <td>Two-week periods</td>
-        <td>Two-week sprints</td>
+        <td>Two-week sprint cadence</td>
       </tr>
       <tr>
         <td><strong>Monthly</strong></td>
         <td>Calendar months</td>
-        <td>Monthly planning, quarterly view</td>
+        <td>Longer-term projects, quarterly planning, roadmap view</td>
       </tr>
       <tr>
         <td><strong>Quarterly</strong></td>
         <td>Q1, Q2, Q3, Q4</td>
-        <td>Annual roadmap planning</td>
+        <td>Annual planning, executive reporting</td>
       </tr>
     </table>
 
-    <!-- Section 3: Compliance Tab -->
-    <h2 id="compliance-tab">3. Compliance Tab (Data Quality)</h2>
-    <p>The Compliance tab identifies data quality issues in your Jira issues that could affect planning accuracy.</p>
+    <!-- Section 4: Team Tab -->
+    <h2 id="team-tab">4. Team Tab</h2>
 
-    <h3 id="violation-types">Violation Types</h3>
+    <h3 id="team-concepts">Understanding Team Workload</h3>
+    <p>The Team tab breaks down the aggregate view into individual team members. This helps you answer critical questions:</p>
+    <ul>
+      <li>Who's overloaded and at risk of burnout?</li>
+      <li>Who has spare capacity that could take on more work?</li>
+      <li>Is work distributed fairly across the team?</li>
+      <li>Are the right people assigned to the right work?</li>
+    </ul>
+
+    <div class="concept-box">
+      <h4>The Load Balancing Problem</h4>
+      <p>Even when total team capacity matches total demand, individual imbalances cause problems. If Alice has 50 hours of work and Bob has 10 hours, Alice will struggle while Bob waits.</p>
+      <p>The Team tab makes these imbalances visible so you can rebalance before problems occur.</p>
+    </div>
+
+    <h3 id="per-user-chart">Per-User Timeline Chart</h3>
+    <p>At the top of the Team tab, you'll find a chart showing capacity, demand, and time spent over time. Use the dropdown to select:</p>
+    <ul>
+      <li><strong>All Team</strong> — Aggregated view of everyone</li>
+      <li><strong>Individual names</strong> — View for a specific team member</li>
+    </ul>
+
+    <h4>Chart Lines</h4>
+    <table>
+      <tr>
+        <th>Line</th>
+        <th>Color</th>
+        <th>Meaning</th>
+      </tr>
+      <tr>
+        <td>Capacity</td>
+        <td><span style="color:#00875A">Green (dashed)</span></td>
+        <td>Hours available per period for this person/team</td>
+      </tr>
+      <tr>
+        <td>Demand</td>
+        <td><span style="color:#0052CC">Blue (solid)</span></td>
+        <td>Hours of work assigned per period</td>
+      </tr>
+      <tr>
+        <td>Time Spent</td>
+        <td><span style="color:#FF8B00">Orange (solid)</span></td>
+        <td>Hours actually worked per period</td>
+      </tr>
+    </table>
+
+    <h4>What to Look For</h4>
+    <ul>
+      <li><strong>Demand above capacity</strong> — This person is overcommitted</li>
+      <li><strong>Time spent below demand</strong> — Work isn't getting done as planned (they may be blocked, or estimates were wrong)</li>
+      <li><strong>Time spent tracking demand</strong> — Healthy progress</li>
+      <li><strong>Capacity much higher than demand</strong> — This person has spare capacity</li>
+    </ul>
+
+    <h3 id="workload-table">Workload Distribution Table</h3>
+    <p>Below the chart, a table shows key metrics for each team member:</p>
+
+    <table>
+      <tr>
+        <th>Column</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><strong>Assignee</strong></td>
+        <td>Team member name (from Jira assignments)</td>
+      </tr>
+      <tr>
+        <td><strong>Capacity</strong></td>
+        <td>Total hours available (from Capacity tab configuration)</td>
+      </tr>
+      <tr>
+        <td><strong>Demand</strong></td>
+        <td>Total hours of work assigned to them</td>
+      </tr>
+      <tr>
+        <td><strong>Load %</strong></td>
+        <td>Demand ÷ Capacity × 100 (how utilized they are)</td>
+      </tr>
+      <tr>
+        <td><strong>Time Spent</strong></td>
+        <td>Hours already logged against their issues</td>
+      </tr>
+      <tr>
+        <td><strong>Utilization %</strong></td>
+        <td>Time Spent ÷ Capacity × 100 (actual work done vs. available)</td>
+      </tr>
+      <tr>
+        <td><strong>Issues</strong></td>
+        <td>Number of issues assigned</td>
+      </tr>
+      <tr>
+        <td><strong>Status</strong></td>
+        <td>Overloaded, On Track, or Under-utilized</td>
+      </tr>
+    </table>
+
+    <h3 id="identifying-imbalances">Identifying Imbalances</h3>
+
+    <h4>Status Indicators</h4>
+    <table>
+      <tr>
+        <th>Status</th>
+        <th>Load %</th>
+        <th>Meaning</th>
+        <th>Action</th>
+      </tr>
+      <tr>
+        <td><span class="score-danger">Overloaded</span></td>
+        <td>&gt;100%</td>
+        <td>More work assigned than capacity available</td>
+        <td>Reassign some work to others or extend timelines</td>
+      </tr>
+      <tr>
+        <td><span class="score-good">On Track</span></td>
+        <td>80-100%</td>
+        <td>Well-utilized with some buffer</td>
+        <td>Maintain current assignments</td>
+      </tr>
+      <tr>
+        <td><span class="score-warning">Under-utilized</span></td>
+        <td>&lt;80%</td>
+        <td>Has spare capacity</td>
+        <td>Could take on more work if needed</td>
+      </tr>
+      <tr>
+        <td>No Capacity</td>
+        <td>N/A</td>
+        <td>No capacity configured for this person</td>
+        <td>Add them in the Capacity tab</td>
+      </tr>
+    </table>
+
+    <div class="note tip">
+      <div class="note-title">Rebalancing Tip</div>
+      <p>Click on a row in the table to filter the chart to that person. Compare overloaded team members against under-utilized ones to identify rebalancing opportunities.</p>
+    </div>
+
+    <!-- Section 5: Capacity Tab -->
+    <h2 id="capacity-tab">5. Capacity Tab</h2>
+
+    <h3 id="capacity-concepts">Understanding Capacity</h3>
+    <p>Capacity represents the work your team <em>can</em> do—the hours available for project work. Getting capacity right is critical for accurate feasibility analysis.</p>
+
+    <div class="concept-box">
+      <h4>Capacity ≠ Hours in a Day</h4>
+      <p>A common mistake is assuming 8 hours/day of capacity per person. In reality, much of the workday is consumed by:</p>
+      <ul>
+        <li>Meetings and standups</li>
+        <li>Email and Slack communication</li>
+        <li>Context switching between tasks</li>
+        <li>Code reviews and helping teammates</li>
+        <li>Administrative tasks</li>
+      </ul>
+      <p>Most teams have 5-6 hours of <em>actual productive capacity</em> per person per day. Be realistic.</p>
+    </div>
+
+    <h3 id="manual-capacity">Manual Capacity Entry</h3>
+    <p>The Capacity tab lets you configure each team member's availability directly:</p>
+
+    <ol>
+      <li>Go to the <strong>Capacity</strong> tab</li>
+      <li>Choose your period: <strong>Weekly</strong> or <strong>Monthly</strong></li>
+      <li>Click <strong>Add Team Member</strong></li>
+      <li>Enter their name (should match Jira display names for best results)</li>
+      <li>Enter their hours per period</li>
+      <li>Optionally set start/end dates for temporary capacity changes</li>
+      <li>Click <strong>Save Capacity Configuration</strong></li>
+    </ol>
+
+    <div class="example-box">
+      <h4>Example Configuration</h4>
+      <p>For a typical team:</p>
+      <table>
+        <tr><th>Name</th><th>Hours/Week</th><th>Notes</th></tr>
+        <tr><td>Alice Chen</td><td>30</td><td>Full-time (6hrs/day × 5 days)</td></tr>
+        <tr><td>Bob Martinez</td><td>30</td><td>Full-time</td></tr>
+        <tr><td>Carol Kim</td><td>20</td><td>Part-time (4 days/week)</td></tr>
+        <tr><td>David Patel</td><td>24</td><td>Full-time but heavy meeting load</td></tr>
+      </table>
+    </div>
+
+    <h3 id="capacity-calculation">How Capacity is Calculated</h3>
+    <p>Beyond Burndown converts your configured capacity into daily values:</p>
+
+    <table>
+      <tr>
+        <th>Period Setting</th>
+        <th>Conversion</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td>Weekly</td>
+        <td>Hours ÷ 5 business days</td>
+        <td>30 hrs/week = 6 hrs/day</td>
+      </tr>
+      <tr>
+        <td>Monthly</td>
+        <td>Hours ÷ 22 avg business days</td>
+        <td>132 hrs/month = 6 hrs/day</td>
+      </tr>
+    </table>
+
+    <p>These daily values are then aggregated according to your selected period view (daily, weekly, monthly, etc.).</p>
+
+    <h3 id="capacity-best-practices">Capacity Best Practices</h3>
+
+    <div class="note tip">
+      <div class="note-title">1. Be Conservative</div>
+      <p>It's better to underestimate capacity than overestimate. If you assume everyone has 8 productive hours/day and they actually have 5, your feasibility score will be dangerously optimistic.</p>
+    </div>
+
+    <div class="note tip">
+      <div class="note-title">2. Account for Planned Absences</div>
+      <p>If someone is taking vacation next week, either reduce their hours or set an end date on their capacity. Don't assume full availability when you know it won't be there.</p>
+    </div>
+
+    <div class="note tip">
+      <div class="note-title">3. Update Regularly</div>
+      <p>Capacity changes over time. Update your configuration when team members join, leave, or have schedule changes. Stale capacity data leads to bad analysis.</p>
+    </div>
+
+    <div class="note tip">
+      <div class="note-title">4. Match Names to Jira</div>
+      <p>For the Team tab to work correctly, the names you enter should match how they appear as assignees in Jira. Check Jira's "Assigned" field to see the exact display names.</p>
+    </div>
+
+    <!-- Section 6: Compliance Tab -->
+    <h2 id="compliance-tab">6. Compliance Tab (Data Quality)</h2>
+
+    <h3 id="why-data-quality">Why Data Quality Matters</h3>
+    <p>Feasibility analysis is only as good as the data it's based on. If your issues are missing estimates, have no due dates, or contain conflicting information, the analysis will be misleading.</p>
+
+    <div class="concept-box">
+      <h4>Garbage In, Garbage Out</h4>
+      <p>The Compliance tab automatically scans your issues and identifies data quality problems. Think of it as a health check for your Jira data.</p>
+      <p>Fixing these violations doesn't just improve Beyond Burndown's accuracy—it improves your overall project visibility and planning quality.</p>
+    </div>
+
+    <h3 id="violation-types">Violation Types Explained</h3>
 
     <div class="feature-box">
       <h4>Missing Start Date</h4>
-      <p>Issues without a start date cannot be properly scheduled. The analyzer assumes work starts immediately, which may not be accurate.</p>
-      <p><strong>Fix:</strong> Add a start date to the issue or use the "Start date" custom field.</p>
+      <p><strong>What it means:</strong> An issue has no start date, so Beyond Burndown doesn't know when work should begin.</p>
+      <p><strong>Why it matters:</strong> Without a start date, the system assumes work could start immediately. If the issue actually can't start for two weeks, demand will be incorrectly front-loaded.</p>
+      <p><strong>How to fix:</strong> Add a start date to the issue. Use Jira's "Start date" custom field, or the start date of the sprint the issue is in.</p>
     </div>
 
     <div class="feature-box">
       <h4>Missing Due Date</h4>
-      <p>Issues without a due date are assumed to have a 14-day window, which may misrepresent actual deadlines.</p>
-      <p><strong>Fix:</strong> Set a realistic due date for the issue.</p>
+      <p><strong>What it means:</strong> An issue has no due date, so there's no clear deadline.</p>
+      <p><strong>Why it matters:</strong> Without a due date, Beyond Burndown uses a default assumption (typically spreading work over a 14-day window). This may not reflect reality.</p>
+      <p><strong>How to fix:</strong> Set a realistic due date that reflects when the work actually needs to be done.</p>
     </div>
 
     <div class="feature-box">
       <h4>Missing Estimate</h4>
-      <p>Issues without time estimates cannot contribute to capacity calculations. They're invisible to feasibility analysis.</p>
-      <p><strong>Fix:</strong> Add an original estimate (time tracking) to the issue.</p>
+      <p><strong>What it means:</strong> An issue has no time estimate (Original Estimate field is empty).</p>
+      <p><strong>Why it matters:</strong> Issues without estimates contribute zero demand. They're invisible to feasibility analysis. If you have 10 unestimated issues, your true demand is higher than reported.</p>
+      <p><strong>How to fix:</strong> Add an Original Estimate to the issue's time tracking. Even a rough estimate is better than none.</p>
     </div>
 
     <div class="feature-box">
       <h4>Overdue</h4>
-      <p>Issues past their due date that aren't marked as Done. These represent planning failures or outdated data.</p>
-      <p><strong>Fix:</strong> Either complete the issue, update the due date, or mark it as blocked.</p>
+      <p><strong>What it means:</strong> An issue's due date has passed but it's not marked Done.</p>
+      <p><strong>Why it matters:</strong> Overdue issues indicate either planning failures (the deadline was unrealistic) or data maintenance problems (the due date wasn't updated).</p>
+      <p><strong>How to fix:</strong> Either complete the issue, update its due date to a realistic new deadline, or mark it as blocked/deprioritized.</p>
     </div>
 
     <div class="feature-box">
       <h4>Done with Remaining Work</h4>
-      <p>Issues marked as Done but still have remaining estimate. This suggests incomplete logging or incorrect status.</p>
-      <p><strong>Fix:</strong> Clear the remaining estimate or verify the issue is actually complete.</p>
+      <p><strong>What it means:</strong> An issue is marked Done but still has remaining estimate time.</p>
+      <p><strong>Why it matters:</strong> This usually indicates the issue was closed without proper time logging, or the status is wrong. It skews capacity calculations.</p>
+      <p><strong>How to fix:</strong> Clear the remaining estimate (set to 0), or verify the issue is actually complete.</p>
     </div>
 
     <div class="feature-box">
       <h4>Child After Parent</h4>
-      <p>Sub-tasks or child stories with due dates after their parent Epic's due date. This creates impossible schedules.</p>
-      <p><strong>Fix:</strong> Adjust either the child's due date or the parent's due date.</p>
+      <p><strong>What it means:</strong> A sub-task or child story has a due date after its parent Epic's due date.</p>
+      <p><strong>Why it matters:</strong> This creates an impossible schedule—the Epic can't be done until its children are done, but the children are scheduled to finish later.</p>
+      <p><strong>How to fix:</strong> Either move the child's due date earlier, or extend the parent's due date.</p>
     </div>
 
     <div class="feature-box">
       <h4>Dependency Conflict</h4>
-      <p>A blocking issue finishes after the blocked issue is supposed to start. This creates impossible execution order.</p>
-      <p><strong>Fix:</strong> Adjust dates so blockers finish before dependent work begins.</p>
+      <p><strong>What it means:</strong> An issue depends on (is blocked by) another issue that finishes after the dependent issue is supposed to start.</p>
+      <p><strong>Why it matters:</strong> You can't start work on a blocked issue until its blocker is done. If the blocker finishes after you're supposed to start, the schedule is impossible.</p>
+      <p><strong>How to fix:</strong> Adjust dates so blockers complete before dependent work begins, or remove the dependency if it's not actually a hard blocker.</p>
     </div>
 
     <h3 id="severity-levels">Severity Levels</h3>
@@ -471,35 +852,60 @@
       <tr>
         <th>Severity</th>
         <th>Color</th>
-        <th>Meaning</th>
+        <th>Description</th>
+        <th>Priority</th>
       </tr>
       <tr>
         <td><strong>Error</strong></td>
-        <td>Red</td>
+        <td><span class="score-danger">Red</span></td>
         <td>Critical issue that will cause planning failures</td>
+        <td>Fix immediately</td>
       </tr>
       <tr>
         <td><strong>Warning</strong></td>
-        <td>Orange</td>
+        <td><span class="score-warning">Orange</span></td>
         <td>Potential problem that may affect accuracy</td>
+        <td>Fix when possible</td>
       </tr>
       <tr>
         <td><strong>Info</strong></td>
-        <td>Blue</td>
-        <td>Minor issue or suggestion for improvement</td>
+        <td><span style="color:#0052CC">Blue</span></td>
+        <td>Minor issue or suggestion</td>
+        <td>Nice to fix</td>
       </tr>
     </table>
 
-    <!-- Section 4: Dependencies Tab -->
-    <h2 id="dependencies-tab">4. Dependencies Tab</h2>
-    <p>The Dependencies tab analyzes blocking relationships between issues to help you understand execution order and identify problems.</p>
-
-    <h3 id="dependency-graph">Dependency Graph</h3>
-    <p>The dependency analysis builds a directed graph from Jira issue links:</p>
-
-    <h4>Link Types Analyzed</h4>
+    <h3 id="fixing-violations">How to Fix Violations</h3>
+    <p>The Compliance tab shows each violation with:</p>
     <ul>
-      <li><strong>Blocks / Is blocked by</strong> - Primary blocking relationships</li>
+      <li>The issue key (clickable to open in Jira)</li>
+      <li>The violation type and description</li>
+      <li>The severity level</li>
+    </ul>
+
+    <div class="note tip">
+      <div class="note-title">Prioritization Strategy</div>
+      <p>Start with Errors (red), then Warnings (orange). You don't need to fix everything—focus on issues that significantly affect your analysis. A few Info-level violations won't throw things off much.</p>
+    </div>
+
+    <!-- Section 7: Dependencies Tab -->
+    <h2 id="dependencies-tab">7. Dependencies Tab</h2>
+
+    <h3 id="dependency-concepts">Understanding Dependencies</h3>
+    <p>Dependencies represent ordering constraints—work that must be done in a specific sequence. If Issue A blocks Issue B, then B cannot start until A is complete.</p>
+
+    <div class="concept-box">
+      <h4>Why Dependencies Matter for Feasibility</h4>
+      <p>Dependencies affect more than just execution order. They can create bottlenecks that reduce effective capacity.</p>
+      <p>If three issues are all blocked by one issue, that blocker becomes a critical path item. Any delay to it delays everything downstream.</p>
+    </div>
+
+    <h3 id="dependency-analysis">Dependency Analysis</h3>
+    <p>Beyond Burndown analyzes blocking relationships from Jira issue links:</p>
+
+    <h4>Link Types Recognized</h4>
+    <ul>
+      <li><strong>Blocks / Is blocked by</strong></li>
       <li><strong>Has to be done before / Has to be done after</strong></li>
       <li><strong>Is required by / Requires</strong></li>
     </ul>
@@ -508,239 +914,193 @@
     <table>
       <tr>
         <th>Metric</th>
-        <th>Description</th>
+        <th>Meaning</th>
+        <th>Why It Matters</th>
       </tr>
       <tr>
         <td><strong>Dependency Depth</strong></td>
-        <td>How many levels of blockers an issue has. Depth 0 = no blockers.</td>
+        <td>How many levels of blockers an issue has (depth 0 = no blockers)</td>
+        <td>High-depth issues are at the end of long chains and are vulnerable to upstream delays</td>
       </tr>
       <tr>
         <td><strong>Root Issues</strong></td>
-        <td>Issues with no blockers - can start immediately.</td>
+        <td>Issues with no blockers</td>
+        <td>These can start immediately—prioritize them to unblock downstream work</td>
       </tr>
       <tr>
         <td><strong>Leaf Issues</strong></td>
-        <td>Issues that don't block anything - can finish last.</td>
-      </tr>
-      <tr>
-        <td><strong>Topological Order</strong></td>
-        <td>Optimal execution sequence respecting all dependencies.</td>
+        <td>Issues that don't block anything</td>
+        <td>These are end points—their completion doesn't unblock other work</td>
       </tr>
     </table>
 
     <h3 id="circular-dependencies">Circular Dependencies</h3>
-    <p>A circular dependency occurs when issues form a cycle (A blocks B, B blocks C, C blocks A). These are impossible to execute and must be resolved.</p>
+    <p>A <strong>circular dependency</strong> occurs when issues form a cycle: A blocks B, B blocks C, and C blocks A. This is impossible to execute—no issue can start because they're all waiting for each other.</p>
 
     <div class="note error">
-      <div class="note-title">Circular Dependency Detected</div>
-      If circular dependencies are found, they're displayed prominently with the cycle path. You must break the cycle by removing one of the blocking links.
+      <div class="note-title">Critical: Break All Cycles</div>
+      <p>Circular dependencies must be resolved. They're displayed prominently with the full cycle path. You need to remove at least one link to break the cycle.</p>
+      <p>Often, circular dependencies are created by mistake or represent "nice to have" relationships rather than true blockers.</p>
     </div>
 
-    <!-- Section 5: Report Tab -->
-    <h2 id="report-tab">5. Report Tab</h2>
-    <p>The Report tab generates professional status reports for stakeholder communication.</p>
+    <h3 id="critical-path">Critical Path Implications</h3>
+    <p>While Beyond Burndown doesn't calculate critical path directly, the dependency analysis reveals critical path indicators:</p>
 
-    <h3>Report Contents</h3>
     <ul>
-      <li><strong>Executive Summary</strong> - High-level status with feasibility score</li>
-      <li><strong>Key Metrics</strong> - Total demand, capacity, time spent, completion %</li>
-      <li><strong>Risk Highlights</strong> - Top compliance violations and concerns</li>
-      <li><strong>Overload Periods</strong> - Dates when demand exceeds capacity</li>
-      <li><strong>Dependency Status</strong> - Circular dependencies and blocked chains</li>
+      <li><strong>High-depth chains</strong> — Long dependency chains have more opportunities for delays</li>
+      <li><strong>Many downstream dependents</strong> — Issues that block many others are high-risk</li>
+      <li><strong>Root issues on critical path</strong> — Start these first to unblock downstream work</li>
     </ul>
 
-    <h3>Export Options</h3>
-    <table>
-      <tr>
-        <th>Format</th>
-        <th>Best For</th>
-      </tr>
-      <tr>
-        <td><strong>Copy as Text</strong></td>
-        <td>Email, Slack, plain text documents</td>
-      </tr>
-      <tr>
-        <td><strong>Copy as Markdown</strong></td>
-        <td>Confluence, GitHub, documentation systems</td>
-      </tr>
-    </table>
+    <!-- Section 8: Report Tab -->
+    <h2 id="report-tab">8. Report Tab</h2>
 
-    <!-- Section 6: Team Tab -->
-    <h2 id="team-tab">6. Team Tab</h2>
-    <p>The Team tab shows workload distribution across team members.</p>
+    <h3 id="report-contents">Report Contents</h3>
+    <p>The Report tab generates a professional status report that consolidates findings from all other tabs:</p>
 
-    <h3>Workload Analysis</h3>
-    <p>For each assignee, the Team view shows:</p>
+    <h4>Executive Summary</h4>
     <ul>
-      <li><strong>Assigned Hours</strong> - Total estimated work assigned to them</li>
-      <li><strong>Time Spent</strong> - Hours already logged</li>
-      <li><strong>Remaining</strong> - Hours still to complete</li>
-      <li><strong>Utilization</strong> - Percentage of their capacity used</li>
+      <li>Overall project status (Healthy, At Risk, Overloaded)</li>
+      <li>Feasibility score with interpretation</li>
+      <li>Key dates and timeline</li>
     </ul>
 
-    <h3>Identifying Imbalances</h3>
+    <h4>Key Metrics</h4>
     <ul>
-      <li><span class="score-danger">Red</span> - Over capacity (>100% utilization)</li>
-      <li><span class="score-warning">Orange</span> - Near capacity (80-100%)</li>
-      <li><span class="score-good">Green</span> - Healthy (<80%)</li>
+      <li>Total demand (hours)</li>
+      <li>Total capacity (hours)</li>
+      <li>Time spent to date</li>
+      <li>Completion percentage</li>
+      <li>Number of issues analyzed</li>
     </ul>
 
-    <h3>Unassigned Work</h3>
-    <p>Work without an assignee is shown separately. This helps identify gaps in task assignment.</p>
+    <h4>Risk Highlights</h4>
+    <ul>
+      <li>Overloaded periods with dates</li>
+      <li>Critical compliance violations</li>
+      <li>Circular dependencies (if any)</li>
+      <li>Team members who are overloaded</li>
+    </ul>
 
-    <!-- Section 7: Capacity Tab -->
-    <h2 id="capacity-tab">7. Capacity Tab</h2>
-    <p>The Capacity tab lets you configure team capacity without creating Jira issues.</p>
+    <h4>Recommended Actions</h4>
+    <p>Based on the analysis, the report suggests prioritized actions to improve feasibility.</p>
 
-    <h3>Manual Capacity Entry</h3>
-    <p>Instead of using capacity issues, you can directly specify each team member's availability:</p>
-
-    <ol>
-      <li>Go to the <strong>Capacity</strong> tab</li>
-      <li>Select period type: <strong>Weekly</strong> or <strong>Monthly</strong></li>
-      <li>Click <strong>Add Team Member</strong></li>
-      <li>Enter their name and hours per period</li>
-      <li>Optionally set start/end dates for temporary capacity</li>
-      <li>Click <strong>Save</strong></li>
-    </ol>
-
-    <h3>Capacity Calculation</h3>
-    <table>
-      <tr>
-        <th>Period</th>
-        <th>Daily Conversion</th>
-        <th>Example</th>
-      </tr>
-      <tr>
-        <td>Weekly</td>
-        <td>Hours ÷ 5 business days</td>
-        <td>40 hrs/week = 8 hrs/day</td>
-      </tr>
-      <tr>
-        <td>Monthly</td>
-        <td>Hours ÷ 22 avg business days</td>
-        <td>176 hrs/month ≈ 8 hrs/day</td>
-      </tr>
-    </table>
+    <h3 id="using-reports">Using Reports Effectively</h3>
 
     <div class="note tip">
-      <div class="note-title">Tip: Account for Meetings</div>
-      Don't assume 8 hours/day of productive time. Most teams have 5-6 hours of actual coding/work time after meetings, breaks, and context switching.
+      <div class="note-title">For Stakeholder Updates</div>
+      <p>Use the "Copy as Text" option to paste into emails or Slack. The plain text format works well for quick updates.</p>
     </div>
 
-    <!-- Section 8: What-If Panel -->
-    <h2 id="what-if-panel">8. What-If Scenarios</h2>
-    <p>The What-If panel lets you model hypothetical changes and see their impact on feasibility before committing to them.</p>
+    <div class="note tip">
+      <div class="note-title">For Documentation</div>
+      <p>Use "Copy as Markdown" for Confluence, GitHub, or other documentation systems. The formatting will render nicely.</p>
+    </div>
 
-    <h3>Opening What-If</h3>
-    <p>Click the <strong>Show What-If</strong> button in the header to open the scenarios panel.</p>
+    <!-- Section 9: What-If Scenarios -->
+    <h2 id="what-if-panel">9. What-If Scenarios</h2>
+
+    <h3 id="what-if-concepts">The Power of What-If Analysis</h3>
+    <p>One of Beyond Burndown's most powerful features is the ability to model hypothetical changes and see their impact before committing to them.</p>
+
+    <div class="concept-box">
+      <h4>Making Informed Decisions</h4>
+      <p>When your feasibility is low, you have three fundamental levers:</p>
+      <ol>
+        <li><strong>Add capacity</strong> — Hire contractors, approve overtime, reassign people</li>
+        <li><strong>Reduce scope</strong> — Cut features, defer work to later releases</li>
+        <li><strong>Extend timeline</strong> — Push the deadline out</li>
+      </ol>
+      <p>What-If lets you model each option (or combinations) to find the right balance before making commitments.</p>
+    </div>
 
     <h3 id="capacity-scenarios">Capacity Scenarios</h3>
-    <p>Model changes to team capacity:</p>
 
-    <h4>Add Capacity (+)</h4>
-    <p>Simulate adding resources:</p>
+    <h4>Adding Capacity (+)</h4>
+    <p>Model what happens if you increase resources:</p>
     <ul>
-      <li><strong>+10%</strong> - Modest increase (overtime, temporary help)</li>
-      <li><strong>+25%</strong> - Significant increase (new team member)</li>
-      <li><strong>+50%</strong> - Major increase (multiple hires)</li>
-      <li><strong>Custom</strong> - Enter any percentage</li>
+      <li><strong>+10%</strong> — Modest increase (overtime, focus time)</li>
+      <li><strong>+25%</strong> — Significant increase (temporary contractor)</li>
+      <li><strong>+50%</strong> — Major increase (new team member)</li>
+      <li><strong>Custom</strong> — Any percentage you want to test</li>
     </ul>
 
-    <h4>Remove Capacity (-)</h4>
-    <p>Simulate losing resources:</p>
+    <h4>Removing Capacity (-)</h4>
+    <p>Model what happens if you lose resources:</p>
     <ul>
-      <li><strong>-10%</strong> - Minor reduction (sick days, training)</li>
-      <li><strong>-25%</strong> - Vacation or temporary leave</li>
-      <li><strong>-50%</strong> - Major reduction (departure, reassignment)</li>
+      <li><strong>-10%</strong> — Minor reduction (sick days, training)</li>
+      <li><strong>-25%</strong> — Vacation or extended absence</li>
+      <li><strong>-50%</strong> — Major reduction (departure, reassignment)</li>
     </ul>
 
-    <h3 id="scope-scenarios">Scope Scenarios</h3>
-    <p>Model changes to planned work:</p>
-
-    <h4>Remove Scope (-)</h4>
-    <p>Simulate descoping:</p>
-    <ul>
-      <li><strong>-10%</strong> - Minor feature cuts</li>
-      <li><strong>-25%</strong> - Significant descope</li>
-      <li><strong>-50%</strong> - Major scope reduction</li>
-    </ul>
-
-    <h4>Add Scope (+)</h4>
-    <p>Simulate scope creep or new requirements:</p>
-    <ul>
-      <li><strong>+10%</strong> - Minor additions</li>
-      <li><strong>+25%</strong> - New feature request</li>
-      <li><strong>+50%</strong> - Major scope increase</li>
-    </ul>
-
-    <h3 id="deadline-scenarios">Deadline Scenarios</h3>
-    <p>Model timeline changes:</p>
-    <ul>
-      <li><strong>+1 week</strong> - Extend deadline by 7 days</li>
-      <li><strong>+2 weeks</strong> - Extend by 14 days</li>
-      <li><strong>Custom</strong> - Specify any number of days</li>
-    </ul>
-
-    <h3>Combining Scenarios</h3>
-    <p>You can activate multiple scenarios simultaneously to model complex changes:</p>
-
-    <div class="feature-box">
-      <h4>Example: Finding the Sweet Spot</h4>
-      <p>If your feasibility is 45% (red), try:</p>
-      <ol>
-        <li>Add +25% capacity → Score becomes 58%</li>
-        <li>Also remove -20% scope → Score becomes 78%</li>
-        <li>The combination gets you to a healthy state</li>
-      </ol>
+    <div class="example-box">
+      <h4>Example: Contractor Decision</h4>
+      <p>Your feasibility is 65% (At Risk). You're considering hiring a contractor.</p>
+      <p>Try: +25% capacity scenario → Feasibility becomes 81% (Healthy)</p>
+      <p>Now you have data to support the contractor request.</p>
     </div>
 
-    <h3>Active Scenarios Indicator</h3>
-    <p>When scenarios are active, the header shows "Viewing X scenarios" with the combined effect. The feasibility score updates in real-time to reflect the scenario impact.</p>
+    <h3 id="scope-scenarios">Scope Scenarios</h3>
 
-    <!-- Section 9: Configuration -->
-    <h2 id="configuration">9. Configuration</h2>
-    <p>Access configuration by clicking the gear icon on the gadget.</p>
-
-    <h3>Configuration Options</h3>
-    <table>
-      <tr>
-        <th>Setting</th>
-        <th>Description</th>
-        <th>Required</th>
-      </tr>
-      <tr>
-        <td><strong>Demand JQL</strong></td>
-        <td>JQL query to select work items to analyze</td>
-        <td>Yes</td>
-      </tr>
-      <tr>
-        <td><strong>Capacity JQL</strong></td>
-        <td>JQL query for capacity-representing issues</td>
-        <td>No*</td>
-      </tr>
-      <tr>
-        <td><strong>Manual Capacity</strong></td>
-        <td>Use the Capacity tab instead of JQL</td>
-        <td>No*</td>
-      </tr>
-    </table>
-    <p>*Either Capacity JQL or Manual Capacity should be configured.</p>
-
-    <h3>Required Issue Fields</h3>
-    <p>For best results, issues should have:</p>
+    <h4>Removing Scope (-)</h4>
+    <p>Model descoping:</p>
     <ul>
-      <li><strong>Start Date</strong> - When work begins (custom field or sprint start)</li>
-      <li><strong>Due Date</strong> - When work must complete</li>
-      <li><strong>Original Estimate</strong> - Total planned hours</li>
-      <li><strong>Remaining Estimate</strong> - Hours left to complete</li>
-      <li><strong>Worklogs</strong> - Time logged against the issue</li>
+      <li><strong>-10%</strong> — Cut nice-to-haves</li>
+      <li><strong>-25%</strong> — Significant feature reduction</li>
+      <li><strong>-50%</strong> — Major descope to core MVP</li>
     </ul>
 
-    <!-- Section 10: JQL Examples -->
-    <h2 id="jql-examples">10. JQL Examples</h2>
+    <h4>Adding Scope (+)</h4>
+    <p>Model scope creep or new requirements:</p>
+    <ul>
+      <li><strong>+10%</strong> — Minor additions</li>
+      <li><strong>+25%</strong> — New feature request</li>
+      <li><strong>+50%</strong> — Major scope expansion</li>
+    </ul>
 
-    <h3>Demand JQL</h3>
+    <div class="example-box">
+      <h4>Example: Scope Negotiation</h4>
+      <p>Stakeholder wants to add a feature. Your feasibility is 75%.</p>
+      <p>Try: +20% scope → Feasibility drops to 58% (At Risk)</p>
+      <p>Now you can show the impact and negotiate: "We can add this if we cut something else or extend the deadline."</p>
+    </div>
+
+    <h3 id="combining-scenarios">Combining Scenarios</h3>
+    <p>You can activate multiple scenarios simultaneously to find optimal combinations:</p>
+
+    <div class="example-box">
+      <h4>Example: Finding the Sweet Spot</h4>
+      <p>Current feasibility: 45% (Overloaded)</p>
+      <ol>
+        <li>Try +25% capacity alone → 58% (still At Risk)</li>
+        <li>Try -25% scope alone → 60% (still At Risk)</li>
+        <li>Try both together → 80% (Healthy!)</li>
+      </ol>
+      <p>The combination of a modest capacity increase AND modest scope reduction gets you to a healthy state.</p>
+    </div>
+
+    <p>When scenarios are active, the header shows "Viewing X scenarios" and the feasibility score updates in real-time.</p>
+
+    <!-- Section 10: Configuration -->
+    <h2 id="configuration">10. Configuration</h2>
+
+    <h3 id="jql-queries">JQL Queries Explained</h3>
+    <p>JQL (Jira Query Language) is how you tell Beyond Burndown which issues to analyze. The <strong>Demand JQL</strong> query is required—it defines what work you're planning.</p>
+
+    <div class="concept-box">
+      <h4>JQL Basics</h4>
+      <p>JQL uses field = value syntax. Common patterns:</p>
+      <ul>
+        <li><code>project = ABC</code> — Issues in project ABC</li>
+        <li><code>sprint in openSprints()</code> — Issues in active sprints</li>
+        <li><code>assignee = currentUser()</code> — Issues assigned to you</li>
+        <li><code>status != Done</code> — Issues not yet completed</li>
+        <li><code>duedate >= 2026-01-01</code> — Issues due on or after a date</li>
+      </ul>
+      <p>Combine with AND/OR: <code>project = ABC AND sprint in openSprints()</code></p>
+    </div>
+
+    <h3 id="jql-examples">JQL Examples</h3>
 
     <h4>Current Sprint</h4>
     <pre>project = MYPROJECT AND sprint in openSprints()</pre>
@@ -748,98 +1108,267 @@
     <h4>Specific Sprint</h4>
     <pre>project = MYPROJECT AND sprint = "Sprint 42"</pre>
 
-    <h4>Date Range</h4>
+    <h4>Date Range (Quarterly Planning)</h4>
     <pre>project = MYPROJECT AND duedate >= 2026-01-01 AND duedate <= 2026-03-31</pre>
 
-    <h4>Excluding Done Issues</h4>
+    <h4>Exclude Done Issues</h4>
     <pre>project = MYPROJECT AND sprint in openSprints() AND status != Done</pre>
 
-    <h4>Using Saved Filter</h4>
+    <h4>Multiple Projects</h4>
+    <pre>project in (PROJ1, PROJ2, PROJ3) AND sprint in openSprints()</pre>
+
+    <h4>Using a Saved Filter</h4>
+    <pre>filter = "My Release Planning Filter"</pre>
+    <p>or by filter ID:</p>
     <pre>filter = 12345</pre>
 
-    <h3>Capacity JQL</h3>
+    <h4>Specific Issue Types</h4>
+    <pre>project = MYPROJECT AND issuetype in (Story, Task, Bug) AND sprint in openSprints()</pre>
 
-    <h4>Capacity Issues by Summary</h4>
-    <pre>project = MYPROJECT AND summary ~ "Capacity"</pre>
+    <h3 id="required-fields">Required Issue Fields</h3>
+    <p>For best results, your issues should have these fields populated:</p>
 
-    <h4>Capacity Issues by Label</h4>
-    <pre>project = MYPROJECT AND labels = "team-capacity"</pre>
+    <table>
+      <tr>
+        <th>Field</th>
+        <th>Used For</th>
+        <th>If Missing</th>
+      </tr>
+      <tr>
+        <td><strong>Original Estimate</strong></td>
+        <td>Demand calculation</td>
+        <td>Issue contributes zero demand (invisible)</td>
+      </tr>
+      <tr>
+        <td><strong>Start Date</strong></td>
+        <td>When work begins</td>
+        <td>Assumed to start immediately</td>
+      </tr>
+      <tr>
+        <td><strong>Due Date</strong></td>
+        <td>When work must finish</td>
+        <td>14-day default window applied</td>
+      </tr>
+      <tr>
+        <td><strong>Remaining Estimate</strong></td>
+        <td>Work left to do</td>
+        <td>Original estimate used instead</td>
+      </tr>
+      <tr>
+        <td><strong>Worklogs</strong></td>
+        <td>Time spent tracking</td>
+        <td>Progress won't show</td>
+      </tr>
+      <tr>
+        <td><strong>Assignee</strong></td>
+        <td>Team tab breakdown</td>
+        <td>Shows as "Unassigned"</td>
+      </tr>
+    </table>
 
-    <h4>Specific Team</h4>
-    <pre>project = MYPROJECT AND labels = "team-alpha-capacity"</pre>
+    <!-- Section 11: Best Practices -->
+    <h2 id="best-practices">11. Best Practices</h2>
 
-    <div class="note tip">
-      <div class="note-title">Capacity Issue Pattern</div>
-      A common pattern is to create one "Capacity" issue per sprint with:
-      <ul>
-        <li>Summary: "Sprint 42 - Team Capacity"</li>
-        <li>Start Date: Sprint start</li>
-        <li>Due Date: Sprint end</li>
-        <li>Original Estimate: Total team hours available</li>
-      </ul>
+    <div class="feature-box">
+      <h4>1. Configure Capacity First</h4>
+      <p>Before analyzing feasibility, set up accurate capacity in the Capacity tab. Without capacity, the analysis is meaningless.</p>
     </div>
 
-    <!-- Section 11: Troubleshooting -->
-    <h2 id="troubleshooting">11. Troubleshooting</h2>
+    <div class="feature-box">
+      <h4>2. Use Conservative Estimates</h4>
+      <p>Assume 5-6 productive hours per person per day, not 8. Account for meetings, communication, and context switching.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>3. Fix Compliance Violations</h4>
+      <p>Address red (Error) violations first. Missing estimates and impossible schedules will skew your analysis.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>4. Review Regularly</h4>
+      <p>Check Beyond Burndown at least weekly. Plans change—issues get added, estimates change, people take time off. Keep the analysis current.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>5. Use What-If for Decisions</h4>
+      <p>Before committing to scope changes or resource decisions, model them in What-If. Let data drive the conversation.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>6. Share with Stakeholders</h4>
+      <p>Use the Report tab to generate updates. Stakeholders appreciate data-driven status reports over gut feelings.</p>
+    </div>
+
+    <div class="feature-box">
+      <h4>7. Target 80% Feasibility</h4>
+      <p>Don't aim for 100%—leave buffer for uncertainty. An 80% score means you can handle some surprises.</p>
+    </div>
+
+    <!-- Section 12: Troubleshooting -->
+    <h2 id="troubleshooting">12. Troubleshooting</h2>
 
     <h3>No Data Showing</h3>
     <div class="note warning">
       <div class="note-title">Possible Causes</div>
       <ul>
-        <li>JQL query returns no issues - test it in Jira's issue search</li>
-        <li>Issues have no estimates - add Original Estimate values</li>
-        <li>Issues have no dates - add Start Date and Due Date</li>
-        <li>Filter permissions - ensure the filter is shared appropriately</li>
+        <li><strong>JQL returns no issues</strong> — Test your query in Jira's issue search first</li>
+        <li><strong>Issues have no estimates</strong> — Add Original Estimate to your issues</li>
+        <li><strong>Issues have no dates</strong> — Add Start Date and Due Date</li>
+        <li><strong>Filter permissions</strong> — If using a saved filter, ensure it's shared appropriately</li>
       </ul>
     </div>
 
     <h3>Feasibility Score is 0%</h3>
     <p>This means no capacity was detected:</p>
     <ul>
-      <li>Check your Capacity JQL query</li>
-      <li>Verify capacity issues have Original Estimate set</li>
-      <li>Verify capacity issues have both Start Date and Due Date</li>
-      <li>Try using Manual Capacity in the Capacity tab</li>
+      <li>Have you configured capacity in the Capacity tab?</li>
+      <li>If using capacity JQL, verify those issues have estimates and dates</li>
+      <li>Try switching to manual capacity entry</li>
     </ul>
 
-    <h3>Completion Percentage Stuck at 0%</h3>
+    <h3>Team Tab Shows "No Capacity" for Everyone</h3>
+    <p>The names in your Capacity configuration don't match Jira assignee names. Check:</p>
     <ul>
-      <li>Issues need Original Estimates set (not just Remaining)</li>
-      <li>Time must be logged via Worklogs</li>
-      <li>Ensure worklogs are within the analysis date range</li>
+      <li>Spelling and capitalization must match exactly</li>
+      <li>Use the display name from Jira, not email addresses</li>
+      <li>Check an assigned issue to see exactly how the name appears</li>
     </ul>
 
     <h3>Chart Shows Wrong Date Range</h3>
-    <p>The date range is calculated from:</p>
+    <p>The date range is calculated from your issues:</p>
     <ul>
-      <li>Earliest start date across all issues</li>
-      <li>Latest due date across all issues</li>
-      <li>Plus a 5-day buffer on each end</li>
+      <li>Start = earliest start date (or today if none)</li>
+      <li>End = latest due date + buffer</li>
     </ul>
-    <p>Check that your issues have reasonable dates.</p>
+    <p>Check that your issues have reasonable dates. One issue with a due date far in the future will extend the entire chart.</p>
+
+    <h3>Completion Percentage Stuck at 0%</h3>
+    <ul>
+      <li>Issues need <strong>Original Estimates</strong> set (not just Remaining)</li>
+      <li>Time must be logged via <strong>Worklogs</strong></li>
+      <li>Worklogs must be within the analysis date range</li>
+    </ul>
 
     <h3>"Filter Not Found" Error</h3>
-    <p>When using <code>filter = XXXXX</code> syntax:</p>
+    <p>When using <code>filter = XXXXX</code>:</p>
     <ul>
-      <li>The filter must exist and be accessible to you</li>
-      <li>Go to the filter and check sharing permissions</li>
+      <li>The filter must exist and be accessible</li>
+      <li>Check the filter's sharing settings in Jira</li>
       <li>Share with "Any logged-in user" or your group</li>
     </ul>
 
-    <h3>Performance Issues</h3>
-    <p>If the gadget loads slowly:</p>
+    <h3>Gadget Loads Slowly</h3>
     <ul>
       <li>Narrow your JQL to fewer issues</li>
-      <li>Use date range filters to limit the scope</li>
-      <li>Consider using saved filters for complex JQL</li>
+      <li>Add date constraints to limit scope</li>
+      <li>Use saved filters for complex JQL</li>
+      <li>Avoid <code>ORDER BY</code> clauses (not needed)</li>
     </ul>
 
+    <!-- Section 13: Glossary -->
+    <h2 id="glossary">13. Glossary</h2>
+
+    <table>
+      <tr>
+        <th>Term</th>
+        <th>Definition</th>
+      </tr>
+      <tr>
+        <td><strong>Capacity</strong></td>
+        <td>The amount of work (in hours) that can be done in a given time period</td>
+      </tr>
+      <tr>
+        <td><strong>Demand</strong></td>
+        <td>The amount of work (in hours) that needs to be done, derived from issue estimates</td>
+      </tr>
+      <tr>
+        <td><strong>Feasibility</strong></td>
+        <td>A measure of how achievable a plan is, expressed as a percentage (0-100%)</td>
+      </tr>
+      <tr>
+        <td><strong>Overload</strong></td>
+        <td>A period where demand exceeds capacity</td>
+      </tr>
+      <tr>
+        <td><strong>Time Spent</strong></td>
+        <td>Actual hours logged against issues through Jira worklogs</td>
+      </tr>
+      <tr>
+        <td><strong>Utilization</strong></td>
+        <td>Time spent divided by capacity, showing how much of available time is being used</td>
+      </tr>
+      <tr>
+        <td><strong>Load</strong></td>
+        <td>Demand divided by capacity, showing how much work is assigned relative to availability</td>
+      </tr>
+      <tr>
+        <td><strong>Compliance</strong></td>
+        <td>The degree to which issues have complete, consistent data</td>
+      </tr>
+      <tr>
+        <td><strong>Violation</strong></td>
+        <td>A data quality problem detected in an issue</td>
+      </tr>
+      <tr>
+        <td><strong>Dependency</strong></td>
+        <td>A relationship where one issue must be completed before another can start</td>
+      </tr>
+      <tr>
+        <td><strong>Circular Dependency</strong></td>
+        <td>A cycle where issues block each other in a loop (A→B→C→A)</td>
+      </tr>
+      <tr>
+        <td><strong>JQL</strong></td>
+        <td>Jira Query Language, used to search and filter issues</td>
+      </tr>
+      <tr>
+        <td><strong>Original Estimate</strong></td>
+        <td>The initial time estimate for an issue (Jira time tracking field)</td>
+      </tr>
+      <tr>
+        <td><strong>Remaining Estimate</strong></td>
+        <td>The time still needed to complete an issue</td>
+      </tr>
+    </table>
+
+    <!-- Section 14: FAQ -->
+    <h2 id="faq">14. Frequently Asked Questions</h2>
+
+    <h4>Q: Does Beyond Burndown modify my Jira issues?</h4>
+    <p>No. Beyond Burndown is read-only. It analyzes your issues but never creates, modifies, or deletes anything in Jira.</p>
+
+    <h4>Q: How often does the data refresh?</h4>
+    <p>Data is fetched when you load the dashboard or click refresh. It's not real-time—you see a snapshot at load time.</p>
+
+    <h4>Q: Can I use Beyond Burndown for multiple projects?</h4>
+    <p>Yes. Your JQL can span multiple projects: <code>project in (PROJ1, PROJ2, PROJ3)</code>. You can also add multiple gadgets to a dashboard with different configurations.</p>
+
+    <h4>Q: Why is my feasibility score different from what I calculated manually?</h4>
+    <p>Beyond Burndown applies an overload penalty—even if total capacity equals total demand, having concentrated overload periods reduces the score. This reflects the reality that uneven distribution causes problems.</p>
+
+    <h4>Q: What if my team doesn't use time estimates in Jira?</h4>
+    <p>Beyond Burndown relies on estimates for demand calculation. Without estimates, issues contribute zero demand. Consider adding at least rough estimates, or use story points converted to hours.</p>
+
+    <h4>Q: Can I export the charts?</h4>
+    <p>Currently, you can export the status report text. For charts, use your browser's screenshot functionality or a screen capture tool.</p>
+
+    <h4>Q: Does it work with Jira Server/Data Center?</h4>
+    <p>No. Beyond Burndown is built on Atlassian Forge, which only supports Jira Cloud.</p>
+
+    <h4>Q: How do I handle team members who work on multiple projects?</h4>
+    <p>In the Capacity tab, enter their total available capacity. Their demand will be calculated from whatever issues are assigned to them within your JQL scope.</p>
+
+    <h4>Q: What's the difference between Load % and Utilization %?</h4>
+    <p><strong>Load %</strong> = Demand ÷ Capacity (how much work is planned vs. available time)</p>
+    <p><strong>Utilization %</strong> = Time Spent ÷ Capacity (how much work is actually being done vs. available time)</p>
+    <p>High load with low utilization might indicate blockers or procrastination. Low load suggests spare capacity.</p>
+
     <footer>
-      <p>Beyond Burndown User Manual | Version 2.0 | Updated February 2026</p>
+      <p>Beyond Burndown User Manual | Version 3.0 | Updated February 2026</p>
       <p style="margin-top: 16px;">
         <a href="index.html">Home</a>
+        <a href="demo.html">Try Demo</a>
         <a href="https://github.com/donsalz57-git/beyond-burndown">GitHub</a>
-        <a href="https://marketplace.atlassian.com/">Get Beyond Burndown</a>
       </p>
     </footer>
   </div>
